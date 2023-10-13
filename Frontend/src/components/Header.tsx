@@ -17,7 +17,7 @@ const Header = () => {
   const userRedux = useSelector((state: RootState) => state.user);
   return (
     <div
-      className="gap- flex h-[65px]  w-full flex-row items-center "
+      className="flex h-[65px]  w-full flex-row items-center  "
       style={{
         backgroundImage: `url(${backgroundImageUrl})`,
         backgroundSize: "cover",
