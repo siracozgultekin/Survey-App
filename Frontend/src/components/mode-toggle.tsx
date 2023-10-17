@@ -26,7 +26,7 @@ export function ModeToggle() {
           Sen alışmışsın güneşli günlere
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Ben gecenin dördü beşiyim.
+          Ben gecenin dördü beşiyim
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -10,6 +10,7 @@ import { FileText, Search, LogOut, UserCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/app/store";
+import { ModeToggle } from "./mode-toggle";
 // import Drawer from "./Drawer";
 const Header = () => {
   const backgroundImageUrl =
@@ -26,6 +27,7 @@ const Header = () => {
       <div className="flex  flex-1 items-center  ">
         <div className="h-full w-[50px]">{/* <Drawer /> */}</div>
         <button className=" mx-2 flex items-center">
+          <ModeToggle />
           <FileText className="rounded-lg text-green-600" />
           <p className="text-lg font-bold">
             {" "}

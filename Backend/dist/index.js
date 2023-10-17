@@ -64,7 +64,7 @@ app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         console.log("buraya geliyo");
         const userId = newUser.rows[0].id;
         const token = jsonwebtoken_1.default.sign({ userId }, hashedPassword, {
-            expiresIn: "1h", // Token expiration time
+            expiresIn: "9h", // Token expiration time
         });
         res.json({ token });
     }

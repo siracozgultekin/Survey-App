@@ -40,7 +40,7 @@ app.post("/register", async (req: Request, res: Response) => {
     const userId = newUser.rows[0].id;
 
     const token = jwt.sign({ userId }, hashedPassword, {
-      expiresIn: "1h", // Token expiration time
+      expiresIn: "9h", // Token expiration time
     });
 
     res.json({ token });
