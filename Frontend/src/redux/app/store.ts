@@ -1,5 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "../features/user/user";
+import surveySlice from "../features/survey_creation/survey";
+import questionArraySlice from "../features/survey_creation/questionArray";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
 import {
@@ -16,18 +18,22 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
+  blacklist: ["survey", "questionArray"],
 };
 const reducer = combineReducers({
   user: userSlice,
+  survey: surveySlice,
+  questionArray: questionArraySlice,
 });
 const persistedReducer = persistReducer(persistConfig, reducer);
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
+      serializableCheck: false,
+      // {
+      //   ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, ],
+      // },
     }),
 });
 

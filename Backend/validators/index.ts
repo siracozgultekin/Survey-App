@@ -1,5 +1,7 @@
 import z from "zod";
 
+import { Question } from "../types";
+
 export const registerSchema = z.object({
   name: z
     .string()
@@ -14,4 +16,23 @@ export const registerSchema = z.object({
     .string()
     .min(6, "Password must be contain at least 6 characters.")
     .max(255),
+});
+
+export const insertSurveySchema = z.object({
+  id: z.string().min(1),
+  owner_id: z.string().min(1),
+  title: z.string().min(1),
+  description: z.string().min(1),
+  creation_date: z.string(),
+  deadline: z.string(),
+  participants: z.array(z.string()),
+  questions: z.array(
+    z.object({
+      id: z.string().min(1),
+      survey_id: z.string().min(1),
+      question: z.string().min(1),
+      question_type: z.number(),
+      choices: z.array(z.string()),
+    })
+  ),
 });

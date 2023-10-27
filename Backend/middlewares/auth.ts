@@ -7,7 +7,7 @@ import { decode } from "punycode";
 declare global {
   namespace Express {
     interface Request {
-      user: {
+      user?: {
         id: number;
         is_admin: false;
         name: string;

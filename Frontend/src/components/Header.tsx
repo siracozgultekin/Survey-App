@@ -24,14 +24,12 @@ const Header = () => {
         backgroundSize: "cover",
       }}
     >
-      <div className="flex  flex-1 items-center  ">
-        <div className="h-full w-[50px]">{/* <Drawer /> */}</div>
+      <div className="ml-2  flex flex-1 items-center ">
+        <ModeToggle />
         <button className=" mx-2 flex items-center">
-          <ModeToggle />
           <FileText className="rounded-lg text-green-600" />
           <p className="text-lg font-bold">
-            {" "}
-            <Link to="/home">SAS</Link> {userRedux.name}
+            <Link to="/home">SAS</Link>
           </p>
         </button>
       </div>
@@ -46,9 +44,10 @@ const Header = () => {
         </button>
       </div>
 
-      <div className=" mr-5 flex flex-1 justify-end">
+      <div className=" mr-5 flex flex-1 items-center justify-end gap-3">
+        {userRedux.name}
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className="f">
             <img
               className="h-10 w-10 rounded-full "
               src="https://lh3.googleusercontent.com/ogw/AGvuzYZLTQSrTe0LDIlsQm--k_bAXXHjgoBMKN82rFyZ=s32-c-mo"

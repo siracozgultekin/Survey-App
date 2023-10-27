@@ -75,6 +75,34 @@ app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).json({ message: "Registration failed" });
     }
 }));
+//insert survey object  into database
+app.post("/survey", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body.dataSent);
+    try {
+        const { id, owner_id, creation_date, deadline, description, participants, title, questions, } = validators_1.insertSurveySchema.parse(req.body.dataSent);
+        const newSurvey = yield db_1.default.query("INSERT INTO public.surveys (id, owner_id, title, description, creation_date, deadline, participants) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id", [id, owner_id, title, description, creation_date, deadline, participants]);
+        for (let i = 0; i < questions.length; i++) {
+            yield db_1.default.query("INSERT INTO public.questions (id, survey_id, question, question_type, choices) VALUES($1, $2, $3, $4, $5)", [
+                questions[i].id,
+                questions[i].survey_id,
+                questions[i].question,
+                questions[i].question_type,
+                questions[i].choices,
+            ]);
+        }
+        res
+            .status(200)
+            .json({ message: "Survey and questions inserted into their tables" });
+    }
+    catch (error) {
+        console.log(error);
+        if (error instanceof zod_1.ZodError) {
+            console.log("hocam şimdi de zod tipinde hata var");
+            return res.status(400).json({ error: error.errors });
+        }
+        res.status(500).json({ error: "Ups.. Something went wrong!" });
+    }
+}));
 //Login enpdoint
 app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -90,7 +118,7 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return res.status(401).json({ error: "Invalid password" });
         }
         const token = jsonwebtoken_1.default.sign({ user: user.rows[0] }, process.env.JWT_SECRET, {
-            expiresIn: "1h", // Token expiration time
+            expiresIn: "8h", // Token expiration time
         });
         res
             .cookie("token", token, { secure: true, httpOnly: false })

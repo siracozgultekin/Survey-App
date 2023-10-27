@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,68 +7,63 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Question, Survey } from "@/interfaces";
 import { v4 as uuidv4 } from "uuid";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/app/store";
-import OpenEnded from "./questiontype/OpenEnded";
 import MultipleChoice from "./questiontype/MultipleChoice";
 import Rating from "./questiontype/Rating";
 import { Circle, CircleDot, Star } from "lucide-react";
 import TiptapEditor from "./editor/TiptapEditor";
 import { convert } from "html-to-text";
-type Props = {
-  setTitleInp: React.Dispatch<React.SetStateAction<string>>;
-  titleInp: string;
-};
 
-const SurveyCreationBody = ({ setTitleInp, titleInp }: Props) => {
-  const userRedux = useSelector((state: RootState) => state.user);
+import { useToast } from "@/components/ui/use-toast";
+import { useDispatch } from "react-redux";
+import {
+  setSurveyTitle,
+  setSurveyDescription,
+} from "@/redux/features/survey_creation/survey";
+import { setQuestionArray } from "@/redux/features/survey_creation/questionArray";
+
+const SurveyCreationBody = () => {
+  const dispatch = useDispatch();
+
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + 3);
-  const [deadline, setDeadline] = useState<Date>(currentDate);
-  const [questionArray, setQuestionArray] = useState<Question[]>([]);
-  const [description, setDescription] = useState<string>("");
-  const [survey, setSurvey] = useState<Survey>({} as Survey);
+  // // const [questionArray, setQuestionArray] = useState<Question[]>([]);
+  // const [survey, setSurvey] = useState<Survey>({ id: uuidv4() } as Survey);
   const [dropdownMenuTitle, setdropdownMenuTitle] = useState("Multiple Choice");
   const [questionType, setQuestionType] = useState<number>(2);
   const [choices, setChoices] = useState([""]);
 
-  const [editorState, setEditorState] = useState("");
-  useEffect(() => {
-    setSurvey({
-      id: uuidv4(),
-      owner_id: userRedux.id,
-      title: titleInp,
-      description: description,
-      creation_date: currentDate,
-      deadline: deadline,
-      participants: [],
-    });
-  }, [titleInp, description, deadline]);
+  const { toast } = useToast();
 
-  console.log(editorState);
+  const [editorState, setEditorState] = useState("");
+
+  const QuestionArr = useSelector((state: RootState) => state.questionArray);
+  const surveyId = useSelector((state: RootState) => state.survey.id);
 
   const createQuestion = () => {
-    setQuestionArray((prev) => {
-      // console.log("questionArray =>", questionArray);
+    dispatch(
+      setQuestionArray({
+        id: uuidv4(),
+        survey_id: surveyId,
+        question: editorState,
+        question_type: questionType,
+        choices: choices,
+      }),
+    );
 
-      return [
-        ...prev,
-        {
-          id: uuidv4(),
-          survey_id: survey!.id,
-          question: editorState,
-          question_type: questionType,
-          choices: choices,
-        },
-      ];
+    toast({
+      title: "Question created!",
+      description: "Question created successfully.",
     });
     setChoices([""]);
     setEditorState("");
   };
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-start bg-slate-100">
+      {surveyId}
       <div className="m-10 flex h-fit w-[50%] flex-col  gap-3  rounded-2xl bg-white ">
         <div className="flex h-3 w-full self-start rounded-t-2xl bg-blue-500"></div>
         <div className="flex flex-col gap-3 p-5">
@@ -77,13 +72,9 @@ const SurveyCreationBody = ({ setTitleInp, titleInp }: Props) => {
             name=""
             id=""
             onChange={(e) => {
-              setTitleInp((prev) => {
-                if (e.target.value.length > 40) {
-                  return prev;
-                }
-
-                return e.target.value;
-              });
+              if (e.target.value.length < 40) {
+                dispatch(setSurveyTitle(e.target.value));
+              }
             }}
             placeholder="Untitled Document"
             className=" border-slate-600 font-sans text-3xl focus:border-b-2 focus:outline-none"
@@ -95,12 +86,12 @@ const SurveyCreationBody = ({ setTitleInp, titleInp }: Props) => {
             placeholder="Form Description"
             className=" border-slate-600 font-normal focus:border-b-2 focus:outline-none "
             onChange={(e) => {
-              setDescription(e.target.value);
+              dispatch(setSurveyDescription(e.target.value));
             }}
           />
         </div>
       </div>
-      {questionArray?.map((question) => (
+      {QuestionArr?.map((question) => (
         <div
           className="mb-5 w-[50%]   rounded-2xl bg-white p-5"
           key={question.id}
@@ -112,8 +103,8 @@ const SurveyCreationBody = ({ setTitleInp, titleInp }: Props) => {
             {/*Bold italic vs. çalısmıyor.*/}
           </div>
           <div>
-            {question.choices.map((choice) => (
-              <div className="mb-2 flex gap-2">
+            {question.choices.map((choice, index) => (
+              <div key={index} className="mb-2 flex gap-2">
                 <Circle />
                 {choice}
               </div>

@@ -4,11 +4,11 @@ import cors from "cors";
 import dbpool from "./db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { registerSchema } from "./validators";
+import { registerSchema, insertSurveySchema } from "./validators";
 import { ZodError } from "zod";
 import authenticateToken from "./middlewares/auth";
 import cookieParser from "cookie-parser";
-import { Survey } from "./types";
+import { Survey, Question } from "./types";
 const app: Express = express();
 
 dotenv.config();
@@ -52,6 +52,50 @@ app.post("/register", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Registration failed" });
   }
 });
+//insert survey object  into database
+app.post("/survey", async (req: Request, res: Response) => {
+  console.log(req.body.dataSent);
+  try {
+    const {
+      id,
+      owner_id,
+      creation_date,
+      deadline,
+      description,
+      participants,
+      title,
+      questions,
+    } = insertSurveySchema.parse(req.body.dataSent);
+    const newSurvey = await dbpool.query(
+      "INSERT INTO public.surveys (id, owner_id, title, description, creation_date, deadline, participants) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+      [id, owner_id, title, description, creation_date, deadline, participants]
+    );
+
+    for (let i = 0; i < questions.length; i++) {
+      await dbpool.query(
+        "INSERT INTO public.questions (id, survey_id, question, question_type, choices) VALUES($1, $2, $3, $4, $5)",
+        [
+          questions[i].id,
+          questions[i].survey_id,
+          questions[i].question,
+          questions[i].question_type,
+          questions[i].choices,
+        ]
+      );
+    }
+
+    res
+      .status(200)
+      .json({ message: "Survey and questions inserted into their tables" });
+  } catch (error) {
+    console.log(error);
+    if (error instanceof ZodError) {
+      console.log("hocam şimdi de zod tipinde hata var");
+      return res.status(400).json({ error: error.errors });
+    }
+    res.status(500).json({ error: "Ups.. Something went wrong!" });
+  }
+});
 
 //Login enpdoint
 app.post("/login", async (req: Request, res: Response) => {
@@ -74,7 +118,7 @@ app.post("/login", async (req: Request, res: Response) => {
       { user: user.rows[0] },
       process.env.JWT_SECRET as string,
       {
-        expiresIn: "1h", // Token expiration time
+        expiresIn: "8h", // Token expiration time
       }
     );
 

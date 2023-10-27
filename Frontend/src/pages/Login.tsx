@@ -8,6 +8,9 @@ import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "@/redux/features/user/user";
 
+import SebitLogo from "@/assets/sebitLogo.png";
+import LoginBG from "@/assets/loginBG.jpeg";
+
 const Login = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -60,11 +63,7 @@ const Login = () => {
         <div className="flex w-full pb-8 ">
           <ModeToggle />
         </div>
-        <img
-          src="https://www.vfabrika.com/Content/universal/img/sebit_logo.png"
-          alt="SebitPhoto"
-          className="w-[90%] "
-        />
+        <img src={SebitLogo} alt="SebitPhoto" className="w-[90%] " />
         <h2 className="text-xl font-semibold">
           Sebit Eğitim ve Bilgi Teknolojileri A.Ş.
         </h2>
@@ -77,8 +76,7 @@ const Login = () => {
       <div
         className=" relative flex w-[65%] flex-col  items-center justify-center"
         style={{
-          backgroundImage:
-            'url("https://galeri3.arkitera.com/var/albums/Arkiv.com.tr/Proje/ozer-urger-mimarlik-749840472/turk-telekom-odtu-teknokent-ar-ge-binasi/_photo%2000%20(2).jpg.jpeg")',
+          backgroundImage: `url(${LoginBG})`,
           backgroundSize: "auto 100%",
         }}
       >

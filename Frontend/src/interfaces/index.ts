@@ -14,8 +14,8 @@ export interface Survey {
   owner_id: string;
   title: string;
   description: string;
-  creation_date: Date;
-  deadline: Date;
+  creation_date: Date | null;
+  deadline: Date | null;
   participants: string[];
 }
 export interface Question {

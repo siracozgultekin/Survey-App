@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button } from "../ui/button";
 
 function Rating() {
   const [rating, setRating] = useState<number>(1);
@@ -9,24 +10,15 @@ function Rating() {
 
   return (
     <div className="flex items-center">
-      {Array.from({ length: 10 }).map((_, index) => {
-        const ratingValue = index + 1;
-        const isHighlighted = ratingValue <= rating;
-
-        const circleClasses = `rounded-full bg-white w-8 h-8 flex items-center justify-center mr-2 hover:bg-yellow-200 transition-colors ${
-          isHighlighted ? "bg-green-500" : "bg-red-500"
-        }`;
-
-        return (
-          <div
-            key={ratingValue}
-            className={circleClasses}
-            onClick={() => handleRatingClick(ratingValue)}
-          >
-            {ratingValue}
-          </div>
-        );
-      })}
+      {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+        <button
+          key={num}
+          className="
+        h-10 w-10 rounded-full border-2 border-slate-500 bg-slate-200 text-[80%] hover:bg-yellow-500 hover:text-white"
+        >
+          {num}
+        </button>
+      ))}
     </div>
   );
 }
