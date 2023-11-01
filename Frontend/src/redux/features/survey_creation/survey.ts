@@ -1,15 +1,16 @@
 import { Survey } from "@/interfaces";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { stat } from "fs";
 import { v4 as uuidv4 } from "uuid";
 
 const initialState: Survey = {
   id: uuidv4(),
   owner_id: "",
-  title: "Untitled Document",
+  title: "",
   description: "",
-  creation_date: null,
-  deadline: null,
+  creation_date: new Date(),
+  deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   participants: [],
 };
 
@@ -17,6 +18,16 @@ const surveySlice = createSlice({
   name: "survey",
   initialState,
   reducers: {
+    setAllSurvey: (state, action: PayloadAction<Survey>) => {
+      state.id = action.payload.id;
+      state.owner_id = action.payload.owner_id;
+      state.title = action.payload.title;
+      state.description = action.payload.description;
+      state.creation_date = action.payload.creation_date;
+      state.deadline = action.payload.deadline;
+      state.participants = action.payload.participants;
+    },
+
     setSurveyId: (state, action: PayloadAction<string>) => {
       state.id = action.payload;
     },
@@ -50,6 +61,7 @@ const surveySlice = createSlice({
   },
 });
 export const {
+  setAllSurvey,
   setSurveyId,
   setSurveyOwnerId,
   setSurveyTitle,

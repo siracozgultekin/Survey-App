@@ -63,7 +63,7 @@ const SurveyCreationBody = () => {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-start bg-slate-100">
-      {surveyId}
+      surveyId: {surveyId}
       <div className="m-10 flex h-fit w-[50%] flex-col  gap-3  rounded-2xl bg-white ">
         <div className="flex h-3 w-full self-start rounded-t-2xl bg-blue-500"></div>
         <div className="flex flex-col gap-3 p-5">

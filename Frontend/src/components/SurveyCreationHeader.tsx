@@ -3,41 +3,39 @@ import { Eye, FileText } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "./ui/use-toast";
 import axios, { AxiosError } from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "@/redux/app/store";
 
 import {
-  setSurveyOwnerId,
-  setSurveyCreationDate,
-  setSurveyDeadline,
-  setSurveyParticipants,
+  // setAllSurvey,
+  // setSurveyOwnerId,
+  // setSurveyCreationDate,
+  // setSurveyDeadline,
+  // setSurveyParticipants,
   resetSurvey,
 } from "@/redux/features/survey_creation/survey";
 
 const SurveyCreationHeader = () => {
   const dispatch = useDispatch();
 
-  const userId = useSelector((state: RootState) => state.user.id);
-  const titleInput = useSelector((state: RootState) => state.survey.title);
+  const user = useSelector((state: RootState) => state.user);
   const survey = useSelector((state: RootState) => state.survey);
   const questionArray = useSelector((state: RootState) => state.questionArray);
 
   const handlePublish = async () => {
-    dispatch(setSurveyOwnerId(userId));
-
-    //DUZGUN SETLEMIOR
-    dispatch(setSurveyCreationDate(new Date()));
-    dispatch(
-      setSurveyDeadline(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)), // 7 days
-    );
-    dispatch(setSurveyParticipants([]));
-
+    // dispatch(setSurveyOwnerId(userId));
+    // dispatch(setSurveyCreationDate(new Date()));
+    // dispatch(
+    //   setSurveyDeadline(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)), // 7 days
+    // );
+    // dispatch(setSurveyParticipants([]));
     try {
       const res = await axios.post("http://localhost:5000/survey", {
+        //dataSent is equal to: { ...survey, questions: questionArray },
         dataSent: {
           id: survey.id,
-          owner_id: survey.owner_id,
+          owner_id: user.id,
           title: survey.title,
           description: survey.description,
           creation_date: survey.creation_date?.toISOString(),
@@ -111,7 +109,7 @@ const SurveyCreationHeader = () => {
       <div className="flex items-center">
         <FileText className="h-10 w-10 rounded-lg text-blue-500" />
 
-        <h3 className="w-[400px] font-semibold">{titleInput}</h3>
+        <h3 className="w-[400px] font-semibold">{survey.title}</h3>
       </div>
       <div className="flex items-center gap-5">
         <Eye className="h-6 w-6 text-slate-700" />
