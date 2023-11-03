@@ -107,11 +107,9 @@ const Profile = () => {
                 <div className="h-[475px]" style={{ overflowY: "scroll" }}>
                   <ul className="grid grid-cols-1 gap-4  p-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {participatedSurveys?.map((survey, index) => (
-                      <>
-                        <li key={index}>
-                          <ParticipatedCard survey={survey} />
-                        </li>
-                      </>
+                      <li key={index}>
+                        <ParticipatedCard survey={survey} />
+                      </li>
                     ))}
                   </ul>
                 </div>

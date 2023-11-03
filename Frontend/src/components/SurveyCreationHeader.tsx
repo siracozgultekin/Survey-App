@@ -1,48 +1,32 @@
-import React from "react";
 import { Eye, FileText } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "./ui/use-toast";
 import axios, { AxiosError } from "axios";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-
-import { RootState } from "@/redux/app/store";
-
-import {
-  // setAllSurvey,
-  // setSurveyOwnerId,
-  // setSurveyCreationDate,
-  // setSurveyDeadline,
-  // setSurveyParticipants,
-  resetSurvey,
-} from "@/redux/features/survey_creation/survey";
+import { useSurveyStore } from "@/store/use-survey-store";
+import { useUserStore } from "@/store/use-user-store";
+import { useQuestionArrStore } from "@/store/use-questionArr-store";
 
 const SurveyCreationHeader = () => {
-  const dispatch = useDispatch();
-
-  const user = useSelector((state: RootState) => state.user);
-  const survey = useSelector((state: RootState) => state.survey);
-  const questionArray = useSelector((state: RootState) => state.questionArray);
+  const surveyStore = useSurveyStore();
+  const { user } = useUserStore();
+  const { questionArr } = useQuestionArrStore();
 
   const handlePublish = async () => {
-    // dispatch(setSurveyOwnerId(userId));
-    // dispatch(setSurveyCreationDate(new Date()));
-    // dispatch(
-    //   setSurveyDeadline(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)), // 7 days
-    // );
-    // dispatch(setSurveyParticipants([]));
+    const dataSent = {
+      id: surveyStore.id,
+      owner_id: user?.id,
+      title: surveyStore.title,
+      description: surveyStore.description,
+      creation_date: surveyStore.creation_date,
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      participants: [],
+      questions: questionArr,
+    };
+
     try {
       const res = await axios.post("http://localhost:5000/survey", {
         //dataSent is equal to: { ...survey, questions: questionArray },
-        dataSent: {
-          id: survey.id,
-          owner_id: user.id,
-          title: survey.title,
-          description: survey.description,
-          creation_date: survey.creation_date?.toISOString(),
-          deadline: survey.deadline?.toISOString(),
-          participants: survey.participants,
-          questions: questionArray,
-        },
+        dataSent,
       });
 
       if (res.status === 200) {
@@ -50,7 +34,7 @@ const SurveyCreationHeader = () => {
           title: "Survey created!",
           description: "Survey created successfully.",
         });
-        dispatch(resetSurvey());
+        surveyStore.resetsurveyStore();
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -72,44 +56,12 @@ const SurveyCreationHeader = () => {
     }
   };
 
-  // const InsertSurveyandQuestion = async () => {
-  //   try {
-  //     await axios.post("http://localhost:5000/survey", {
-  //       dataSent: {
-  //         ...survey,
-  //         questions: questionArray,
-  //       },
-  //     });
-  //     console.log("survey and question were inserted");
-  //   } catch (error) {
-  //     const err = error as AxiosError;
-  //     console.log("err=>", err.response?.data);
-  //     if (err.response?.status === 400) {
-  //       toast({
-  //         title: "Form boş yollanılamaz",
-  //         description: "2 soru yazmaya mı üşendin aq cocu",
-  //         variant: "destructive",
-  //       });
-  //     } else if (err.response?.status === 500) {
-  //       const { error } = err.response?.data as { error: string };
-  //       toast({
-  //         title: error,
-  //         description:
-  //           "Please check your internet connection and try again later.",
-  //         variant: "destructive",
-  //       });
-  //     }
-  //   }
-
-  //   // console.log("res=>", res);
-  // };
-
   return (
     <div className="flex h-full items-center justify-between border-b-[1px] border-gray-300 px-8">
       <div className="flex items-center">
         <FileText className="h-10 w-10 rounded-lg text-blue-500" />
 
-        <h3 className="w-[400px] font-semibold">{survey.title}</h3>
+        <h3 className="w-[400px] font-semibold">{surveyStore.title}</h3>
       </div>
       <div className="flex items-center gap-5">
         <Eye className="h-6 w-6 text-slate-700" />

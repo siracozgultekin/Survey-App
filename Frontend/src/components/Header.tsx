@@ -11,21 +11,22 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/app/store";
 import { ModeToggle } from "./mode-toggle";
+import { useNavigate } from "react-router-dom";
 // import Drawer from "./Drawer";
 const Header = () => {
-  const backgroundImageUrl =
-    "https://www.desktopbackground.org/download/2560x1440/2012/09/28/459792_wallpapers-old-paper-wallpapers-cave_3000x2000_h.jpg";
+  const navigate = useNavigate();
   const userRedux = useSelector((state: RootState) => state.user);
+  //logout function
+  const HandleLogOut = () => {
+    console.log("handlelogout tetiklendi");
+    document.cookie = "token=; expires=Thu, 01 Jan 1978 00:00:00 UTC; path=/;";
+    localStorage.clear();
+    navigate("/", { replace: true });
+  };
+
   return (
-    <div
-      className="flex h-[65px]  w-full flex-row items-center  "
-      style={{
-        backgroundImage: `url(${backgroundImageUrl})`,
-        backgroundSize: "cover",
-      }}
-    >
+    <div className="flex h-[65px]  w-full flex-row items-center bg-primary ">
       <div className="ml-2  flex flex-1 items-center ">
-        <ModeToggle />
         <button className=" mx-2 flex items-center">
           <FileText className="rounded-lg text-green-600" />
           <p className="text-lg font-bold">
@@ -59,17 +60,20 @@ const Header = () => {
               {userRedux?.name} {userRedux?.surname}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+
             <Link to="/profile">
               <DropdownMenuItem>
                 <UserCircle className="mr-2 w-4" />
                 Profile
               </DropdownMenuItem>
             </Link>
+
             <DropdownMenuItem>
-              <LogOut className="mr-2 w-4" /> Sign Out
+              <LogOut className="mr-2 w-4" onClick={HandleLogOut} /> Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu>{" "}
+        <ModeToggle />
       </div>
     </div>
   );

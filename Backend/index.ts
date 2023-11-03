@@ -24,6 +24,18 @@ app.use(cookieParser());
 
 app.use(express.json());
 
+//signout endpoint
+app.post("/logout", (req: Request, res: Response) => {
+  console.log("first line of logout");
+  try {
+    res.clearCookie("token").json({ message: "Log out successful" });
+    // localStorage.clear();
+  } catch (error) {
+    console.error("Log out failed:", error);
+    res.status(500).json({ error: "Log out failed, try again" });
+  }
+});
+
 //Register enpdoint
 app.post("/register", async (req: Request, res: Response) => {
   try {
@@ -160,7 +172,24 @@ app.get("/surveys/:id", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Get user failed" });
   }
 });
+app.get(
+  "/mySurveys",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const { id } = req.body.user;
 
+    try {
+      const mySurveys = await dbpool.query(
+        "SELECT * FROM surveys WHERE owner_id = $1",
+        [id]
+      );
+      res.json(mySurveys.rows);
+    } catch (error) {
+      console.log("get user failed:", error);
+      res.status(500).json({ error: "Get user failed" });
+    }
+  }
+);
 app.get(
   "/currentuser",
   authenticateToken,

@@ -5,19 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
-import { useDispatch } from "react-redux";
-import { setCurrentUser } from "@/redux/features/user/user";
-
+import { useUserStore } from "@/store/use-user-store";
 import SebitLogo from "@/assets/sebitLogo.png";
-import LoginBG from "@/assets/loginBG.jpeg";
+import LoginBG from "@/assets/loginbgg.png";
 
 const Login = () => {
-  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const { setUser } = useUserStore();
   const handleLogin = async (e: any) => {
     e.preventDefault();
     try {
@@ -38,12 +35,13 @@ const Login = () => {
 
       if (response.status === 200) {
         const token = Cookies.get("token");
-        console.log(Cookies.get("token"));
+        console.log("CookiesToken=> ", Cookies.get("token"));
         if (!token) return;
         const decoded = jwt_decode(token); //unknown tipinde olduğu için stringfy ile json'a çevirip sonra da parse ile objeye çevirdim.
         const dataObj = JSON.parse(JSON.stringify(decoded));
         console.log(`dataobject: `, dataObj);
-        dispatch(setCurrentUser(dataObj.user));
+        setUser(dataObj.user);
+        // dispatch(setCurrentUser(dataObj.user));
         navigate("/home");
         // Token'i kullanmak için burada işlem yapabilirsiniz, örneğin yerel depolamada saklayabilirsiniz.
       } else {
@@ -59,33 +57,31 @@ const Login = () => {
   };
   return (
     <div className="flex  h-full">
-      <div className="flex  w-[35%] flex-col items-center bg-blue-200 dark:bg-slate-500 ">
-        <div className="flex w-full pb-8 ">
-          <ModeToggle />
-        </div>
-        <img src={SebitLogo} alt="SebitPhoto" className="w-[90%] " />
-        <h2 className="text-xl font-semibold">
-          Sebit Eğitim ve Bilgi Teknolojileri A.Ş.
-        </h2>
-        <h4 className="text-lg font-thin italic">
-          "Geleceğin eğitimini tasarlıyoruz".
-        </h4>
-
-        {/* <FileEdit /> */}
-      </div>
       <div
-        className=" relative flex w-[65%] flex-col  items-center justify-center"
+        className=" relative flex w-full flex-col  items-center "
         style={{
           backgroundImage: `url(${LoginBG})`,
-          backgroundSize: "auto 100%",
+          backgroundSize: "cover",
         }}
       >
-        <div className="absolute z-[2] h-full w-full bg-white/10 dark:bg-black/70" />
-        <div className="z-[3] flex h-[40%] min-h-[300px] w-[45%] flex-col items-center justify-center rounded-xl bg-blue-300 bg-opacity-50 bg-clip-padding p-9 backdrop-blur-md backdrop-filter dark:bg-slate-400 dark:bg-opacity-50">
-          <form className="flex w-full flex-col gap-2 " onSubmit={handleLogin}>
-            <h2 className="  mb-5 rounded-lg px-1 text-center text-[35px]  text-white  dark:shadow-slate-600 ">
-              LOGIN
-            </h2>
+        <div className="absolute z-[2] h-full w-full bg-white/10 dark:bg-black/70" />{" "}
+        {/* <div className="z-[3] flex self-start">
+          <ModeToggle />
+        </div> */}
+        <div className="z-[3] mb-8 flex w-[35%] flex-col items-center bg-opacity-0 bg-clip-padding   dark:bg-opacity-0 ">
+          <div className="flex w-full pb-8 "></div>
+          <img src={SebitLogo} alt="SebitPhoto" className="w-[90%] " />
+          <h2 className="text-xl font-semibold">
+            Sebit Eğitim ve Bilgi Teknolojileri A.Ş.
+          </h2>
+          <h4 className="text-lg font-thin italic">
+            "Geleceğin eğitimini tasarlıyoruz".
+          </h4>
+
+          {/* <FileEdit /> */}
+        </div>
+        <div className="z-[3] flex h-[40%] min-h-[300px] w-[30%] flex-col items-center justify-center rounded-xl bg-blue-300 bg-opacity-30 bg-clip-padding p-9 backdrop-blur-md backdrop-filter dark:bg-slate-400 dark:bg-opacity-20">
+          <form className="flex w-full flex-col gap-4 " onSubmit={handleLogin}>
             {error && (
               <div className="relative flex   rounded-lg border border-red-400 bg-red-100 py-1 pr-4 text-red-700">
                 <strong className="mx-1 block sm:inline">

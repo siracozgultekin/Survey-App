@@ -15,22 +15,13 @@ import Rating from "./questiontype/Rating";
 import { Circle, CircleDot, Star } from "lucide-react";
 import TiptapEditor from "./editor/TiptapEditor";
 import { convert } from "html-to-text";
-
 import { useToast } from "@/components/ui/use-toast";
-import { useDispatch } from "react-redux";
-import {
-  setSurveyTitle,
-  setSurveyDescription,
-} from "@/redux/features/survey_creation/survey";
-import { setQuestionArray } from "@/redux/features/survey_creation/questionArray";
+import { useSurveyStore } from "@/store/use-survey-store";
+import { useQuestionArrStore } from "@/store/use-questionArr-store";
 
 const SurveyCreationBody = () => {
-  const dispatch = useDispatch();
-
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + 3);
-  // // const [questionArray, setQuestionArray] = useState<Question[]>([]);
-  // const [survey, setSurvey] = useState<Survey>({ id: uuidv4() } as Survey);
   const [dropdownMenuTitle, setdropdownMenuTitle] = useState("Multiple Choice");
   const [questionType, setQuestionType] = useState<number>(2);
   const [choices, setChoices] = useState([""]);
@@ -39,19 +30,16 @@ const SurveyCreationBody = () => {
 
   const [editorState, setEditorState] = useState("");
 
-  const QuestionArr = useSelector((state: RootState) => state.questionArray);
-  const surveyId = useSelector((state: RootState) => state.survey.id);
-
+  const { setSurveyDescription, setSurveyTitle, id } = useSurveyStore();
+  const { insertQuestion, questionArr } = useQuestionArrStore();
   const createQuestion = () => {
-    dispatch(
-      setQuestionArray({
-        id: uuidv4(),
-        survey_id: surveyId,
-        question: editorState,
-        question_type: questionType,
-        choices: choices,
-      }),
-    );
+    insertQuestion({
+      id: uuidv4(),
+      survey_id: id,
+      question: editorState,
+      question_type: questionType,
+      choices: choices,
+    });
 
     toast({
       title: "Question created!",
@@ -63,7 +51,7 @@ const SurveyCreationBody = () => {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-start bg-slate-100">
-      surveyId: {surveyId}
+      surveyId: {id}
       <div className="m-10 flex h-fit w-[50%] flex-col  gap-3  rounded-2xl bg-white ">
         <div className="flex h-3 w-full self-start rounded-t-2xl bg-blue-500"></div>
         <div className="flex flex-col gap-3 p-5">
@@ -73,7 +61,7 @@ const SurveyCreationBody = () => {
             id=""
             onChange={(e) => {
               if (e.target.value.length < 40) {
-                dispatch(setSurveyTitle(e.target.value));
+                setSurveyTitle(e.target.value);
               }
             }}
             placeholder="Untitled Document"
@@ -86,27 +74,37 @@ const SurveyCreationBody = () => {
             placeholder="Form Description"
             className=" border-slate-600 font-normal focus:border-b-2 focus:outline-none "
             onChange={(e) => {
-              dispatch(setSurveyDescription(e.target.value));
+              setSurveyDescription(e.target.value);
             }}
           />
         </div>
       </div>
-      {QuestionArr?.map((question) => (
+      {questionArr?.map((question) => (
         <div
           className="mb-5 w-[50%]   rounded-2xl bg-white p-5"
           key={question.id}
         >
-          {JSON.stringify(question, null, 2)}
+          {/* {JSON.stringify(question, null, 2)} */}
 
           <div className="mb-5 text-lg">
-            {convert(question.question, { wordwrap: 130 })}{" "}
             {/*Bold italic vs. çalısmıyor.*/}
+            <input
+              type="text"
+              value={question.question}
+              className=" border-slate-600 font-sans text-lg focus:border-b-2 focus:outline-none"
+            />
           </div>
           <div>
             {question.choices.map((choice, index) => (
               <div key={index} className="mb-2 flex gap-2">
                 <Circle />
-                {choice}
+                {
+                  <input
+                    type="text"
+                    value={choice}
+                    className=" border-slate-600 font-sans text-lg focus:border-b-2 focus:outline-none"
+                  />
+                }
               </div>
             ))}
           </div>

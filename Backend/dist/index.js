@@ -54,6 +54,18 @@ app.use((0, cors_1.default)({
 }));
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
+//signout endpoint
+app.post("/logout", (req, res) => {
+    console.log("first line of logout");
+    try {
+        res.clearCookie("token").json({ message: "Log out successful" });
+        // localStorage.clear();
+    }
+    catch (error) {
+        console.error("Log out failed:", error);
+        res.status(500).json({ error: "Log out failed, try again" });
+    }
+});
 //Register enpdoint
 app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -152,6 +164,17 @@ app.get("/surveys/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
         console.log("e burası başarılı oldu");
         console.log("survey.rows=>", survey.rows);
         res.json(survey.rows);
+    }
+    catch (error) {
+        console.log("get user failed:", error);
+        res.status(500).json({ error: "Get user failed" });
+    }
+}));
+app.get("/mySurveys", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body.user;
+    try {
+        const mySurveys = yield db_1.default.query("SELECT * FROM surveys WHERE owner_id = $1", [id]);
+        res.json(mySurveys.rows);
     }
     catch (error) {
         console.log("get user failed:", error);
