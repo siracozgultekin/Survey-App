@@ -12,12 +12,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/app/store";
 import MultipleChoice from "./questiontype/MultipleChoice";
 import Rating from "./questiontype/Rating";
-import { Circle, CircleDot, Star } from "lucide-react";
+import { Circle, CircleDot, Star, Trash2, X } from "lucide-react";
 import TiptapEditor from "./editor/TiptapEditor";
 import { convert } from "html-to-text";
 import { useToast } from "@/components/ui/use-toast";
 import { useSurveyStore } from "@/store/use-survey-store";
 import { useQuestionArrStore } from "@/store/use-questionArr-store";
+import { Button } from "./ui/button";
 
 const SurveyCreationBody = () => {
   const currentDate = new Date();
@@ -31,7 +32,15 @@ const SurveyCreationBody = () => {
   const [editorState, setEditorState] = useState("");
 
   const { setSurveyDescription, setSurveyTitle, id } = useSurveyStore();
-  const { insertQuestion, questionArr } = useQuestionArrStore();
+  const {
+    addChoice,
+    removeQuestion,
+    removeChoice,
+    setQuestionChoice,
+    setQuestion,
+    insertQuestion,
+    questionArr,
+  } = useQuestionArrStore();
   const createQuestion = () => {
     insertQuestion({
       id: uuidv4(),
@@ -52,6 +61,10 @@ const SurveyCreationBody = () => {
   return (
     <div className="flex h-full w-full flex-col items-center justify-start bg-slate-100">
       surveyId: {id}
+      <p className="text-red-600">
+        Çöz : Oluşturulan soruyu editleyince texteditor devre dışı kalıyor.
+        Stilsiz şekilde editlenebiliyor.
+      </p>
       <div className="m-10 flex h-fit w-[50%] flex-col  gap-3  rounded-2xl bg-white ">
         <div className="flex h-3 w-full self-start rounded-t-2xl bg-blue-500"></div>
         <div className="flex flex-col gap-3 p-5">
@@ -81,32 +94,83 @@ const SurveyCreationBody = () => {
       </div>
       {questionArr?.map((question) => (
         <div
-          className="mb-5 w-[50%]   rounded-2xl bg-white p-5"
+          className=" mb-5 flex w-[50%] justify-between rounded-2xl  bg-white"
           key={question.id}
         >
           {/* {JSON.stringify(question, null, 2)} */}
-
-          <div className="mb-5 text-lg">
-            {/*Bold italic vs. çalısmıyor.*/}
-            <input
-              type="text"
-              value={question.question}
-              className=" border-slate-600 font-sans text-lg focus:border-b-2 focus:outline-none"
-            />
+          <div className="m-5 w-[85%]">
+            <div className="mb-5 text-lg">
+              {/*Bold italic vs. çalısmıyor.*/}
+              <input
+                type="text"
+                placeholder={question.question}
+                className=" h-[90px] w-[100%]  border-slate-600 font-sans text-lg focus:border-b-2 focus:outline-none"
+                onChange={(e) => {
+                  e.preventDefault(),
+                    setQuestion({
+                      id: question.id,
+                      questionstr: e.target.value,
+                    });
+                }}
+              />
+            </div>
+            <div>
+              {question.choices.map((choice, index) => (
+                <div key={index} className="mb-2 flex items-center gap-2">
+                  <Circle />
+                  {
+                    <input
+                      type="text"
+                      placeholder={choice}
+                      className="   w-[50%] border-slate-600 font-sans text-lg focus:border-b-2 focus:outline-none"
+                      onChange={(e) => {
+                        e.preventDefault(),
+                          setQuestionChoice({
+                            id: question.id,
+                            index: index,
+                            choicestr: e.target.value,
+                          });
+                      }}
+                    />
+                  }
+                  <div
+                    onClick={() => {
+                      console.log("removeonces...", question.id, index);
+                      removeChoice({
+                        id: question.id,
+                        index: index,
+                      });
+                      console.log("sonrası...", question.id, index);
+                    }}
+                  >
+                    <X className="border-2 text-red-600" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div>
-            {question.choices.map((choice, index) => (
-              <div key={index} className="mb-2 flex gap-2">
-                <Circle />
-                {
-                  <input
-                    type="text"
-                    value={choice}
-                    className=" border-slate-600 font-sans text-lg focus:border-b-2 focus:outline-none"
-                  />
-                }
-              </div>
-            ))}
+          <div className="flex flex-col justify-between">
+            <Trash2
+              className=" m-1 flex h-[25px] w-[25px] self-center"
+              onClick={() =>
+                removeQuestion({
+                  id: question.id,
+                })
+              }
+            />
+            {question.question_type === 2 && (
+              <button
+                className="m-2 rounded-2xl border-2 bg-blue-200 py-1 text-[70%]"
+                onClick={() => {
+                  addChoice({
+                    id: question.id,
+                    choicestr: "newChoice",
+                  });
+                }}
+              >
+                Add Choice
+              </button>
+            )}
           </div>
         </div>
       ))}
