@@ -173,7 +173,7 @@ app.get("/surveys/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
 app.get("/mySurveys", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.body.user;
     try {
-        const mySurveys = yield db_1.default.query("SELECT * FROM surveys WHERE owner_id = $1", [id]);
+        const mySurveys = yield db_1.default.query("SELECT * FROM surveys WHERE owner_id = $1 LIMIT 6", [id]);
         res.json(mySurveys.rows);
     }
     catch (error) {

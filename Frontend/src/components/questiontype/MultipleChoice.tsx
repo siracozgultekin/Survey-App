@@ -24,7 +24,7 @@ const MultipleChoice = ({ choices, setChoices }: Props) => {
             <input
               type="text"
               placeholder="New Choice"
-              className=" w-[75%] border-slate-600 font-normal focus:border-b-2 focus:outline-none"
+              className=" w-[75%] rounded-lg border-slate-900 bg-gray-200 p-2  focus:border-b-2 focus:outline-none dark:border-gray-200 dark:bg-slate-800"
               value={choice}
               onChange={(e) => {
                 const newChoices = [...choices];
@@ -33,16 +33,16 @@ const MultipleChoice = ({ choices, setChoices }: Props) => {
               }}
             />
             <button
-              className="flex items-center rounded-3xl border-2 bg-gray-200 text-[70%]"
+              className="ml-2 flex h-7 items-center self-center border bg-transparent "
               onClick={() => deleteChoice(index)}
             >
-              <X className="text-red-700" />
+              <X className=" text-red-700" />
             </button>
           </div>
         ))}
       </div>
       <button
-        className="h-10 w-[15%] rounded-lg border-2 bg-slate-400 text-[70%]"
+        className="h-10 w-[15%] rounded-lg border-2 bg-gray-100 text-[70%] dark:bg-slate-900"
         onClick={addChoice}
       >
         Add Choice

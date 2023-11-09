@@ -59,14 +59,14 @@ const SurveyCreationBody = () => {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-start bg-slate-100">
+    <div className="flex h-full w-full flex-col items-center justify-start ">
       surveyId: {id}
       <p className="text-red-600">
         Çöz : Oluşturulan soruyu editleyince texteditor devre dışı kalıyor.
         Stilsiz şekilde editlenebiliyor.
       </p>
-      <div className="m-10 flex h-fit w-[50%] flex-col  gap-3  rounded-2xl bg-white ">
-        <div className="flex h-3 w-full self-start rounded-t-2xl bg-blue-500"></div>
+      <div className="m-10 flex h-fit w-[50%] flex-col  gap-3  rounded-2xl bg-gray-100 dark:bg-slate-900 ">
+        <div className="flex h-3 w-full self-start rounded-t-2xl bg-primary"></div>
         <div className="flex flex-col gap-3 p-5">
           <input
             type="text"
@@ -78,14 +78,14 @@ const SurveyCreationBody = () => {
               }
             }}
             placeholder="Untitled Document"
-            className=" border-slate-600 font-sans text-3xl focus:border-b-2 focus:outline-none"
+            className=" border-slate-600 bg-gray-200 px-2 font-sans text-3xl focus:border-b-2 focus:outline-none dark:bg-slate-800"
           />
           <input
             type="text"
             name=""
             id=""
             placeholder="Form Description"
-            className=" border-slate-600 font-normal focus:border-b-2 focus:outline-none "
+            className=" border-slate-600 bg-gray-200 px-2 font-normal focus:border-b-2 focus:outline-none dark:bg-slate-800 "
             onChange={(e) => {
               setSurveyDescription(e.target.value);
             }}
@@ -94,7 +94,7 @@ const SurveyCreationBody = () => {
       </div>
       {questionArr?.map((question) => (
         <div
-          className=" mb-5 flex w-[50%] justify-between rounded-2xl  bg-white"
+          className=" mb-5 flex w-[50%] justify-between rounded-2xl  bg-gray-100 dark:bg-slate-900"
           key={question.id}
         >
           {/* {JSON.stringify(question, null, 2)} */}
@@ -104,7 +104,7 @@ const SurveyCreationBody = () => {
               <input
                 type="text"
                 placeholder={question.question}
-                className=" h-[90px] w-[100%]  border-slate-600 font-sans text-lg focus:border-b-2 focus:outline-none"
+                className=" h-[90px] w-[100%] border-slate-600 bg-gray-200 font-sans text-lg focus:border-b-2 focus:outline-none dark:bg-slate-800"
                 onChange={(e) => {
                   e.preventDefault(),
                     setQuestion({
@@ -122,7 +122,7 @@ const SurveyCreationBody = () => {
                     <input
                       type="text"
                       placeholder={choice}
-                      className="   w-[50%] border-slate-600 font-sans text-lg focus:border-b-2 focus:outline-none"
+                      className="w-[50%] rounded-lg border-slate-800 bg-gray-200 p-1 font-sans text-lg focus:border-b-2 focus:outline-none dark:bg-slate-800"
                       onChange={(e) => {
                         e.preventDefault(),
                           setQuestionChoice({
@@ -143,7 +143,7 @@ const SurveyCreationBody = () => {
                       console.log("sonrası...", question.id, index);
                     }}
                   >
-                    <X className="border-2 text-red-600" />
+                    <X className="h-6 border text-red-700" />
                   </div>
                 </div>
               ))}
@@ -160,7 +160,7 @@ const SurveyCreationBody = () => {
             />
             {question.question_type === 2 && (
               <button
-                className="m-2 rounded-2xl border-2 bg-blue-200 py-1 text-[70%]"
+                className="m-2 rounded-2xl border-2 bg-gray-100 py-1 text-[70%] dark:bg-slate-900"
                 onClick={() => {
                   addChoice({
                     id: question.id,
@@ -174,12 +174,11 @@ const SurveyCreationBody = () => {
           </div>
         </div>
       ))}
-      <div className=" flex h-fit w-[50%]   rounded-2xl bg-white ">
-        <div className=" self-star h-full w-2 rounded-bl-2xl rounded-tl-2xl bg-purple-700"></div>
-        <div className="flex w-full flex-col p-5">
-          {" "}
+      <div className=" flex  w-[50%] rounded-2xl  ">
+        <div className=" w-2  rounded-bl-2xl rounded-tl-2xl bg-purple-700 "></div>
+        <div className="flex  w-full flex-col bg-gray-100 p-5 dark:bg-slate-900">
           <div className="flex w-full flex-col">
-            <div className="flex  w-full items-center justify-center gap-3 ">
+            <div className="flex  w-full items-center justify-center gap-3 bg-gray-100 dark:bg-slate-900 ">
               {/* <input
                 type="text"
                 name="questioninput"
@@ -191,7 +190,7 @@ const SurveyCreationBody = () => {
                 value={questioninput}
                 className="h-[60px] w-[50%] border-slate-600 bg-gray-200 placeholder-gray-400 focus:border-b-[1px] focus:outline-none"
               /> */}
-              <div className="m-2 mb-5 w-full border">
+              <div className="m-2 mb-5 w-full  border  ">
                 <TiptapEditor
                   editorState={editorState}
                   setEditorState={setEditorState}
@@ -200,7 +199,7 @@ const SurveyCreationBody = () => {
               <div className=" items-center ">
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    <div className="flex h-[60px] w-[90px] items-center justify-center rounded-md border-[1px] border-slate-500 bg-white text-sm ">
+                    <div className="flex h-[60px] w-[90px] items-center justify-center rounded-md border-[1px]  text-sm ">
                       {dropdownMenuTitle}
                     </div>
                   </DropdownMenuTrigger>
@@ -249,7 +248,7 @@ const SurveyCreationBody = () => {
             {questionType === 3 && <Rating />}
           </div>
           <button
-            className="flex h-[40px] w-[10%]  items-center justify-center self-center rounded-lg border-2 bg-slate-200 text-[80%]"
+            className="flex h-[40px] w-[10%]  items-center justify-center self-center rounded-lg border-2 text-[80%]"
             type="submit"
             onClick={createQuestion}
           >

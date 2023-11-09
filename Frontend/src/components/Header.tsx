@@ -25,7 +25,7 @@ const Header = () => {
   };
 
   return (
-    <div className="flex h-[65px]  w-full flex-row items-center bg-primary ">
+    <div className="flex h-[65px]  w-full flex-row items-center bg-gray-100 dark:bg-slate-900 ">
       <div className="ml-2  flex flex-1 items-center ">
         <button className=" mx-2 flex items-center">
           <FileText className="rounded-lg text-green-600" />

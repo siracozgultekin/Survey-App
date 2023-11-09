@@ -57,11 +57,12 @@ const SurveyCreationHeader = () => {
   };
 
   return (
-    <div className="flex h-full items-center justify-between border-b-[1px] border-gray-300 px-8">
+    <div className=" flex h-full items-center justify-between border-b px-8">
       <div className="flex items-center">
-        <FileText className="h-10 w-10 rounded-lg text-blue-500" />
+        {/* <FileText className="h-10 w-10 rounded-lg text-blue-500" /> */}
 
-        <h3 className="w-[400px] font-semibold">{surveyStore.title}</h3>
+        {/* <h3 className="w-[400px] font-semibold">{surveyStore.title}</h3> */}
+        <h3 className="w-[400px] font-semibold">*Şablon Tipi*</h3>
       </div>
       <div className="flex items-center gap-5">
         <Eye className="h-6 w-6 text-slate-700" />

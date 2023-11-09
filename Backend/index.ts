@@ -180,7 +180,7 @@ app.get(
 
     try {
       const mySurveys = await dbpool.query(
-        "SELECT * FROM surveys WHERE owner_id = $1",
+        "SELECT * FROM surveys WHERE owner_id = $1 LIMIT 6",
         [id]
       );
       res.json(mySurveys.rows);

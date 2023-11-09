@@ -8,35 +8,24 @@ import SurveyCreation from "@/pages/SurveyCreation";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/login",
     element: <Login />,
   },
   {
-    path: "/x",
-    element: <div>Test</div>,
-  },
-  {
-    path: "/home",
-    element: <Home />,
-  },
-  {
-    path: "/profile",
-    element: <Profile />,
-  },
-  {
-    path: "/survey-creation",
-    element: <SurveyCreation />,
-  },
-  {
+    path: "/",
     element: <AuthLayout />,
     children: [
       {
-        path: "sign-in",
-        element: <div className="w-[60%] bg-slate-700">login</div>,
+        path: "home",
+        element: <Home />,
       },
       {
-        path: "sign-up",
-        element: <div>signup</div>,
+        path: "profile",
+        element: <Profile />,
+      },
+      {
+        path: "survey-creation",
+        element: <SurveyCreation />,
       },
     ],
   },
