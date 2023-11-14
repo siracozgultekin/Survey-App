@@ -4,9 +4,17 @@ import {
   Home,
   Inbox,
   LogOut,
+  MoreHorizontal,
+  MoreVertical,
   Plus,
   Settings,
+  User,
 } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { Link } from "react-router-dom";
 import { useUserStore } from "@/store/use-user-store";
@@ -26,32 +34,7 @@ const Sidebar = () => {
       alt="SebitPhoto"
     /> */}
       <div>
-        <div className="w-full ">
-          <Link to="/profile">
-            <Button
-              className=" w-full justify-start gap-2  px-4 text-base"
-              variant="ghost"
-            >
-              <img
-                className=" h-6 w-6 rounded-full "
-                src="https://lh3.googleusercontent.com/ogw/AGvuzYZLTQSrTe0LDIlsQm--k_bAXXHjgoBMKN82rFyZ=s32-c-mo"
-                alt="pp"
-              />
-              <h2 className="w-full truncate text-center text-lg font-semibold">
-                {user?.name &&
-                  user?.surname &&
-                  user?.name + " " + user?.surname}
-              </h2>
-              <div
-                className={cn(
-                  "ml-auto h-full border-2 border-primary opacity-0 transition-all",
-                  location.pathname === "/profile" && "opacity-100",
-                )}
-              />
-            </Button>
-          </Link>
-        </div>
-        <hr className="border-1 w-full " />
+        {/* <hr className="border-1 w-full " /> */}
         <Link to="/survey-creation">
           <Button className="m-4 flex items-center  " variant="positive">
             <Plus className="mr-1" /> Create New Survey
@@ -76,7 +59,7 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/home">
+            <Link to="/inbox">
               <Button
                 className="w-full justify-start gap-3 text-base"
                 variant="ghost"
@@ -86,71 +69,105 @@ const Sidebar = () => {
                 <div
                   className={cn(
                     "ml-auto h-full border-2 border-primary opacity-0 transition-all",
-                    location.pathname === "/notifications" && "opacity-100",
+                    location.pathname === "/inbox" && "opacity-100",
                   )}
                 />
               </Button>
             </Link>
           </li>
           <li>
-            <Link to="/profile">
+            <Link to="/surveys">
               <Button
                 className="w-full justify-start gap-3 text-base"
                 variant="ghost"
               >
                 <FileText className="h-5 w-5" />
-                My Surveys
+                Surveys
                 <div
                   className={cn(
                     "ml-auto h-full border-2 border-primary opacity-0 transition-all",
-                    location.pathname === "/mysurveys" && "opacity-100",
+                    location.pathname === "/surveys" && "opacity-100",
                   )}
                 />
               </Button>
             </Link>
           </li>
           <li>
-            <Link to="/home">
+            <Link to="/report">
               <Button
                 className="w-full justify-start gap-3 text-base"
                 variant="ghost"
               >
                 <BarChart3 className="h-5 w-5" />
                 Reports
+                <div
+                  className={cn(
+                    "ml-auto h-full border-2 border-primary opacity-0 transition-all",
+                    location.pathname === "/report" && "opacity-100",
+                  )}
+                />
               </Button>
-              <div
-                className={cn(
-                  "ml-auto h-full border-2 border-primary opacity-0 transition-all",
-                  location.pathname === "/reports" && "opacity-100",
-                )}
-              />
             </Link>
           </li>
         </ul>
       </div>
-      <div className=" w-full">
-        <hr className="py-3" />
+      <div className=" my-1 flex w-full flex-col gap-3">
+        <hr className="" />
 
-        <ul className="flex flex-col items-start justify-start ">
-          <li className="w-full">
-            <Setting />
-          </li>
-          <li className="w-full">
-            <Link to="/home">
-              <Button
-                className="w-full justify-start gap-3 text-base"
-                variant="ghost"
-              >
-                <LogOut className="h-5 w-5" />
-                Log Out
-              </Button>
-            </Link>
-          </li>
-        </ul>
+        <Popover>
+          <PopoverTrigger>
+            <div className="w-full   ">
+              <div className=" flex w-full justify-start gap-1 px-4 py-2 text-base hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50">
+                <img
+                  className=" h-6 w-6  rounded-full"
+                  src="https://lh3.googleusercontent.com/ogw/AGvuzYZLTQSrTe0LDIlsQm--k_bAXXHjgoBMKN82rFyZ=s32-c-mo"
+                  alt="pp"
+                />
+                <h2 className="w-full truncate  text-center  font-semibold">
+                  {user?.name &&
+                    user?.surname &&
+                    user?.name + " " + user?.surname}
+                </h2>
+                <MoreVertical className="" />
+                <div />
+              </div>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="bg-stone-950 ">
+            <ul className="flex flex-col items-start justify-start ">
+              <li className="w-full">
+                <Link to="/profile">
+                  <Button
+                    className="w-full justify-start gap-3 text-base"
+                    variant="ghost"
+                  >
+                    <User className="h-5 w-5" />
+                    Profile
+                  </Button>
+                </Link>
+              </li>
+              <li className="w-full">
+                <Setting />
+              </li>
+              <hr />
+              <li className="w-full">
+                <Link to="/home">
+                  <Button
+                    className="w-full justify-start gap-3 text-base"
+                    variant="ghost"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    Log Out
+                  </Button>
+                </Link>
+              </li>
+            </ul>
+          </PopoverContent>
+        </Popover>
 
-        <p className=" pl-4 pt-2 text-xs">
+        {/* <p className="    pl-4 pt-2 text-center text-[10px] ">
           <span className=" font-semibold">SAS</span> Version 1.12
-        </p>
+        </p> */}
       </div>
     </div>
   );

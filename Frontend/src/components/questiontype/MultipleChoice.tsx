@@ -33,10 +33,10 @@ const MultipleChoice = ({ choices, setChoices }: Props) => {
               }}
             />
             <button
-              className="ml-2 flex h-7 items-center self-center border bg-transparent "
+              className="ml-2 flex h-7 items-center self-center bg-transparent "
               onClick={() => deleteChoice(index)}
             >
-              <X className=" text-red-700" />
+              <X className="  text-red-700" />
             </button>
           </div>
         ))}

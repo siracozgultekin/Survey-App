@@ -57,7 +57,7 @@ const SurveyCreationHeader = () => {
   };
 
   return (
-    <div className=" flex h-full items-center justify-between border-b px-8">
+    <div className=" flex h-full items-center justify-between border-b bg-white px-8 dark:bg-slate-950">
       <div className="flex items-center">
         {/* <FileText className="h-10 w-10 rounded-lg text-blue-500" /> */}
 

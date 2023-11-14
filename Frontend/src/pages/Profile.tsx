@@ -89,35 +89,6 @@ const Profile = () => {
           </div>
           <div className="flex flex-col items-center"></div>
         </div>
-        <div className="ml-[60px]  min-h-[300px] w-[75%] rounded-xl  bg-gray-100">
-          <div className=" ">
-            <Tabs
-              defaultValue="account"
-              className="flex h-[70%] w-full flex-col "
-            >
-              <TabsList className="w-[350px] justify-evenly self-end rounded-tr-xl bg-slate-400 ">
-                <TabsTrigger value="inp1">My Surveys</TabsTrigger>
-                <TabsTrigger value="inp2">Participated Surveys</TabsTrigger>
-                <TabsTrigger value="inp3">Invites</TabsTrigger>
-              </TabsList>
-              <TabsContent value="inp1">
-                Make changes to your account here.
-              </TabsContent>
-              <TabsContent className=" flex  flex-col  " value="inp2">
-                <div className="h-[475px]" style={{ overflowY: "scroll" }}>
-                  <ul className="grid grid-cols-1 gap-4  p-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {participatedSurveys?.map((survey, index) => (
-                      <li key={index}>
-                        <ParticipatedCard survey={survey} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </TabsContent>
-              <TabsContent value="inp3">invite.</TabsContent>
-            </Tabs>
-          </div>
-        </div>
       </div>
     </div>
   );

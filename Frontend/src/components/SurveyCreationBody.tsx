@@ -60,7 +60,7 @@ const SurveyCreationBody = () => {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-start ">
-      surveyId: {id}
+      {/* surveyId: {id} */}
       <p className="text-red-600">
         Çöz : Oluşturulan soruyu editleyince texteditor devre dışı kalıyor.
         Stilsiz şekilde editlenebiliyor.
@@ -78,14 +78,14 @@ const SurveyCreationBody = () => {
               }
             }}
             placeholder="Untitled Document"
-            className=" border-slate-600 bg-gray-200 px-2 font-sans text-3xl focus:border-b-2 focus:outline-none dark:bg-slate-800"
+            className=" rounded-lg border-slate-600 bg-gray-200 px-2 font-sans text-3xl focus:border-b-2 focus:outline-none dark:bg-slate-800"
           />
           <input
             type="text"
             name=""
             id=""
             placeholder="Form Description"
-            className=" border-slate-600 bg-gray-200 px-2 font-normal focus:border-b-2 focus:outline-none dark:bg-slate-800 "
+            className=" rounded-lg border-slate-600 bg-gray-200 px-2 font-normal focus:border-b-2 focus:outline-none dark:bg-slate-800 "
             onChange={(e) => {
               setSurveyDescription(e.target.value);
             }}
@@ -143,7 +143,7 @@ const SurveyCreationBody = () => {
                       console.log("sonrası...", question.id, index);
                     }}
                   >
-                    <X className="h-6 border text-red-700" />
+                    <X className="h-6  text-red-700" />
                   </div>
                 </div>
               ))}
@@ -151,7 +151,7 @@ const SurveyCreationBody = () => {
           </div>
           <div className="flex flex-col justify-between">
             <Trash2
-              className=" m-1 flex h-[25px] w-[25px] self-center"
+              className=" m-2 flex h-[25px] w-[25px] self-center"
               onClick={() =>
                 removeQuestion({
                   id: question.id,
