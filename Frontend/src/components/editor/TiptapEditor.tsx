@@ -17,7 +17,7 @@ const TiptapEditor = ({ editorState, setEditorState }: Props) => {
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: "Enter your question here...",
+        placeholder: "Soru metni giriniz...",
       }),
     ],
     content: editorState,

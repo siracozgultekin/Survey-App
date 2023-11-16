@@ -23,7 +23,7 @@ const MultipleChoice = ({ choices, setChoices }: Props) => {
           <div key={index} className="flex w-full pb-2  pr-5">
             <input
               type="text"
-              placeholder="New Choice"
+              placeholder="Yeni Seçenek "
               className=" w-[75%] rounded-lg border-slate-900 bg-gray-200 p-2  focus:border-b-2 focus:outline-none dark:border-gray-200 dark:bg-slate-800"
               value={choice}
               onChange={(e) => {
@@ -45,7 +45,7 @@ const MultipleChoice = ({ choices, setChoices }: Props) => {
         className="h-10 w-[15%] rounded-lg border-2 bg-gray-100 text-[70%] dark:bg-slate-900"
         onClick={addChoice}
       >
-        Add Choice
+        Seçenek ekle
       </button>
     </div>
   );

@@ -23,7 +23,7 @@ import { Button } from "./ui/button";
 const SurveyCreationBody = () => {
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + 3);
-  const [dropdownMenuTitle, setdropdownMenuTitle] = useState("Multiple Choice");
+  const [dropdownMenuTitle, setdropdownMenuTitle] = useState("Çoktan Seçmeli");
   const [questionType, setQuestionType] = useState<number>(2);
   const [choices, setChoices] = useState([""]);
 
@@ -77,14 +77,14 @@ const SurveyCreationBody = () => {
                 setSurveyTitle(e.target.value);
               }
             }}
-            placeholder="Untitled Document"
+            placeholder="Başlıksız Döküman"
             className=" rounded-lg border-slate-600 bg-gray-200 px-2 font-sans text-3xl focus:border-b-2 focus:outline-none dark:bg-slate-800"
           />
           <input
             type="text"
             name=""
             id=""
-            placeholder="Form Description"
+            placeholder="Anket açıklaması..."
             className=" rounded-lg border-slate-600 bg-gray-200 px-2 font-normal focus:border-b-2 focus:outline-none dark:bg-slate-800 "
             onChange={(e) => {
               setSurveyDescription(e.target.value);
@@ -151,7 +151,7 @@ const SurveyCreationBody = () => {
           </div>
           <div className="flex flex-col justify-between">
             <Trash2
-              className=" m-2 flex h-[25px] w-[25px] self-center"
+              className=" m-2 flex h-[25px] w-[25px] self-center  "
               onClick={() =>
                 removeQuestion({
                   id: question.id,
@@ -168,7 +168,7 @@ const SurveyCreationBody = () => {
                   });
                 }}
               >
-                Add Choice
+                Seçenek Ekle
               </button>
             )}
           </div>
@@ -204,9 +204,7 @@ const SurveyCreationBody = () => {
                     </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuLabel>
-                      {"Select type of the question"}
-                    </DropdownMenuLabel>
+                    <DropdownMenuLabel>{"Soru Tipi Seçiniz"}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
 
                     {/* <DropdownMenuItem
@@ -220,10 +218,10 @@ const SurveyCreationBody = () => {
                     <DropdownMenuItem
                       onClick={() => {
                         setQuestionType(2);
-                        setdropdownMenuTitle("Multiple Choice");
+                        setdropdownMenuTitle("Çoktan Seçmeli");
                       }}
                     >
-                      <CircleDot className="h-5" /> Multiple Choice
+                      <CircleDot className="h-5" /> Çoktan Seçmeli
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => {
@@ -231,7 +229,7 @@ const SurveyCreationBody = () => {
                         setdropdownMenuTitle("Rating");
                       }}
                     >
-                      <Star className="h-5" /> Rating
+                      <Star className="h-5" /> Puanlama
                     </DropdownMenuItem>
 
                     <DropdownMenuItem></DropdownMenuItem>

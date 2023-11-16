@@ -18,6 +18,7 @@ export interface Survey {
   deadline: Date | null;
   participants: string[];
 }
+
 export interface Question {
   id: string;
   survey_id: string;

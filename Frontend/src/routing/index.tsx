@@ -11,12 +11,11 @@ import Survey from "@/redux/features/survey_creation/survey";
 import Surveys from "@/pages/Surveys";
 
 export const router = createBrowserRouter([
-  { path: "/login", element: <Login /> },
   {
     path: "/",
     element: <AuthLayout />,
     children: [
-      { index: true, element: <Navigate to="/login" replace /> },
+      // { index: true, element: <Navigate to="/login" replace /> },
 
       {
         path: "home",
@@ -38,4 +37,5 @@ export const router = createBrowserRouter([
       { path: "surveys", element: <Surveys /> },
     ],
   },
+  { path: "/login", element: <Login /> },
 ]);

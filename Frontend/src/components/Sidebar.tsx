@@ -4,10 +4,8 @@ import {
   Home,
   Inbox,
   LogOut,
-  MoreHorizontal,
   MoreVertical,
   Plus,
-  Settings,
   User,
 } from "lucide-react";
 import {
@@ -16,16 +14,23 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "@/store/use-user-store";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
-import { ModeToggle } from "./mode-toggle";
+
 import Setting from "./Setting";
 const Sidebar = () => {
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setUser(null);
+    document.cookie = "token=; expires=Thu, 01 Jan 1978 00:00:00 UTC; path=/;";
+    navigate("login", { replace: true });
+  };
 
   return (
     <div className="flex h-full w-[250px] flex-col justify-between border-2 px-4  py-2 ">
@@ -151,15 +156,14 @@ const Sidebar = () => {
               </li>
               <hr />
               <li className="w-full">
-                <Link to="/home">
-                  <Button
-                    className="w-full justify-start gap-3 text-base"
-                    variant="ghost"
-                  >
-                    <LogOut className="h-5 w-5" />
-                    Log Out
-                  </Button>
-                </Link>
+                <Button
+                  className="w-full justify-start gap-3 text-base"
+                  variant="ghost"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-5 w-5" />
+                  Log Out
+                </Button>
               </li>
             </ul>
           </PopoverContent>

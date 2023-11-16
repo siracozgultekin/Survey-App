@@ -1,10 +1,18 @@
-import { Eye, FileText } from "lucide-react";
+import { Eye, FileText, Ghost, Mail } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "./ui/use-toast";
 import axios, { AxiosError } from "axios";
 import { useSurveyStore } from "@/store/use-survey-store";
 import { useUserStore } from "@/store/use-user-store";
 import { useQuestionArrStore } from "@/store/use-questionArr-store";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const SurveyCreationHeader = () => {
   const surveyStore = useSurveyStore();
@@ -65,14 +73,30 @@ const SurveyCreationHeader = () => {
         <h3 className="w-[400px] font-semibold">*Şablon Tipi*</h3>
       </div>
       <div className="flex items-center gap-5">
-        <Eye className="h-6 w-6 text-slate-700" />
+        <div className=" px-4 ">
+          <Sheet>
+            <SheetTrigger className="flex gap-1">
+              <Mail /> Davet Edilenler
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Ankete Davet Et </SheetTitle>
+                <SheetDescription>
+                  Ankete davet etmek istediğin kişileri seç.
+                </SheetDescription>
+                <div></div>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+        </div>
+
         <Button
           className="bg-blue-500 text-white"
           onClick={() => {
             handlePublish();
           }}
         >
-          Publish
+          Yayınla
         </Button>
       </div>
     </div>

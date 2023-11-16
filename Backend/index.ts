@@ -52,7 +52,7 @@ app.post("/register", async (req: Request, res: Response) => {
     const userId = newUser.rows[0].id;
 
     const token = jwt.sign({ userId }, hashedPassword, {
-      expiresIn: "9h", // Token expiration time
+      expiresIn: "8h", // Token expiration time
     });
 
     res.json({ token });
@@ -187,6 +187,76 @@ app.get(
     } catch (error) {
       console.log("get user failed:", error);
       res.status(500).json({ error: "Get user failed" });
+    }
+  }
+);
+
+app.get(
+  "/tablemysurvey",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const { id } = req.body.user;
+
+    try {
+      const mySurveys = await dbpool.query(
+        `
+      SELECT 
+    id, 
+    creation_date, 
+    title, 
+    deadline, 
+    COALESCE(CAST(array_length(participants, 1) AS INTEGER), 0) AS "numberOfParticipants",
+    CASE 
+        WHEN deadline > CURRENT_TIMESTAMP THEN 'active'
+        ELSE 'closed'
+    END AS status
+FROM 
+    surveys
+WHERE 
+    owner_id = $1;
+    `,
+        [id]
+      );
+
+      res.json(mySurveys.rows);
+    } catch (error) {
+      res.status(500).json({ error: error });
+    }
+  }
+);
+
+app.get(
+  "/tableparticipatedsurvey",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const { id } = req.body.user;
+
+    try {
+      const participatedSurveys = await dbpool.query(
+        `
+        SELECT 
+        s.id, 
+        s.title,
+        CONCAT(u.name, ' ', u.surname) AS owner_name,
+        s.deadline, 
+        CASE 
+            WHEN s.deadline > CURRENT_TIMESTAMP THEN 'active'
+            ELSE 'closed'
+        END AS status
+    FROM
+        surveys s
+    JOIN
+        users u ON s.owner_id = u.id
+    WHERE 
+        $1 = ANY(s.participants);
+    
+    `,
+        [id]
+      );
+
+      res.json(participatedSurveys.rows);
+    } catch (error) {
+      res.status(500).json({ error: error });
     }
   }
 );

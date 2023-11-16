@@ -99,23 +99,23 @@ const HomeBody = () => {
         </div>
         <div className=" w-[80%] ">
           <p className="my-4 self-center rounded-t-2xl  text-3xl font-semibold text-primary">
-            My Surveys (Recently)
+            Anketlerim (Yakın Zamanda)
           </p>
           <Table className="">
-            <TableCaption>(List of my surveys created recently)</TableCaption>
+            <TableCaption>(Yakın zamanda oluşturulan anketler)</TableCaption>
             <TableHeader>
               <TableRow className=" hover:bg-transparent">
                 <TableHead className="bg-gray-200 dark:bg-slate-900">
-                  Title
+                  Başlık
                 </TableHead>
                 <TableHead className="bg-gray-200 dark:bg-slate-900">
-                  Creation Date
+                  Oluşturma Tarihi
                 </TableHead>
                 <TableHead className="bg-gray-200 dark:bg-slate-900">
-                  Deadline
+                  Bitiş tarihi
                 </TableHead>
                 <TableHead className="bg-gray-200 dark:bg-slate-900">
-                  Participant
+                  Katılımcı Sayısı
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -141,7 +141,7 @@ const HomeBody = () => {
                   </TableRow>
                 ))
               ) : (
-                <TableRow>No surveys available</TableRow>
+                <TableRow>Anketiniz Bulunmamaktadır...</TableRow>
               )}
             </TableBody>
           </Table>
