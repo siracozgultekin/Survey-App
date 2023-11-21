@@ -18,10 +18,11 @@ import { Input } from "./ui/input";
 import { useEffect, useState } from "react";
 import { Avatar } from "@radix-ui/react-avatar";
 import type { User } from "@/interfaces";
+import { useNavigate } from "react-router-dom";
 const SurveyCreationHeader = () => {
   const surveyStore = useSurveyStore();
   const { user } = useUserStore();
-  const { questionArr } = useQuestionArrStore();
+  const { questionArr, resetQuestionArr } = useQuestionArrStore();
   const [usersArr, setUsersArr] = useState<User[]>([]);
   const [allUsersArr, setAllUsersArr] = useState<User[]>([]);
   useEffect(() => {
@@ -37,7 +38,7 @@ const SurveyCreationHeader = () => {
     };
     fetchData();
   }, []);
-
+  const navigate = useNavigate();
   const searchUsersArr = (searchInp: string) => {
     const res = allUsersArr.filter((user) => {
       return user.name.toLowerCase().includes(searchInp);
@@ -70,6 +71,9 @@ const SurveyCreationHeader = () => {
           description: "Survey created successfully.",
         });
         surveyStore.resetsurveyStore();
+        resetQuestionArr();
+        console.log("calisti");
+        navigate("/home");
       }
     } catch (error) {
       const err = error as AxiosError;

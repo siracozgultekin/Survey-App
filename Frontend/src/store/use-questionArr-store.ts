@@ -12,6 +12,7 @@ interface QuestionArrStore {
   removeChoice: (data: any) => void;
   removeQuestion: (data: any) => void;
   addChoice: (data: any) => void;
+  resetQuestionArr: () => void;
 }
 export const useQuestionArrStore = create<QuestionArrStore>((set) => ({
   //initial state of the QuestionArrStore
@@ -75,5 +76,10 @@ export const useQuestionArrStore = create<QuestionArrStore>((set) => ({
         }
         return questionObj;
       }),
+    })),
+
+  resetQuestionArr: () =>
+    set(() => ({
+      questionArr: [],
     })),
 }));
