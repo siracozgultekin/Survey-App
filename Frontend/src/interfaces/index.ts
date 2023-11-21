@@ -7,6 +7,7 @@ type User = {
   password: string;
   registration_date: string;
   participated_surveys: string[];
+  department: string;
 };
 export type { User };
 export interface Survey {

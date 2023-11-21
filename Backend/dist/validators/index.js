@@ -19,6 +19,25 @@ exports.registerSchema = zod_1.default.object({
         .string()
         .min(6, "Password must be contain at least 6 characters.")
         .max(255),
+    department: zod_1.default.enum([
+        "Frontend",
+        "Backend",
+        "Database",
+        "Fullstack",
+        "DevOps",
+        "Designer",
+        "Educational",
+        "Other",
+        "Finance",
+        "Law",
+        "HR",
+        "Sales",
+        "CustomerService",
+        "Production",
+        "Logistics",
+        "Arge",
+        "Other",
+    ]),
 });
 exports.insertSurveySchema = zod_1.default.object({
     id: zod_1.default.string().min(1),

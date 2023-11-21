@@ -121,21 +121,21 @@ const Sidebar = () => {
 
         <Popover>
           <PopoverTrigger>
-            <div className="w-full   ">
-              <div className=" flex w-full justify-start gap-1 px-4 py-2 text-base hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50">
-                <img
-                  className=" h-6 w-6  rounded-full"
-                  src="https://lh3.googleusercontent.com/ogw/AGvuzYZLTQSrTe0LDIlsQm--k_bAXXHjgoBMKN82rFyZ=s32-c-mo"
-                  alt="pp"
-                />
-                <h2 className="w-full truncate  text-center  font-semibold">
-                  {user?.name &&
-                    user?.surname &&
-                    user?.name + " " + user?.surname}
-                </h2>
-                <MoreVertical className="" />
-                <div />
+            <div className=" flex items-center   text-base hover:rounded-sm hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50">
+              <div className=" flex h-[30px] w-[30px] items-center justify-center rounded-full bg-slate-800 p-2 ">
+                {user?.name &&
+                  user?.surname &&
+                  user?.name[0].toUpperCase() + user?.surname[0].toUpperCase()}
               </div>
+
+              <h2 className="w-full truncate  text-center  font-semibold">
+                {user?.name &&
+                  user?.surname &&
+                  user?.name[0].toUpperCase() +
+                    user?.name.slice(1) +
+                    " " +
+                    user?.surname.toUpperCase()}
+              </h2>
             </div>
           </PopoverTrigger>
           <PopoverContent className="bg-stone-950 ">

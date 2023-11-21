@@ -1,4 +1,4 @@
-import { Eye, FileText, Ghost, Mail } from "lucide-react";
+import { Eye, FileText, Ghost, Mail, UserPlus2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "./ui/use-toast";
 import axios, { AxiosError } from "axios";
@@ -13,11 +13,38 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "./ui/input";
+import { useEffect, useState } from "react";
+import { Avatar } from "@radix-ui/react-avatar";
+import type { User } from "@/interfaces";
 const SurveyCreationHeader = () => {
   const surveyStore = useSurveyStore();
   const { user } = useUserStore();
   const { questionArr } = useQuestionArrStore();
+  const [usersArr, setUsersArr] = useState<User[]>([]);
+  const [allUsersArr, setAllUsersArr] = useState<User[]>([]);
+  useEffect(() => {
+    //get users from db with user.department value
+
+    const fetchData = async () => {
+      const res = await axios.get(
+        `http://localhost:5000/users/${user?.department}`,
+      );
+      console.log("res.data=>", res.data);
+      setUsersArr(res.data);
+      setAllUsersArr(res.data);
+    };
+    fetchData();
+  }, []);
+
+  const searchUsersArr = (searchInp: string) => {
+    const res = allUsersArr.filter((user) => {
+      return user.name.toLowerCase().includes(searchInp);
+    });
+    setUsersArr(res);
+    console.log("res=>", res);
+  };
 
   const handlePublish = async () => {
     const dataSent = {
@@ -80,11 +107,59 @@ const SurveyCreationHeader = () => {
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
-                <SheetTitle>Ankete Davet Et </SheetTitle>
+                <SheetTitle className="flex items-center gap-3">
+                  Ankete Davet Et <UserPlus2 />
+                </SheetTitle>
                 <SheetDescription>
                   Ankete davet etmek istediğin kişileri seç.
                 </SheetDescription>
-                <div></div>
+                <div className="flex flex-col gap-5">
+                  <div>
+                    {" "}
+                    <Input
+                      className="rounded-b-none border-b-slate-900/70 "
+                      placeholder="Davet etmek istediğin kişiyi bul..."
+                      onChange={(e) => {
+                        searchUsersArr(e.target.value);
+                      }}
+                    />
+                    <ScrollArea className=" h-40 rounded-lg rounded-t-none border-b border-l border-r">
+                      {usersArr.map((user) => (
+                        <div
+                          key={user.id}
+                          className="mt-3 flex items-center justify-between p-1 px-5  hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+                        >
+                          <div className="flex h-8 w-8 justify-center  rounded-full bg-gray-300  text-lg font-bold  text-black">
+                            <p className="self-center  text-center">
+                              {user.name[0]}
+                            </p>
+                          </div>
+                          <p className="w-[50%] truncate  ">
+                            {user.name} {user.surname}
+                          </p>
+                          <button className="rounded-lg bg-blue-500 px-1 text-white">
+                            Davet
+                          </button>
+                        </div>
+                      ))}
+                    </ScrollArea>{" "}
+                  </div>
+                  <h3 className="pt-5">Davet Ettiklerin</h3>
+                  <ScrollArea className=" h-40 rounded-lg border">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Quos repellat cupiditate, esse assumenda reprehenderit vel
+                    ipsum. Est, distinctio nulla iusto, nisi delectus inventore,
+                    incidunt totam deserunt voluptatibus rem cum temporibus.
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Quod, asperiores placeat dolorem quo dicta ea delectus velit
+                    molestias soluta mollitia commodi quibusdam assumenda
+                    voluptatibus sint, quia, optio laborum ab quaerat. Lorem
+                    ipsum dolor sit amet consectetur adipisicing elit. Est
+                    tempora perspiciatis asperiores sed. Veritatis mollitia
+                    ducimus ipsum dolore esse, veniam rem distinctio aspernatur
+                    commodi fuga similique magni iste tempore beatae!
+                  </ScrollArea>
+                </div>
               </SheetHeader>
             </SheetContent>
           </Sheet>

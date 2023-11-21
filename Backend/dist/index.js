@@ -69,10 +69,10 @@ app.post("/logout", (req, res) => {
 //Register enpdoint
 app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, surname, email, password } = validators_1.registerSchema.parse(req.body);
+        const { name, surname, email, password, department } = validators_1.registerSchema.parse(req.body);
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         console.log(hashedPassword);
-        const newUser = yield db_1.default.query("INSERT INTO public.users (is_admin, name, surname, password, email) VALUES($1, $2, $3, $4, $5) RETURNING id", [false, name, surname, hashedPassword, email]);
+        const newUser = yield db_1.default.query("INSERT INTO public.users (is_admin, name, surname, password, email, department) VALUES($1, $2, $3, $4, $5, $6) RETURNING id", [false, name, surname, hashedPassword, email, department]);
         console.log("buraya geliyo");
         const userId = newUser.rows[0].id;
         const token = jsonwebtoken_1.default.sign({ userId }, hashedPassword, {
@@ -164,6 +164,17 @@ app.get("/surveys/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
         console.log("e burası başarılı oldu");
         console.log("survey.rows=>", survey.rows);
         res.json(survey.rows);
+    }
+    catch (error) {
+        console.log("get user failed:", error);
+        res.status(500).json({ error: "Get user failed" });
+    }
+}));
+app.get("/users/:department", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const department = req.params.department;
+    try {
+        const users = yield db_1.default.query("SELECT * FROM users WHERE department = $1", [department]);
+        res.json(users.rows);
     }
     catch (error) {
         console.log("get user failed:", error);

@@ -39,13 +39,15 @@ app.post("/logout", (req: Request, res: Response) => {
 //Register enpdoint
 app.post("/register", async (req: Request, res: Response) => {
   try {
-    const { name, surname, email, password } = registerSchema.parse(req.body);
+    const { name, surname, email, password, department } = registerSchema.parse(
+      req.body
+    );
 
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log(hashedPassword);
     const newUser = await dbpool.query(
-      "INSERT INTO public.users (is_admin, name, surname, password, email) VALUES($1, $2, $3, $4, $5) RETURNING id",
-      [false, name, surname, hashedPassword, email]
+      "INSERT INTO public.users (is_admin, name, surname, password, email, department) VALUES($1, $2, $3, $4, $5, $6) RETURNING id",
+      [false, name, surname, hashedPassword, email, department]
     );
     console.log("buraya geliyo");
 
@@ -172,6 +174,21 @@ app.get("/surveys/:id", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Get user failed" });
   }
 });
+
+app.get("/users/:department", async (req: Request, res: Response) => {
+  const department = req.params.department;
+  try {
+    const users = await dbpool.query(
+      "SELECT * FROM users WHERE department = $1",
+      [department]
+    );
+    res.json(users.rows);
+  } catch (error) {
+    console.log("get user failed:", error);
+    res.status(500).json({ error: "Get user failed" });
+  }
+});
+
 app.get(
   "/mySurveys",
   authenticateToken,

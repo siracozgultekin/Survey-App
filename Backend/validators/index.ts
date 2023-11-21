@@ -16,6 +16,25 @@ export const registerSchema = z.object({
     .string()
     .min(6, "Password must be contain at least 6 characters.")
     .max(255),
+  department: z.enum([
+    "Frontend",
+    "Backend",
+    "Database",
+    "Fullstack",
+    "DevOps",
+    "Designer",
+    "Educational",
+    "Other",
+    "Finance",
+    "Law",
+    "HR",
+    "Sales",
+    "CustomerService",
+    "Production",
+    "Logistics",
+    "Arge",
+    "Other",
+  ]),
 });
 
 export const insertSurveySchema = z.object({
