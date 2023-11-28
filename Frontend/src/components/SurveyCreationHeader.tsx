@@ -1,4 +1,4 @@
-import { Eye, FileText, Ghost, Mail, UserPlus2 } from "lucide-react";
+import { Eye, FileText, Ghost, Key, Mail, UserPlus2, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "./ui/use-toast";
 import axios, { AxiosError } from "axios";
@@ -19,12 +19,15 @@ import { useEffect, useState } from "react";
 import { Avatar } from "@radix-ui/react-avatar";
 import type { User } from "@/interfaces";
 import { useNavigate } from "react-router-dom";
+import { set } from "zod";
 const SurveyCreationHeader = () => {
   const surveyStore = useSurveyStore();
   const { user } = useUserStore();
   const { questionArr, resetQuestionArr } = useQuestionArrStore();
-  const [usersArr, setUsersArr] = useState<User[]>([]);
+  const [filteredUsersArr, setFilteredUsersArr] = useState<User[]>([]);
   const [allUsersArr, setAllUsersArr] = useState<User[]>([]);
+  const [invitedUsersArr, setInvitedUsersArr] = useState<User[]>([]);
+  const [searchInp, setSearchInp] = useState<string>("");
   useEffect(() => {
     //get users from db with user.department value
 
@@ -33,21 +36,37 @@ const SurveyCreationHeader = () => {
         `http://localhost:5000/users/${user?.department}`,
       );
       console.log("res.data=>", res.data);
-      setUsersArr(res.data);
-      setAllUsersArr(res.data);
+      {
+      }
+      setAllUsersArr(
+        res.data.filter((usr: User) => {
+          return usr.id !== user?.id;
+        }),
+      );
+      setFilteredUsersArr(
+        res.data.filter((usr: User) => {
+          return usr.id !== user?.id;
+        }),
+      );
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    searchUsersArr(searchInp);
+  }, [allUsersArr]);
+
   const navigate = useNavigate();
+
   const searchUsersArr = (searchInp: string) => {
     const res = allUsersArr.filter((user) => {
       return user.name.toLowerCase().includes(searchInp);
     });
-    setUsersArr(res);
+    setFilteredUsersArr(res);
     console.log("res=>", res);
   };
 
-  const handlePublish = async () => {
+  const CreateSurvey = async () => {
     const dataSent = {
       id: surveyStore.id,
       owner_id: user?.id,
@@ -94,6 +113,48 @@ const SurveyCreationHeader = () => {
       }
     }
   };
+  const CreateInvitations = async () => {
+    try {
+      axios.post("http://localhost:5000/invitation", {
+        invitedUserArr: invitedUsersArr,
+        survey_id: surveyStore.id,
+      });
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
+  const Publish = async () => {
+    CreateSurvey();
+    //be sure that survey is created
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    CreateInvitations();
+
+    surveyStore.resetsurveyStore();
+    resetQuestionArr();
+    setInvitedUsersArr([]);
+    console.log("calisti");
+    navigate("/home");
+  };
+
+  const AddUser = (usr: User) => {
+    setInvitedUsersArr((prev: User[]) => [...prev, usr]);
+    console.log("allUsersArr=>", allUsersArr);
+    const filteredUsers = allUsersArr.filter((user) => {
+      console.log("usr.id=>", usr.id);
+      return user.id !== usr.id;
+    });
+    console.log("filteredUsers=>", filteredUsers);
+    setAllUsersArr(filteredUsers);
+  };
+
+  const RemoveUser = (usr: User) => {
+    const filteredUsers = invitedUsersArr.filter((user) => {
+      return usr.id !== user.id;
+    });
+    setInvitedUsersArr(filteredUsers);
+    setAllUsersArr((prev: User[]) => [...prev, usr]);
+  };
+  console.log("invitedUsersArr=>", invitedUsersArr);
 
   return (
     <div className=" flex h-full items-center justify-between border-b bg-white px-8 dark:bg-slate-950">
@@ -124,24 +185,29 @@ const SurveyCreationHeader = () => {
                       className="rounded-b-none border-b-slate-900/70 "
                       placeholder="Davet etmek istediğin kişiyi bul..."
                       onChange={(e) => {
+                        setSearchInp(e.target.value);
                         searchUsersArr(e.target.value);
                       }}
                     />
                     <ScrollArea className=" h-40 rounded-lg rounded-t-none border-b border-l border-r">
-                      {usersArr.map((user) => (
+                      {filteredUsersArr.map((user) => (
                         <div
                           key={user.id}
                           className="mt-3 flex items-center justify-between p-1 px-5  hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50"
                         >
-                          <div className="flex h-8 w-8 justify-center  rounded-full bg-gray-300  text-lg font-bold  text-black">
+                          <div className="flex h-8 w-8 justify-center   rounded-full  bg-gray-300 font-bold  text-black">
                             <p className="self-center  text-center">
-                              {user.name[0]}
+                              {user.name[0].toLocaleUpperCase()}
+                              {user.surname[0].toLocaleUpperCase()}
                             </p>
                           </div>
                           <p className="w-[50%] truncate  ">
                             {user.name} {user.surname}
                           </p>
-                          <button className="rounded-lg bg-blue-500 px-1 text-white">
+                          <button
+                            className="rounded-lg bg-blue-500 px-1 text-white"
+                            onClick={() => AddUser(user)}
+                          >
                             Davet
                           </button>
                         </div>
@@ -150,18 +216,28 @@ const SurveyCreationHeader = () => {
                   </div>
                   <h3 className="pt-5">Davet Ettiklerin</h3>
                   <ScrollArea className=" h-40 rounded-lg border">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quos repellat cupiditate, esse assumenda reprehenderit vel
-                    ipsum. Est, distinctio nulla iusto, nisi delectus inventore,
-                    incidunt totam deserunt voluptatibus rem cum temporibus.
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quod, asperiores placeat dolorem quo dicta ea delectus velit
-                    molestias soluta mollitia commodi quibusdam assumenda
-                    voluptatibus sint, quia, optio laborum ab quaerat. Lorem
-                    ipsum dolor sit amet consectetur adipisicing elit. Est
-                    tempora perspiciatis asperiores sed. Veritatis mollitia
-                    ducimus ipsum dolore esse, veniam rem distinctio aspernatur
-                    commodi fuga similique magni iste tempore beatae!
+                    {invitedUsersArr.map((user: User) => (
+                      <div
+                        key={user.id}
+                        className="mt-3 flex items-center justify-between p-1 px-5  hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+                      >
+                        <div className="flex h-8 w-8 justify-center   rounded-full  bg-gray-300 font-bold  text-black">
+                          <p className="self-center  text-center">
+                            {user.name[0].toLocaleUpperCase()}
+                            {user.surname[0].toLocaleUpperCase()}
+                          </p>
+                        </div>
+                        <p className="w-[50%] truncate  ">
+                          {user.name} {user.surname}
+                        </p>
+                        <button
+                          className="rounded-full  bg-red-500 "
+                          onClick={() => RemoveUser(user)}
+                        >
+                          <X className="h-6 w-6" />
+                        </button>
+                      </div>
+                    ))}
                   </ScrollArea>
                 </div>
               </SheetHeader>
@@ -172,7 +248,7 @@ const SurveyCreationHeader = () => {
         <Button
           className="bg-blue-500 text-white"
           onClick={() => {
-            handlePublish();
+            Publish();
           }}
         >
           Yayınla

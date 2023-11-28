@@ -55,3 +55,43 @@ export const insertSurveySchema = z.object({
     })
   ),
 });
+export const invitationSchema = z.object({
+  invitedUserArr: z.array(
+    z.object({
+      id: z.string().min(1),
+      name: z
+        .string()
+        .min(2, "Name must contain at least 2 characters.")
+        .max(255),
+      surname: z
+        .string()
+        .min(2, "Surname must contain at least 2 characters.")
+        .max(255),
+      email: z.string().email("Invalid email address."),
+      password: z
+        .string()
+        .min(6, "Password must contain at least 6 characters.")
+        .max(255),
+      department: z.enum([
+        "Frontend",
+        "Backend",
+        "Database",
+        "Fullstack",
+        "DevOps",
+        "Designer",
+        "Educational",
+        "Other",
+        "Finance",
+        "Law",
+        "HR",
+        "Sales",
+        "CustomerService",
+        "Production",
+        "Logistics",
+        "Arge",
+        "Other",
+      ]),
+    })
+  ),
+  survey_id: z.string().min(1),
+});

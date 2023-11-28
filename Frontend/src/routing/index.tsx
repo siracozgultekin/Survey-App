@@ -9,6 +9,7 @@ import Inbox from "@/pages/Inbox";
 import Report from "@/pages/Report";
 import Survey from "@/redux/features/survey_creation/survey";
 import Surveys from "@/pages/Surveys";
+import SurveyAnswer from "@/pages/SurveyAnswer";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
         element: <Inbox />,
       },
       { path: "surveys", element: <Surveys /> },
+      {
+        path: "survey-answer/:surveyId",
+        element: <SurveyAnswer />,
+      },
     ],
   },
   { path: "/login", element: <Login /> },

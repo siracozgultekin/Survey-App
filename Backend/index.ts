@@ -4,15 +4,22 @@ import cors from "cors";
 import dbpool from "./db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { registerSchema, insertSurveySchema } from "./validators";
+import {
+  registerSchema,
+  insertSurveySchema,
+  invitationSchema,
+} from "./validators";
 import { ZodError } from "zod";
 import authenticateToken from "./middlewares/auth";
 import cookieParser from "cookie-parser";
-import { Survey, Question } from "./types";
+import { Survey, Question, Invitation } from "./types";
 const app: Express = express();
 
 dotenv.config();
-
+export interface SurveyWithInvitation extends Survey {
+  invitation_id: string;
+  state: boolean;
+}
 //middleware
 app.use(
   cors({
@@ -66,6 +73,43 @@ app.post("/register", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Registration failed" });
   }
 });
+
+app.post("/invitation", async (req: Request, res: Response) => {
+  try {
+    const { invitedUserArr, survey_id } = invitationSchema.parse(req.body);
+    console.log("invitedUserArr=>", invitedUserArr);
+    console.log("survey_id=>", survey_id);
+    invitedUserArr.forEach(async (user) => {
+      await dbpool.query(
+        "INSERT INTO public.invitations (survey_id, user_id, state) VALUES($1, $2, $3) RETURNING id",
+        [survey_id, user.id, false]
+      );
+    });
+    res.status(200).json({ message: "Invitation sent" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Ups.. Something went wrong! (code:500)" });
+  }
+});
+
+app.get(
+  "/invitations",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const { id } = req.body.user;
+    try {
+      const invitations = await dbpool.query(
+        "SELECT * FROM invitations WHERE user_id = $1",
+        [id]
+      );
+      res.json(invitations.rows);
+    } catch (error) {
+      console.log("get user failed:", error);
+      res.status(500).json({ error: "Get user failed" });
+    }
+  }
+);
+
 //insert survey object  into database
 app.post("/survey", async (req: Request, res: Response) => {
   console.log(req.body.dataSent);
@@ -158,23 +202,79 @@ app.post("/login", async (req: Request, res: Response) => {
 //     res.status(500).json({ error: "Get user failed" });
 //   }
 // });
+app.post("/survey", async (req, res) => {
+  const surveyIDArr = req.body;
+
+  try {
+    const surveyPromises = surveyIDArr.map(async (surveyID: string) => {
+      const survey = await dbpool.query("SELECT * FROM surveys WHERE id= $1", [
+        surveyID,
+      ]);
+      return survey.rows[0]; // Sadece ilk satırı döndürmek, varsa
+    });
+
+    const surveyResults = await Promise.all(surveyPromises);
+    res.json(surveyResults);
+  } catch (error) {
+    console.log("get survey failed:", error);
+    res.status(500).json({ error: "Get survey failed" });
+  }
+});
+app.post("/surveysbyinvitation/", async (req, res) => {
+  try {
+    const invitationArr: Invitation[] = req.body.invitations;
+
+    const surveyExtendedArr = await Promise.all(
+      invitationArr.map(async (invitation) => {
+        const survey = await dbpool.query(
+          "SELECT * FROM surveys WHERE id = $1",
+          [invitation.survey_id]
+        );
+
+        return {
+          ...survey.rows[0],
+          invitation_id: invitation.id,
+          state: invitation.state,
+        };
+      })
+    );
+
+    res.json(surveyExtendedArr);
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({ error: "Failed to get survey by invitation" });
+  }
+});
 
 app.get("/surveys/:id", async (req: Request, res: Response) => {
   const surveyid = req.params.id;
-  console.log(`surveyid: ${surveyid}`);
+
   try {
     const survey = await dbpool.query("SELECT * FROM surveys WHERE id= $1", [
       surveyid,
     ]);
-    console.log("e burası başarılı oldu");
-    console.log("survey.rows=>", survey.rows);
-    res.json(survey.rows);
+
+    res.json(survey.rows[0]);
+  } catch (error) {
+    console.log("get survey failed:", error);
+    res.status(500).json({ error: "Get user failed" });
+  }
+});
+app.get("/questions/:id", async (req: Request, res: Response) => {
+  const surveyid = req.params.id;
+  console.log(`surveyidquestion: ${surveyid}`);
+  try {
+    const questionArr = await dbpool.query(
+      "SELECT * FROM questions WHERE survey_id= $1",
+      [surveyid]
+    );
+
+    res.json(questionArr.rows);
   } catch (error) {
     console.log("get user failed:", error);
     res.status(500).json({ error: "Get user failed" });
   }
 });
-
 app.get("/users/:department", async (req: Request, res: Response) => {
   const department = req.params.department;
   try {

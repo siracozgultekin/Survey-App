@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +40,7 @@ const SurveyCreationBody = () => {
     setQuestion,
     insertQuestion,
     questionArr,
+    resetQuestionArr,
   } = useQuestionArrStore();
   const createQuestion = () => {
     insertQuestion({
@@ -57,6 +58,9 @@ const SurveyCreationBody = () => {
     setChoices([""]);
     setEditorState("");
   };
+  // useEffect(() => {
+  //   resetQuestionArr();
+  // }, []);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-start ">

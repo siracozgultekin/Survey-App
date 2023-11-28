@@ -87,6 +87,32 @@ app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).json({ message: "Registration failed" });
     }
 }));
+app.post("/invitation", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { invitedUserArr, survey_id } = validators_1.invitationSchema.parse(req.body);
+        console.log("invitedUserArr=>", invitedUserArr);
+        console.log("survey_id=>", survey_id);
+        invitedUserArr.forEach((user) => __awaiter(void 0, void 0, void 0, function* () {
+            yield db_1.default.query("INSERT INTO public.invitations (survey_id, user_id, state) VALUES($1, $2, $3) RETURNING id", [survey_id, user.id, false]);
+        }));
+        res.status(200).json({ message: "Invitation sent" });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Ups.. Something went wrong! (code:500)" });
+    }
+}));
+app.get("/invitations", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body.user;
+    try {
+        const invitations = yield db_1.default.query("SELECT * FROM invitations WHERE user_id = $1", [id]);
+        res.json(invitations.rows);
+    }
+    catch (error) {
+        console.log("get user failed:", error);
+        res.status(500).json({ error: "Get user failed" });
+    }
+}));
 //insert survey object  into database
 app.post("/survey", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body.dataSent);
@@ -154,16 +180,56 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 //     res.status(500).json({ error: "Get user failed" });
 //   }
 // });
+app.post("/survey", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const surveyIDArr = req.body;
+    try {
+        const surveyPromises = surveyIDArr.map((surveyID) => __awaiter(void 0, void 0, void 0, function* () {
+            const survey = yield db_1.default.query("SELECT * FROM surveys WHERE id= $1", [
+                surveyID,
+            ]);
+            return survey.rows[0]; // Sadece ilk satırı döndürmek, varsa
+        }));
+        const surveyResults = yield Promise.all(surveyPromises);
+        res.json(surveyResults);
+    }
+    catch (error) {
+        console.log("get survey failed:", error);
+        res.status(500).json({ error: "Get survey failed" });
+    }
+}));
+app.post("/surveysbyinvitation/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const invitationArr = req.body.invitations;
+        const surveyExtendedArr = yield Promise.all(invitationArr.map((invitation) => __awaiter(void 0, void 0, void 0, function* () {
+            const survey = yield db_1.default.query("SELECT * FROM surveys WHERE id = $1", [invitation.survey_id]);
+            return Object.assign(Object.assign({}, survey.rows[0]), { invitation_id: invitation.id, state: invitation.state });
+        })));
+        res.json(surveyExtendedArr);
+    }
+    catch (error) {
+        console.log("Error:", error);
+        res.status(500).json({ error: "Failed to get survey by invitation" });
+    }
+}));
 app.get("/surveys/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const surveyid = req.params.id;
-    console.log(`surveyid: ${surveyid}`);
     try {
         const survey = yield db_1.default.query("SELECT * FROM surveys WHERE id= $1", [
             surveyid,
         ]);
-        console.log("e burası başarılı oldu");
-        console.log("survey.rows=>", survey.rows);
-        res.json(survey.rows);
+        res.json(survey.rows[0]);
+    }
+    catch (error) {
+        console.log("get survey failed:", error);
+        res.status(500).json({ error: "Get user failed" });
+    }
+}));
+app.get("/questions/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const surveyid = req.params.id;
+    console.log(`surveyidquestion: ${surveyid}`);
+    try {
+        const questionArr = yield db_1.default.query("SELECT * FROM questions WHERE survey_id= $1", [surveyid]);
+        res.json(questionArr.rows);
     }
     catch (error) {
         console.log("get user failed:", error);

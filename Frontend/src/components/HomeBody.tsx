@@ -141,7 +141,11 @@ const HomeBody = () => {
                   </TableRow>
                 ))
               ) : (
-                <TableRow>Anketiniz Bulunmamaktadır...</TableRow>
+                <TableRow>
+                  <TableCell colSpan={4}>
+                    Anketiniz Bulunmamaktadır...
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>

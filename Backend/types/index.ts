@@ -8,6 +8,12 @@ export interface Survey {
   participants: string[];
 }
 
+export interface Invitation {
+  id: string;
+  user_id: string;
+  survey_id: string;
+  state: boolean;
+}
 export interface Question {
   id: string;
   survey_id: string;

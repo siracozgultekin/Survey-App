@@ -4,7 +4,6 @@ import {
   Home,
   Inbox,
   LogOut,
-  MoreVertical,
   Plus,
   User,
 } from "lucide-react";

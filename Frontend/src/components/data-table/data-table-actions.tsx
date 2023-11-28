@@ -16,11 +16,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { mySurveySchema, participatedSurveySchema } from "./data/schema";
+import {
+  invitationSchema,
+  mySurveySchema,
+  participatedSurveySchema,
+  surveyWithInvitationSchema,
+} from "./data/schema";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
-  tableType: "mySurvey" | "participatedSurvey";
+  tableType: "mySurvey" | "participatedSurvey" | "invitation";
 }
 
 export function DataTableRowActions<TData>({
@@ -30,7 +35,9 @@ export function DataTableRowActions<TData>({
   const survey =
     tableType === "mySurvey"
       ? mySurveySchema.parse(row.original)
-      : participatedSurveySchema.parse(row.original);
+      : tableType === "participatedSurvey"
+      ? participatedSurveySchema.parse(row.original)
+      : surveyWithInvitationSchema.parse(row.original);
 
   return (
     <DropdownMenu>

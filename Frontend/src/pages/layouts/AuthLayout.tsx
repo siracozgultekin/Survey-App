@@ -2,13 +2,14 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import { useEffect } from "react";
 import { useUserStore } from "@/store/use-user-store";
+import Cookies from "js-cookie";
 
 function AuthLayout() {
   const { user } = useUserStore();
   const navigate = useNavigate();
-
+  const token = Cookies.get("token");
   useEffect(() => {
-    if (!user) {
+    if (!token) {
       navigate("/login", { replace: true });
     }
   }, []);
