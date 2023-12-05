@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
       },
       { path: "surveys", element: <Surveys /> },
       {
-        path: "survey-answer/:surveyId",
+        path: "survey-answer/:surveyId/:invitationId",
         element: <SurveyAnswer />,
       },
     ],

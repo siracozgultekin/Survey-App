@@ -16,7 +16,7 @@ function AuthLayout() {
 
   return (
     <>
-      {user && (
+      {token && user && (
         <div className=" z flex-1  grid-cols-[225px_minmax(0,1fr)] items-start  md:grid md:gap-6 ">
           <aside className="fixed top-0 z-30 hidden h-[calc(100vh)]  shrink-0 md:sticky md:block">
             <Sidebar />

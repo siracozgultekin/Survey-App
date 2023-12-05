@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
       <DataTableToolbar table={table} />
       <DataTablePagination table={table} />
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-gray-100 dark:bg-slate-900">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {

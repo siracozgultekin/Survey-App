@@ -1,4 +1,13 @@
-import { Eye, FileText, Ghost, Key, Mail, UserPlus2, X } from "lucide-react";
+import {
+  Eraser,
+  Eye,
+  FileText,
+  Ghost,
+  Key,
+  Mail,
+  UserPlus2,
+  X,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "./ui/use-toast";
 import axios, { AxiosError } from "axios";
@@ -20,7 +29,11 @@ import { Avatar } from "@radix-ui/react-avatar";
 import type { User } from "@/interfaces";
 import { useNavigate } from "react-router-dom";
 import { set } from "zod";
-const SurveyCreationHeader = () => {
+
+type Props = {
+  type: string;
+};
+const SurveyCreationHeader = ({ type }: Props) => {
   const surveyStore = useSurveyStore();
   const { user } = useUserStore();
   const { questionArr, resetQuestionArr } = useQuestionArrStore();
@@ -28,6 +41,8 @@ const SurveyCreationHeader = () => {
   const [allUsersArr, setAllUsersArr] = useState<User[]>([]);
   const [invitedUsersArr, setInvitedUsersArr] = useState<User[]>([]);
   const [searchInp, setSearchInp] = useState<string>("");
+  const [leftHeader, setLeftHeader] = useState<string>("");
+
   useEffect(() => {
     //get users from db with user.department value
 
@@ -50,11 +65,29 @@ const SurveyCreationHeader = () => {
       );
     };
     fetchData();
+    console.log("tpye:", type);
   }, []);
 
   useEffect(() => {
     searchUsersArr(searchInp);
   }, [allUsersArr]);
+
+  useEffect(() => {
+    switch (type) {
+      case "0":
+        setLeftHeader("Boş Şablon");
+        break;
+      case "1":
+        setLeftHeader("Çalışan Memnuniyeti Anketi");
+        break;
+      case "2":
+        setLeftHeader("Etkinlik Değerlendirme Anketi");
+        break;
+      default:
+        setLeftHeader("Erzak Belirleme Anketi");
+        break;
+    }
+  }, []);
 
   const navigate = useNavigate();
 
@@ -159,10 +192,13 @@ const SurveyCreationHeader = () => {
   return (
     <div className=" flex h-full items-center justify-between border-b bg-white px-8 dark:bg-slate-950">
       <div className="flex items-center">
-        {/* <FileText className="h-10 w-10 rounded-lg text-blue-500" /> */}
-
         {/* <h3 className="w-[400px] font-semibold">{surveyStore.title}</h3> */}
-        <h3 className="w-[400px] font-semibold">*Şablon Tipi*</h3>
+        <h3 className=" pr-5 font-semibold"> {leftHeader} </h3>
+        {
+          <button title="Tüm soruları sil" onClick={resetQuestionArr}>
+            <Eraser />
+          </button>
+        }
       </div>
       <div className="flex items-center gap-5">
         <div className=" px-4 ">

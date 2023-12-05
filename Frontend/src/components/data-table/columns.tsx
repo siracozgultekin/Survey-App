@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {
-  DataTableInvitation,
   DataTableParticipatedSurvey,
   DataTableSurvey,
   DataTableSurveyWithInvitation,
@@ -10,9 +9,10 @@ import { DataTableRowActions } from "./data-table-actions";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { formatISOToCustomString } from "@/lib/stringToDate";
 import { statuses } from "./data/data";
-import { Check, Hourglass } from "lucide-react";
-import { link } from "fs";
-import { Link, useNavigate } from "react-router-dom";
+import { Check, Hourglass, XCircle } from "lucide-react";
+
+import { Button } from "../ui/button";
+import { Link } from "react-router-dom";
 
 //mysurvey ve participated survey için ayrı columnlar oluşturman lazım.
 export const mySurveyColumns: ColumnDef<DataTableSurvey>[] = [
@@ -278,19 +278,17 @@ export const SurveyWithInvitationColumn: ColumnDef<DataTableSurveyWithInvitation
       enableSorting: false,
       enableHiding: false,
     },
+
     {
-      accessorKey: "deadline",
+      accessorKey: "nameSurname",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Bitiş Tarihi" />
+        <DataTableColumnHeader column={column} title="Oluşturan" />
       ),
       cell: ({ row }) => {
-        let deadline: string = row.getValue("deadline");
-        //reverse the deadline
-
         return (
           <div className="flex space-x-2">
             <span className="max-w-[500px] truncate font-medium">
-              {deadline.slice(0, 10)}
+              {row.getValue("nameSurname")}
             </span>
           </div>
         );
@@ -299,17 +297,71 @@ export const SurveyWithInvitationColumn: ColumnDef<DataTableSurveyWithInvitation
       enableHiding: false,
     },
     {
+      accessorKey: "creation_date",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Oluşturulma Tarihi" />
+      ),
+      cell: ({ row }) => {
+        let deadline: Date = new Date(row.getValue("creation_date"));
+        // Tarih formatını gün/ay/yıl olarak düzenleme
+        let formattedDeadline = `${deadline.getUTCDate()}/${
+          deadline.getUTCMonth() + 1
+        }/${deadline.getUTCFullYear()}`;
+
+        return (
+          <div className="flex space-x-2">
+            <span className="max-w-[500px] truncate font-medium">
+              {formattedDeadline}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "deadline",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Bitiş Tarihi" />
+      ),
+      cell: ({ row }) => {
+        let deadline: Date = new Date(row.getValue("deadline"));
+        // Tarih formatını gün/ay/yıl olarak düzenleme
+        let formattedDeadline = `${deadline.getUTCDate()}/${
+          deadline.getUTCMonth() + 1
+        }/${deadline.getUTCFullYear()}`;
+
+        return (
+          <div className="flex space-x-2">
+            <span className="max-w-[500px] truncate font-medium">
+              {formattedDeadline}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "state",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Durum" />
       ),
       cell: ({ row }) => {
         if (!row.getValue("state")) {
-          return (
-            <div className="flex w-[100px] items-center justify-center gap-2 rounded-lg bg-gray-200 p-1 text-center text-yellow-400 dark:bg-slate-800">
-              Bekliyor <Hourglass className="h-4 w-4" />
-            </div>
-          );
+          let deadline: string = row.getValue("deadline");
+          let deadlineDate = new Date(deadline); // Dizeyi Date nesnesine dönüştür
+
+          // Anketin bitiş tarihini geçip geçmediğini kontrol et
+          if (deadlineDate < new Date()) {
+            return (
+              <div className="flex w-[100px] items-center justify-center gap-2 rounded-lg bg-gray-200  p-1 text-center text-red-400 dark:bg-slate-800">
+                Geçti <XCircle className="h-4 w-4" />
+              </div>
+            );
+          } else {
+            return (
+              <div className="flex w-[100px] items-center justify-center gap-2 rounded-lg bg-gray-200 p-1 text-center text-yellow-400 dark:bg-slate-800">
+                Bekliyor <Hourglass className="h-4 w-4" />
+              </div>
+            );
+          }
         } else {
           return (
             <div className="flex w-[100px] items-center justify-center gap-2 rounded-lg bg-gray-200 p-1 text-center text-green-400 dark:bg-slate-800">
@@ -318,6 +370,8 @@ export const SurveyWithInvitationColumn: ColumnDef<DataTableSurveyWithInvitation
           );
         }
       },
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "id",
@@ -326,19 +380,30 @@ export const SurveyWithInvitationColumn: ColumnDef<DataTableSurveyWithInvitation
       ),
       cell: ({ row }) => {
         //reverse the deadline
+        let deadline: string = row.getValue("deadline");
+        let deadlineDate = new Date(deadline);
 
         return (
-          <div className="flex space-x-2">
+          <Button
+            className="m-0 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-200 p-0 text-center text-green-500 dark:bg-slate-800"
+            disabled={deadlineDate < new Date() || row.getValue("state")}
+          >
             <Link
-              to={"/survey-answer/" + row.getValue("id")}
-              className="max-w-[500px] truncate font-medium"
+              to={
+                "/survey-answer/" +
+                row.getValue("id") +
+                "/" +
+                row.original.invitation_id
+              }
+              className="flex h-full w-[full] max-w-[500px] truncate   p-2 font-medium"
+              //linki disable yap.
             >
               KATIL
               {
                 // Anketi çözme sayfasına yönlendirecek (anketin id üzerinden).
               }
             </Link>
-          </div>
+          </Button>
         );
       },
       enableSorting: false,

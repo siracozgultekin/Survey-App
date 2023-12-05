@@ -197,12 +197,61 @@ app.post("/survey", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(500).json({ error: "Get survey failed" });
     }
 }));
+//Create answer objects in database
+app.post("/answers", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const answersArr = req.body;
+        answersArr.forEach((answer) => __awaiter(void 0, void 0, void 0, function* () {
+            yield db_1.default.query("INSERT INTO public.answers (id, question_id, survey_id, user_id, answer) VALUES($1, $2, $3, $4, $5)", [
+                answer.id,
+                answer.question_id,
+                answer.survey_id,
+                answer.user_id,
+                answer.answer,
+            ]);
+        }));
+        //.then(async() => {
+        //   try {
+        //     const { invitation_id } = req.body;
+        //     await dbpool.query("UPDATE invitations SET state = true WHERE id = $1", [
+        //       invitation_id,
+        //     ]);
+        //     res.json({ message: "Invitation state updated" });
+        //   } catch (error) {
+        //     console.log("update invitation state failed:", error);
+        //     res.status(500).json({ error: "Update invitation state failed" });
+        //   }});
+        res.json({ message: "Answers inserted into their tables" });
+    }
+    catch (error) {
+        console.log("insert answers failed:", error);
+        res.status(500).json({ error: "Insert answers failed" });
+    }
+}));
+app.post("/updateinvitationstate", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { invitation_id } = req.body;
+        console.log("invitation_id=>", invitation_id);
+        console.log("req.body=>", req.body);
+        yield db_1.default.query("UPDATE invitations SET state = true WHERE id = $1", [
+            invitation_id,
+        ]);
+        res.json({ message: "Invitation state updated" });
+    }
+    catch (error) {
+        console.log("update invitation state failed:", error);
+        res.status(500).json({ error: "Update invitation state failed" });
+    }
+}));
 app.post("/surveysbyinvitation/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const invitationArr = req.body.invitations;
         const surveyExtendedArr = yield Promise.all(invitationArr.map((invitation) => __awaiter(void 0, void 0, void 0, function* () {
             const survey = yield db_1.default.query("SELECT * FROM surveys WHERE id = $1", [invitation.survey_id]);
-            return Object.assign(Object.assign({}, survey.rows[0]), { invitation_id: invitation.id, state: invitation.state });
+            const user = yield db_1.default.query("SELECT * FROM users WHERE id = $1", [
+                survey.rows[0].owner_id,
+            ]);
+            return Object.assign(Object.assign({}, survey.rows[0]), { invitation_id: invitation.id, state: invitation.state, nameSurname: user.rows[0].name + " " + user.rows[0].surname });
         })));
         res.json(surveyExtendedArr);
     }

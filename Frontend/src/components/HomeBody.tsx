@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Header from "../components/Header";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 // import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 // import { useLocation } from "react-router-dom";
 import { Plus } from "lucide-react";
@@ -68,7 +68,7 @@ const HomeBody = () => {
                 </div>
               </div>
             </Link>
-            <Link to={"/survey-creation"}>
+            <Link to={"/survey-creation?template=1"}>
               <div
                 // style={{
                 //   backgroundImage: `url(${multiplech})`,
@@ -81,14 +81,14 @@ const HomeBody = () => {
                 </div>
               </div>
             </Link>
-            <Link to={"/survey-creation"}>
+            <Link to={"/survey-creation?template=2"}>
               <div className="h-[275px] w-[215px] bg-secondary text-center text-secondary  shadow-2xl">
                 <div className="absolute z-[2]  flex h-[275px] w-[215px] flex-col items-center justify-center rounded-sm text-lg font-semibold text-primary hover:bg-primary hover:text-white dark:text-white">
                   Etkinlik Anketi <Plus />
                 </div>
               </div>
             </Link>
-            <Link to={"/survey-creation"}>
+            <Link to={"/survey-creation?template=3"}>
               <div className="h-[275px] w-[215px] bg-secondary text-center text-secondary  shadow-2xl">
                 <div className="absolute z-[2]  flex h-[275px] w-[215px] flex-col items-center justify-center rounded-sm text-lg font-semibold text-primary hover:bg-primary hover:text-white dark:text-white">
                   Erzak Belirleme Anketi <Plus />
@@ -117,6 +117,7 @@ const HomeBody = () => {
                 <TableHead className="bg-gray-200 dark:bg-slate-900">
                   Katılımcı Sayısı
                 </TableHead>
+                <TableHead className="bg-gray-200 dark:bg-slate-900"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className=" ">
@@ -137,6 +138,13 @@ const HomeBody = () => {
                     <TableCell className="">
                       {" "}
                       {survey.participants.length}
+                    </TableCell>
+                    <TableCell>
+                      {/* <Link to={`/survey/${survey.id}`}> */}
+                      <Button variant="ghost" className="">
+                        Görüntüle
+                      </Button>
+                      {/* </Link> */}
                     </TableCell>
                   </TableRow>
                 ))

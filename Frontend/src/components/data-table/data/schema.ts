@@ -36,6 +36,8 @@ export const invitationSchema = z.object({
 
 export const surveyWithInvitationSchema = z.object({
   survey: mySurveySchema,
+  nameSurname: z.string(),
+
   invitation_id: z.string(),
   state: z.boolean(),
 });

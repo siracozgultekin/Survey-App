@@ -20,13 +20,17 @@ import { useSurveyStore } from "@/store/use-survey-store";
 import { useQuestionArrStore } from "@/store/use-questionArr-store";
 import { Button } from "./ui/button";
 
-const SurveyCreationBody = () => {
+type Props = {
+  type: string;
+};
+
+const SurveyCreationBody = ({ type }: Props) => {
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + 3);
   const [dropdownMenuTitle, setdropdownMenuTitle] = useState("Çoktan Seçmeli");
   const [questionType, setQuestionType] = useState<number>(2);
   const [choices, setChoices] = useState([""]);
-
+  const [rate, setRate] = useState<string>("0");
   const { toast } = useToast();
 
   const [editorState, setEditorState] = useState("");
@@ -61,6 +65,95 @@ const SurveyCreationBody = () => {
   // useEffect(() => {
   //   resetQuestionArr();
   // }, []);
+
+  useEffect(() => {
+    switch (type) {
+      case "1":
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Bulunduğunuz departmanı seçiniz",
+          question_type: 2,
+          choices: [
+            "Frontend",
+            "Backend",
+            "Fullstack",
+            "DevOps",
+            "Database",
+            "Diğer",
+          ],
+        });
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Haftada kaç gün remote olarak çalışıyorsunuz?",
+          question_type: 2,
+          choices: ["1", "2", "3", "4", "5"],
+        });
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Kaçıncı kattasınız?",
+          question_type: 2,
+          choices: ["Zemin", "1.kat", "2.kat", "3.kat"],
+        });
+        break;
+      case "2":
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "TemplateQuestion 3",
+          question_type: 3,
+          choices: [],
+        });
+        break;
+      case "3":
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Çarşamba günü hangi tür erzak istersiniz?",
+          question_type: 2,
+          choices: [
+            "Tatlı çeşidi",
+            "Tuzlu çeşidi",
+            "İçecek çeşidi",
+            "Meyve çeşidi",
+            "Kuru yemiş çeşidi",
+          ],
+        });
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Deparmanınızı seçiniz",
+          question_type: 2,
+          choices: [
+            "Frontend",
+            "Backend",
+            "Fullstack",
+            "DevOps",
+            "Database",
+            "Diğer",
+          ],
+        });
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Saat kaçta istersiniz?",
+          question_type: 2,
+          choices: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
+        });
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Geçen haftaki erzak gününden ne kadar memnun musunuz?",
+          question_type: 3, // rating gözükmüyor. yanlis yazmış olabilirsin.
+          choices: [],
+        });
+        break;
+      default:
+        break;
+    }
+  }, []);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-start ">

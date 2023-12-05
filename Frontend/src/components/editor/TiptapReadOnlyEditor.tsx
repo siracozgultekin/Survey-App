@@ -17,7 +17,7 @@ const ReadOnlyTiptapEditor = ({ content }: Props) => {
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm dark:prose-invert min-w-full focus:outline-none text-foreground h-[200px]",
+          "prose prose-sm dark:prose-invert min-w-full focus:outline-none text-foreground",
       },
     },
   });

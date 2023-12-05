@@ -1,13 +1,24 @@
-import { Question, Survey } from "@/interfaces";
+import { Answer, Question, Survey } from "@/interfaces";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
+import ReadOnlyTiptapEditor from "@/components/editor/TiptapReadOnlyEditor";
+import Rating from "@/components/questiontype/Rating";
+import { Button } from "@/components/ui/button";
+import { v4 as uuidv4 } from "uuid";
+import { useUserStore } from "@/store/use-user-store";
+
+const token = localStorage.getItem("token");
 const SurveyAnswer = () => {
   const { surveyId } = useParams<{ surveyId: string }>();
+  const { invitationId } = useParams<{ invitationId: string }>();
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [answers, setAnswers] = useState<Answer[]>([]);
 
+  //get user id from store
+  const user = useUserStore((state) => state.user);
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -34,36 +45,148 @@ const SurveyAnswer = () => {
     };
     fetchSurvey();
   }, []);
+  useEffect(() => {
+    //create answers object and asign it to answers for each question
+    const newAnswers = questions.map((question: Question) => {
+      console.log("answer olusturucu tetiklendi");
+      return {
+        id: uuidv4(),
+        user_id: user!.id,
+        question_id: question.id,
+        survey_id: surveyId!,
+        answer: [],
+      };
+    });
+    setAnswers(newAnswers);
+  }, [questions]);
+  const InsertRatingAnswer = (choice: string, questionID: string) => {
+    const newAnswers = answers.map((answerobj: Answer) => {
+      if (answerobj.question_id === questionID) {
+        if (answerobj.answer.includes(choice)) {
+          return {
+            ...answerobj,
+            answer: ["5"],
+          };
+        }
+        return { ...answerobj, answer: [choice] };
+      }
+      return answerobj;
+    });
+    console.log("AnswerArrayÖncesi=>", answers);
+    setAnswers(newAnswers);
+    console.log("newAnswers", newAnswers);
+    console.log("typeof newAnswers", typeof newAnswers);
+    console.log("AnswerArray=>", answers);
+  };
+  const InsertMultipleChoiceAnswer = (choice: string, questionID: string) => {
+    const newAnswers = answers.map((answerobj: Answer) => {
+      if (answerobj.question_id === questionID) {
+        if (answerobj.answer.includes(choice)) {
+          return {
+            ...answerobj,
+            answer: answerobj.answer.filter((item) => item !== choice),
+          };
+        }
+        return { ...answerobj, answer: [...answerobj.answer, choice] };
+      }
+      return answerobj;
+    });
+    console.log("AnswerArrayÖncesi=>", answers);
+    setAnswers(newAnswers);
+    console.log("newAnswers", newAnswers);
+    console.log("typeof newAnswers", typeof newAnswers);
+    console.log("AnswerArray=>", answers);
+  };
+  const CreateAnswer = async () => {
+    try {
+      const res = await axios.post(`http://localhost:5000/answers`, answers);
+
+      if (res.status == 200) {
+        UpdateInvitationState();
+
+        alert("cevaplarınız başarıyla kaydedildi");
+      }
+    } catch (error) {
+      console.log("createAnswer error=>", error);
+    }
+  };
+  const UpdateInvitationState = async () => {
+    console.log("invitationId=>", invitationId);
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/updateinvitationstate`,
+        {
+          invitation_id: invitationId,
+        },
+      );
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center">
-      <div className=" h-[100px] w-[50%] bg-red-400">
-        <p className="text-2xl font-semibold text-primary">
-          {survey && survey.title}
+      <div className=" flex h-[100px] w-[50%] flex-col gap-2 p-5 font-semibold text-primary">
+        <h3 className="self-center text-3xl ">{survey && survey.title}</h3>
+        <p className="text-center text-black dark:text-white">
+          {survey && survey.description}
         </p>
       </div>
-
       {questions.map((question) => (
         <div
           key={question.id}
-          className=" mb-5 flex min-h-[150px] w-[50%] flex-col justify-between rounded-2xl  bg-gray-100 p-3 dark:bg-slate-900"
+          className=" mb-5 flex min-h-[150px] w-[50%] flex-col  rounded-2xl  bg-gray-100 p-3 dark:bg-slate-900"
         >
-          <p>{question.question} </p>
-          {question.choices.map((choice, index) => (
-            <div key={index} className="flex gap-1">
-              <div className="flex items-center space-x-2">
-                <Checkbox id="terms" />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {choice}
-                </label>
-              </div>{" "}
+          <ReadOnlyTiptapEditor content={question.question} />
+          {question.question_type == 2 ? (
+            question.choices.map((choice, index) => (
+              <div key={index} className="flex p-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="terms"
+                    onClick={() =>
+                      InsertMultipleChoiceAnswer(choice, question.id)
+                    }
+                  />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    {choice}
+                  </label>
+                </div>
+              </div>
+            ))
+          ) : (
+            /// her rating sorusu için özel olmalı. Şu an sadece genel bir rate değişkenini günceleyebiliyor.
+
+            <div className="flex  flex-col items-center gap-2 p-3">
+              <Rating
+                questionID={question.id}
+                questions={questions}
+                setQuestions={setQuestions}
+                InsertRatingAnswer={InsertRatingAnswer}
+              />
+              <p> choices: {question.choices}</p>
+              <p className="text-red-900">
+                *Sadece genel rate güncelleniyor. Her soruya özel olmalı*
+              </p>
+              <button
+                onClick={() => {
+                  console.log("choice::", question.choices);
+                  console.log("AnswerArraySon=>", answers);
+                }}
+              >
+                choice
+              </button>
             </div>
-          ))}
+          )}
         </div>
-      ))}
+      ))}{" "}
+      <Button className="" onClick={CreateAnswer}>
+        <span>Submit</span>
+      </Button>
     </div>
   );
 };

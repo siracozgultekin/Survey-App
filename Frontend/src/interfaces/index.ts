@@ -29,8 +29,8 @@ export interface Question {
 }
 export interface Answer {
   id: string;
-  owner_question_id: string;
-  owner_survey_id: string;
-  owner_user_id: string;
+  question_id: string;
+  survey_id: string;
+  user_id: string;
   answer: string[];
 }

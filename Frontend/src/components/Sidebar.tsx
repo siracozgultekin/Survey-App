@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import SebitLogo from "@/assets/sebitLogo.png";
 
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "@/store/use-user-store";
@@ -39,6 +40,14 @@ const Sidebar = () => {
     /> */}
       <div>
         {/* <hr className="border-1 w-full " /> */}
+        <img src={SebitLogo} alt="SebitPhoto" className="" />
+        <div className="flex w-full justify-center  ">
+          <p className=" text-center font-sans tracking-[31px] text-primary ">
+            ANKE
+          </p>
+          <p className=" text-center font-sans text-primary ">T</p>
+        </div>
+        <hr className="mt-2 w-full" />
         <Link to="/survey-creation">
           <Button className="m-4 flex items-center  " variant="positive">
             <Plus className="mr-1" /> Create New Survey
@@ -121,7 +130,7 @@ const Sidebar = () => {
         <Popover>
           <PopoverTrigger>
             <div className=" flex items-center   text-base hover:rounded-sm hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50">
-              <div className=" flex h-[30px] w-[30px] items-center justify-center rounded-full bg-slate-800 p-2 ">
+              <div className=" flex h-[30px] w-[30px] items-center justify-center rounded-full border border-gray-300 bg-gray-200 p-2 dark:border-slate-700 dark:bg-slate-800 ">
                 {user?.name &&
                   user?.surname &&
                   user?.name[0].toUpperCase() + user?.surname[0].toUpperCase()}
@@ -137,7 +146,7 @@ const Sidebar = () => {
               </h2>
             </div>
           </PopoverTrigger>
-          <PopoverContent className="bg-stone-950 ">
+          <PopoverContent className="bg-gray-200 dark:bg-stone-950 ">
             <ul className="flex flex-col items-start justify-start ">
               <li className="w-full">
                 <Link to="/profile">
