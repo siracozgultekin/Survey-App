@@ -2,24 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import * as dotenv from "dotenv";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { decode } from "punycode";
+import { User } from "../types";
 
-// Extend the JwtPayload type with the user property
-declare module "jsonwebtoken" {
-  interface ExtendedJwtPayload extends JwtPayload {
-    user?: User;
-  }
+interface ExtendedJwtPayload extends JwtPayload {
+  user?: User;
 }
-
-export type User = {
-  id: number;
-  is_admin: false;
-  name: string;
-  surname: string;
-  email: string;
-  password: string;
-  registration_date: Date;
-  participated_surveys: string[];
-};
 
 dotenv.config();
 const secretKey = process.env.JWT_SECRET as string;
@@ -32,7 +19,7 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
       return res.sendStatus(401);
     }
 
-    const decoded = jwt.verify(token, secretKey) as jwt.ExtendedJwtPayload;
+    const decoded = jwt.verify(token, secretKey) as ExtendedJwtPayload;
 
     req.user = decoded.user;
 

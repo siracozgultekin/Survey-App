@@ -12,7 +12,7 @@ import {
 import { ZodError } from "zod";
 import authenticateToken from "./middlewares/auth";
 import cookieParser from "cookie-parser";
-import { Survey, Question, Invitation, Answer } from "./types";
+import { Survey, Question, Invitation, Answer, User } from "./types";
 const app: Express = express();
 
 dotenv.config();
@@ -226,29 +226,32 @@ app.post(
   authenticateToken,
   async (req: Request, res: Response) => {
     try {
-      console.log(req);
+      const jwtUser = req.user as User;
+
+      if (!jwtUser) return res.status(401).json({ error: "User not found" });
+
       const { newPassword, oldPassword } = req.body;
 
-      // const user = await dbpool.query("SELECT * FROM users WHERE id = $1", [
-      //   userJWT?.id,
-      // ]);
+      const user = await dbpool.query("SELECT * FROM users WHERE id = $1", [
+        jwtUser.id,
+      ]);
 
-      // const userPass = user.rows[0].password;
+      const userPass = user.rows[0].password;
 
-      // const valid = await bcrypt.compare(oldPassword, userPass);
+      const valid = await bcrypt.compare(oldPassword, userPass);
 
-      // if (!valid) {
-      //   return res.status(401).json({ error: "Invalid old password" });
-      // }
+      if (!valid) {
+        return res.status(401).json({ error: "Invalid old password" });
+      }
 
-      // const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-      // await dbpool.query("UPDATE users SET password = $1 WHERE id = $2", [
-      //   hashedPassword,
-      //   userJWT?.id,
-      // ]);
+      await dbpool.query("UPDATE users SET password = $1 WHERE id = $2", [
+        hashedPassword,
+        jwtUser.id,
+      ]);
 
-      // res.json({ message: "Password updated" });
+      res.json({ message: "Password updated" });
     } catch (error) {
       console.log("update password failed:", error);
       res.status(500).json({ error: "Update password failed" });
@@ -379,7 +382,7 @@ app.get(
   "/mySurveys",
   authenticateToken,
   async (req: Request, res: Response) => {
-    const { id } = req.body.user;
+    const { id } = req.user as User;
 
     try {
       const mySurveys = await dbpool.query(
@@ -398,7 +401,7 @@ app.get(
   "/tablemysurvey",
   authenticateToken,
   async (req: Request, res: Response) => {
-    const { id } = req.body.user;
+    const { id } = req.user as User;
 
     try {
       const mySurveys = await dbpool.query(
@@ -432,7 +435,7 @@ app.get(
   "/tableparticipatedsurvey",
   authenticateToken,
   async (req: Request, res: Response) => {
-    const { id } = req.body.user;
+    const { id } = req.user as User;
 
     try {
       const participatedSurveys = await dbpool.query(
@@ -485,8 +488,7 @@ app.get(
   "/currentuser",
   authenticateToken,
   async (req: Request, res: Response) => {
-    const { id } = req.body.user;
-    console.log("usermi=> ", req.body.user.id);
+    const { id } = req.user as User;
 
     try {
       const userQuery = await dbpool.query(
@@ -548,10 +550,9 @@ app.delete("/removeuser", async (req: Request, res: Response) => {
 
 app.get("/profile", authenticateToken, (req: Request, res: Response) => {
   // Kullanıcının profilini döndürün veya işlem yapın
-  const { payload } = req.body;
-  console.log(payload?.user);
+  const user = req.user as User;
 
-  res.json({ user: payload });
+  res.json({ user: user });
 });
 
 app.listen(5000, () => {

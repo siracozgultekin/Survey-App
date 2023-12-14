@@ -1,3 +1,5 @@
+import { Request } from "express-serve-static-core";
+
 export interface Survey {
   id: string;
   owner_id: string;
@@ -14,6 +16,18 @@ export interface Invitation {
   survey_id: string;
   state: boolean;
 }
+
+export type User = {
+  id: string;
+  is_admin: false;
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  registration_date: Date;
+  participated_surveys: string[];
+};
+
 export interface Question {
   id: string;
   survey_id: string;

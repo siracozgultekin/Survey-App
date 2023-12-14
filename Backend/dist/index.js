@@ -72,7 +72,7 @@ app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const { name, surname, email, password, department } = validators_1.registerSchema.parse(req.body);
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         console.log(hashedPassword);
-        const newUser = yield db_1.default.query("INSERT INTO public.users (is_admin, name, surname, password, email, department) VALUES($1, $2, $3, $4, $5, $6) RETURNING id", [false, name, surname, hashedPassword, email, department]);
+        const newUser = yield db_1.default.query("INSERT INTO public.users (is_admin, name, surname, password, email, department, participated_surveys) VALUES($1, $2, $3, $4, $5, $6,$7) RETURNING id", [false, name, surname, hashedPassword, email, department, []]);
         console.log("buraya geliyo");
         const userId = newUser.rows[0].id;
         const token = jsonwebtoken_1.default.sign({ userId }, hashedPassword, {
@@ -195,6 +195,33 @@ app.post("/survey", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         console.log("get survey failed:", error);
         res.status(500).json({ error: "Get survey failed" });
+    }
+}));
+//create an endpoint to update password
+app.post("/updatepassword", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const jwtUser = req.user;
+        if (!jwtUser)
+            return res.status(401).json({ error: "User not found" });
+        const { newPassword, oldPassword } = req.body;
+        const user = yield db_1.default.query("SELECT * FROM users WHERE id = $1", [
+            jwtUser.id,
+        ]);
+        const userPass = user.rows[0].password;
+        const valid = yield bcrypt_1.default.compare(oldPassword, userPass);
+        if (!valid) {
+            return res.status(401).json({ error: "Invalid old password" });
+        }
+        const hashedPassword = yield bcrypt_1.default.hash(newPassword, 10);
+        yield db_1.default.query("UPDATE users SET password = $1 WHERE id = $2", [
+            hashedPassword,
+            jwtUser.id,
+        ]);
+        res.json({ message: "Password updated" });
+    }
+    catch (error) {
+        console.log("update password failed:", error);
+        res.status(500).json({ error: "Update password failed" });
     }
 }));
 //Create answer objects in database
@@ -357,6 +384,21 @@ app.get("/tableparticipatedsurvey", auth_1.default, (req, res) => __awaiter(void
     }
     catch (error) {
         res.status(500).json({ error: error });
+    }
+}));
+app.post("/insertparticipatedsurvey", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { survey_id, user_id } = req.body;
+    try {
+        console.log("req.bodyforparticipatedsurvey=>", survey_id);
+        //insert survey_id(request) into participated_surveys column of users table
+        yield db_1.default.query("UPDATE users SET participated_surveys = array_append(participated_surveys, $1) WHERE id = $2 ", [survey_id, user_id]);
+        res.json({
+            message: "Survey id inserted into participated_surveys column",
+        });
+    }
+    catch (error) {
+        console.log("get user failed:", error);
+        res.status(500).json({ error: "Get user failed" });
     }
 }));
 app.get("/currentuser", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

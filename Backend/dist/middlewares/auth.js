@@ -32,17 +32,16 @@ dotenv.config();
 const secretKey = process.env.JWT_SECRET;
 function authenticateToken(req, res, next) {
     const token = req.header("Authorization");
-    if (!token) {
-        return res.sendStatus(401);
-    }
-    jsonwebtoken_1.default.verify(token, secretKey, (err, decodedtoken) => {
-        if (err) {
-            return res.sendStatus(403);
+    try {
+        if (!token) {
+            return res.sendStatus(401);
         }
-        console.log("decodedtokenoutputu=> ", decodedtoken);
-        req.body = decodedtoken;
-        console.log("requserOUT=>", req.body);
+        const decoded = jsonwebtoken_1.default.verify(token, secretKey);
+        req.user = decoded.user;
         next();
-    });
+    }
+    catch (error) {
+        res.sendStatus(500);
+    }
 }
 exports.default = authenticateToken;
