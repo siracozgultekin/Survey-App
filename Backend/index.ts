@@ -53,8 +53,8 @@ app.post("/register", async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log(hashedPassword);
     const newUser = await dbpool.query(
-      "INSERT INTO public.users (is_admin, name, surname, password, email, department) VALUES($1, $2, $3, $4, $5, $6) RETURNING id",
-      [false, name, surname, hashedPassword, email, department]
+      "INSERT INTO public.users (is_admin, name, surname, password, email, department, participated_surveys) VALUES($1, $2, $3, $4, $5, $6,$7) RETURNING id",
+      [false, name, surname, hashedPassword, email, department, []]
     );
     console.log("buraya geliyo");
 
@@ -220,6 +220,42 @@ app.post("/survey", async (req, res) => {
     res.status(500).json({ error: "Get survey failed" });
   }
 });
+//create an endpoint to update password
+app.post(
+  "/updatepassword",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      console.log(req);
+      const { newPassword, oldPassword } = req.body;
+
+      // const user = await dbpool.query("SELECT * FROM users WHERE id = $1", [
+      //   userJWT?.id,
+      // ]);
+
+      // const userPass = user.rows[0].password;
+
+      // const valid = await bcrypt.compare(oldPassword, userPass);
+
+      // if (!valid) {
+      //   return res.status(401).json({ error: "Invalid old password" });
+      // }
+
+      // const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // await dbpool.query("UPDATE users SET password = $1 WHERE id = $2", [
+      //   hashedPassword,
+      //   userJWT?.id,
+      // ]);
+
+      // res.json({ message: "Password updated" });
+    } catch (error) {
+      console.log("update password failed:", error);
+      res.status(500).json({ error: "Update password failed" });
+    }
+  }
+);
+
 //Create answer objects in database
 app.post("/answers", async (req, res) => {
   try {
@@ -427,6 +463,24 @@ app.get(
     }
   }
 );
+app.post("/insertparticipatedsurvey", async (req, res) => {
+  const { survey_id, user_id } = req.body;
+  try {
+    console.log("req.bodyforparticipatedsurvey=>", survey_id);
+    //insert survey_id(request) into participated_surveys column of users table
+    await dbpool.query(
+      "UPDATE users SET participated_surveys = array_append(participated_surveys, $1) WHERE id = $2 ",
+      [survey_id, user_id]
+    );
+    res.json({
+      message: "Survey id inserted into participated_surveys column",
+    });
+  } catch (error) {
+    console.log("get user failed:", error);
+    res.status(500).json({ error: "Get user failed" });
+  }
+});
+
 app.get(
   "/currentuser",
   authenticateToken,

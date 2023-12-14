@@ -8,17 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { v4 as uuidv4 } from "uuid";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/app/store";
 import MultipleChoice from "./questiontype/MultipleChoice";
 import Rating from "./questiontype/Rating";
 import { Circle, CircleDot, Star, Trash2, X } from "lucide-react";
 import TiptapEditor from "./editor/TiptapEditor";
-import { convert } from "html-to-text";
 import { useToast } from "@/components/ui/use-toast";
 import { useSurveyStore } from "@/store/use-survey-store";
 import { useQuestionArrStore } from "@/store/use-questionArr-store";
-import { Button } from "./ui/button";
 
 type Props = {
   type: string;
@@ -69,6 +65,7 @@ const SurveyCreationBody = ({ type }: Props) => {
   useEffect(() => {
     switch (type) {
       case "1":
+        resetQuestionArr();
         insertQuestion({
           id: uuidv4(),
           survey_id: id,
@@ -99,6 +96,8 @@ const SurveyCreationBody = ({ type }: Props) => {
         });
         break;
       case "2":
+        resetQuestionArr();
+
         insertQuestion({
           id: uuidv4(),
           survey_id: id,
@@ -108,6 +107,8 @@ const SurveyCreationBody = ({ type }: Props) => {
         });
         break;
       case "3":
+        resetQuestionArr();
+
         insertQuestion({
           id: uuidv4(),
           survey_id: id,
@@ -157,6 +158,7 @@ const SurveyCreationBody = ({ type }: Props) => {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-start ">
+      {" "}
       {/* surveyId: {id} */}
       <p className="text-red-600">
         Çöz : Oluşturulan soruyu editleyince texteditor devre dışı kalıyor.

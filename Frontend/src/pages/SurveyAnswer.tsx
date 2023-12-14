@@ -1,4 +1,4 @@
-import { Answer, Question, Survey } from "@/interfaces";
+import { Answer, Question, Survey, User } from "@/interfaces";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -8,6 +8,7 @@ import Rating from "@/components/questiontype/Rating";
 import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
 import { useUserStore } from "@/store/use-user-store";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const token = localStorage.getItem("token");
 const SurveyAnswer = () => {
@@ -18,7 +19,13 @@ const SurveyAnswer = () => {
   const [answers, setAnswers] = useState<Answer[]>([]);
 
   //get user id from store
-  const user = useUserStore((state) => state.user);
+  const { setUser, user } = useUserStore();
+
+  useEffect(() => {
+    console.log("user=>", user);
+    console.log("usertypeof=>", typeof user);
+  }, [user]);
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -103,7 +110,7 @@ const SurveyAnswer = () => {
 
       if (res.status == 200) {
         UpdateInvitationState();
-
+        InsertParticipatedSurvey();
         alert("cevaplarınız başarıyla kaydedildi");
       }
     } catch (error) {
@@ -124,9 +131,36 @@ const SurveyAnswer = () => {
       console.log(error);
     }
   };
+  const InsertParticipatedSurvey = async () => {
+    try {
+      await axios
+        .post(`http://localhost:5000/insertparticipatedsurvey`, {
+          survey_id: surveyId as string,
+          user_id: user!.id,
+        })
+        .then(() => {
+          console.log("thene girdi");
+          //update user store by adding participated survey id
 
+          const newParticipatedSurveys = [
+            ...user!.participated_surveys,
+            surveyId as string,
+          ];
+          const newUser = {
+            ...(user as User),
+            participated_surveys: newParticipatedSurveys,
+          };
+          setUser(newUser as User);
+        });
+      console.log("then sonu");
+    } catch (error) {
+      console.log(error);
+    }
+    console.log("user son hali=>", user);
+  };
   return (
     <div className="flex flex-col items-center">
+      {" "}
       <div className=" flex h-[100px] w-[50%] flex-col gap-2 p-5 font-semibold text-primary">
         <h3 className="self-center text-3xl ">{survey && survey.title}</h3>
         <p className="text-center text-black dark:text-white">
@@ -168,18 +202,15 @@ const SurveyAnswer = () => {
                 setQuestions={setQuestions}
                 InsertRatingAnswer={InsertRatingAnswer}
               />
-              <p> choices: {question.choices}</p>
-              <p className="text-red-900">
-                *Sadece genel rate güncelleniyor. Her soruya özel olmalı*
-              </p>
-              <button
+
+              {/* <button
                 onClick={() => {
                   console.log("choice::", question.choices);
                   console.log("AnswerArraySon=>", answers);
                 }}
               >
                 choice
-              </button>
+              </button> */}
             </div>
           )}
         </div>

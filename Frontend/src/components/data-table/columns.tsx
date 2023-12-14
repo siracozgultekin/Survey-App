@@ -385,7 +385,7 @@ export const SurveyWithInvitationColumn: ColumnDef<DataTableSurveyWithInvitation
 
         return (
           <Button
-            className="m-0 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-200 p-0 text-center text-green-500 dark:bg-slate-800"
+            className="m-0 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-200 p-0 text-center dark:bg-slate-900"
             disabled={deadlineDate < new Date() || row.getValue("state")}
           >
             <Link
@@ -395,7 +395,7 @@ export const SurveyWithInvitationColumn: ColumnDef<DataTableSurveyWithInvitation
                 "/" +
                 row.original.invitation_id
               }
-              className="flex h-full w-[full] max-w-[500px] truncate   p-2 font-medium"
+              className="flex h-full w-[full] max-w-[500px] truncate  p-2 font-medium text-slate-900 hover:text-gray-100 dark:text-gray-100 dark:hover:text-slate-900"
               //linki disable yap.
             >
               KATIL

@@ -7,7 +7,6 @@ import Profile from "@/pages/Profile";
 import SurveyCreation from "@/pages/SurveyCreation";
 import Inbox from "@/pages/Inbox";
 import Report from "@/pages/Report";
-import Survey from "@/redux/features/survey_creation/survey";
 import Surveys from "@/pages/Surveys";
 import SurveyAnswer from "@/pages/SurveyAnswer";
 

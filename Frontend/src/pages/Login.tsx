@@ -1,4 +1,3 @@
-import { ModeToggle } from "@/components/mode-toggle";
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +7,7 @@ import Cookies from "js-cookie";
 import { useUserStore } from "@/store/use-user-store";
 import SebitLogo from "@/assets/sebitLogo.png";
 import LoginBG from "@/assets/loginbgg.png";
+import { User } from "@/interfaces";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -39,7 +39,12 @@ const Login = () => {
         if (!token) return;
         const decoded = jwt_decode(token); //unknown tipinde olduğu için stringfy ile json'a çevirip sonra da parse ile objeye çevirdim.
         const dataObj = JSON.parse(JSON.stringify(decoded));
-        console.log(`dataobject: `, dataObj);
+        console.log(`dataobject: `, dataObj.user);
+        console.log(`typeofdataobject: `, typeof dataObj.user);
+        console.log(
+          `participatedsurvey typeof: `,
+          typeof dataObj.user.participated_surveys,
+        );
         setUser(dataObj.user);
         // dispatch(setCurrentUser(dataObj.user));
         navigate("/home");

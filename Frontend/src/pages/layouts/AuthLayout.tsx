@@ -1,8 +1,9 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, ScrollRestoration, useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import { useEffect } from "react";
 import { useUserStore } from "@/store/use-user-store";
 import Cookies from "js-cookie";
+import ScrollToTop from "@/components/ScrollToTop";
 
 function AuthLayout() {
   const { user } = useUserStore();
@@ -24,6 +25,7 @@ function AuthLayout() {
           <main className="">
             <section className="">
               <Outlet />
+              <ScrollRestoration />
             </section>
           </main>
         </div>

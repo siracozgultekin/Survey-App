@@ -1,7 +1,5 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
-import Header from "../components/Header";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 // import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 // import { useLocation } from "react-router-dom";
 import { Plus } from "lucide-react";
@@ -10,13 +8,10 @@ import { Plus } from "lucide-react";
 // import { object } from "zod";
 // import { useDispatch, useSelector } from "react-redux";
 // import type { RootState } from "../redux/app/store";
-import { useUserStore } from "@/store/use-user-store";
-import multiplech from "@/assets/multiplech.png";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Survey } from "@/interfaces";
 import Cookies from "js-cookie";
-import { ModeToggle } from "@/components/mode-toggle";
 import {
   Table,
   TableBody,
