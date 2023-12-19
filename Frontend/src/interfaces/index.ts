@@ -27,6 +27,13 @@ export interface Question {
   question_type: number;
   choices: string[];
 }
+export interface ExtendedQuestion extends Question {
+  choicesWithCounts: {
+    choice: string;
+    count: number;
+  }[];
+  answers: Answer[];
+}
 export interface Answer {
   id: string;
   question_id: string;

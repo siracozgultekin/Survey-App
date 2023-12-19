@@ -136,9 +136,12 @@ const HomeBody = () => {
                     </TableCell>
                     <TableCell>
                       {/* <Link to={`/survey/${survey.id}`}> */}
-                      <Button variant="ghost" className="">
+                      <Link
+                        to={`/statistic?surveyid=${survey.id}`}
+                        className=""
+                      >
                         Görüntüle
-                      </Button>
+                      </Link>
                       {/* </Link> */}
                     </TableCell>
                   </TableRow>

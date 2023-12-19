@@ -14,23 +14,15 @@ const Rating: React.FC<RatingProps> = ({
   InsertRatingAnswer,
 }) => {
   const handleRatingClick = (newRating: string) => {
-    // const newQuestions = questions.map((question: Question) => {
-    //   if (question.id === questionID) {
-    //     return { ...question, choices: [newRating] };
-    //   }
-    //   return question;
-    // });
-    // setQuestions && setQuestions(newQuestions); // Güvenlik kontrolü: setQuestions varsa çağır
-    // console.log("newQuestions", newQuestions);
-    // console.log("typeof newQuestions", typeof newQuestions);
     InsertRatingAnswer && InsertRatingAnswer(newRating, questionID!);
   };
 
   return (
     <div className="flex items-center">
       <button
-        className="
-        h-10 w-10 rounded-full border-2 border-slate-500 bg-slate-200 text-[80%] hover:bg-red-900 hover:text-white dark:bg-slate-800 dark:hover:bg-red-900"
+        className={`
+        h-10 w-10 rounded-full border-2 border-slate-500 bg-slate-200
+        text-[80%] hover:bg-red-900 hover:text-white  dark:bg-slate-800  dark:hover:bg-red-900`}
         onClick={() => handleRatingClick("1")}
       >
         1

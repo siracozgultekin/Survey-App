@@ -12,10 +12,12 @@ import { Settings } from "lucide-react";
 import Cookies from "js-cookie";
 import { useUserStore } from "@/store/use-user-store";
 import axios, { AxiosError } from "axios";
+import { useToast } from "./ui/use-toast";
 type Props = {};
 
 const ChangePassword = (props: Props) => {
   const user = useUserStore((state) => state.user);
+  const { toast } = useToast();
 
   const PasswordHandler = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +29,11 @@ const ChangePassword = (props: Props) => {
     const newPasswordConfirm = formData.get("newpass2");
 
     if (newPassword !== newPasswordConfirm) {
-      alert("Şifreler Uyuşmuyor");
+      toast({
+        title: "Hata!",
+        description: "Yeni şifreler uyuşmuyor. Tekrar deneyiniz.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -52,6 +58,11 @@ const ChangePassword = (props: Props) => {
       console.log(response);
     } catch (error) {
       if (error instanceof AxiosError) {
+        toast({
+          title: "Hata!",
+          description: error.response?.data.error,
+          variant: "destructive",
+        });
         console.log(error.response?.data);
       }
     }
@@ -85,7 +96,7 @@ const ChangePassword = (props: Props) => {
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          className="w-full justify-start gap-3  text-primary"
+          className="w-full justify-start gap-3  text-lg text-primary"
           variant="ghost"
         >
           Şifreyi Değiştir

@@ -74,6 +74,74 @@ app.post("/register", async (req: Request, res: Response) => {
   }
 });
 
+app.get(
+  "/getallquestions/:survey_id",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const survey_id = req.params.survey_id;
+      const questions = await dbpool
+        .query("SELECT * FROM questions where survey_id = $1", [survey_id])
+        .then(async (result: any) => {
+          const questions = result.rows;
+          const questionsWithAnswers = await Promise.all(
+            questions.map(async (question: Question) => {
+              const answers = await dbpool.query(
+                "SELECT * FROM answers WHERE question_id = $1",
+                [question.id]
+              );
+              console.log("answers.rows=>", answers.rows[0].answer);
+              const choicesWithCounts = question.choices.map((choice) => {
+                let count = 0;
+                answers.rows.map((answerobj: Answer) => {
+                  answerobj.answer.map((givenAnswer) => {
+                    if (givenAnswer === choice) {
+                      count++;
+                    }
+                  });
+                });
+                return { choice: choice, count: count };
+              });
+              return {
+                ...question,
+                choicesWithCounts,
+                answers: answers.rows,
+              };
+            })
+          );
+          console.log(
+            "questionsWithAnswesaars=>",
+            questionsWithAnswers[0].answers[0]
+          );
+          return questionsWithAnswers;
+        });
+      console.log("qyestions=>", questions);
+      res.json(questions);
+    } catch (error) {
+      console.log("get user failed:", error);
+      res.status(500).json({ error: "Get user failed" });
+    }
+  }
+);
+app.get(
+  "/getallanswers/:question_id",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      console.log("buradadada");
+      const question_id = req.params.question_id;
+      const questions = await dbpool.query(
+        "SELECT * FROM answers where question_id = $1",
+        [question_id]
+      );
+      res.json(questions.rows);
+    } catch (error) {
+      console.log("get user failed:", error);
+      res.status(500).json({ error: "Get user failed" });
+    }
+  }
+);
+
 app.post("/invitation", async (req: Request, res: Response) => {
   try {
     const { invitedUserArr, survey_id } = invitationSchema.parse(req.body);
@@ -96,7 +164,7 @@ app.get(
   "/invitations",
   authenticateToken,
   async (req: Request, res: Response) => {
-    const { id } = req.body.user;
+    const { id } = req.user as User;
     try {
       const invitations = await dbpool.query(
         "SELECT * FROM invitations WHERE user_id = $1",
@@ -241,7 +309,7 @@ app.post(
       const valid = await bcrypt.compare(oldPassword, userPass);
 
       if (!valid) {
-        return res.status(401).json({ error: "Invalid old password" });
+        return res.status(401).json({ error: "Geçersiz Eski Şifre" });
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -386,7 +454,7 @@ app.get(
 
     try {
       const mySurveys = await dbpool.query(
-        "SELECT * FROM surveys WHERE owner_id = $1 LIMIT 6",
+        "SELECT * FROM surveys WHERE owner_id = $1 ORDER BY creation_date DESC LIMIT 6",
         [id]
       );
       res.json(mySurveys.rows);
@@ -396,7 +464,24 @@ app.get(
     }
   }
 );
+app.get(
+  "/getparticipatedsurveys",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const { id } = req.user as User;
 
+    try {
+      const mySurveys = await dbpool.query(
+        "SELECT * FROM surveys WHERE owner_id = $1 ",
+        [id]
+      );
+      res.json(mySurveys.rows);
+    } catch (error) {
+      console.log("get user failed:", error);
+      res.status(500).json({ error: "Get user failed" });
+    }
+  }
+);
 app.get(
   "/tablemysurvey",
   authenticateToken,

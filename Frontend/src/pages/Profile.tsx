@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { Survey, User } from "@/interfaces";
 import { Mail } from "lucide-react";
 import ChangePassword from "@/components/ChangePassword";
+import axios from "axios";
 
 export interface extendedSurvey extends Survey {
   owner: {
@@ -21,8 +22,26 @@ const Profile = () => {
   const [participatedSurveys, setParticipatedSurveys] = useState<
     extendedSurvey[] | null
   >(null);
+  const [createdSurveys, setCreatedSurveys] = useState<Survey[] | null>(null);
   useEffect(() => {
     user && console.log(user);
+    const getCreatedSurveys = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:5000/getparticipatedsurveys",
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          },
+        );
+        console.log("res.data=>", res.data);
+        setCreatedSurveys(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getCreatedSurveys();
   }, []);
 
   return (
@@ -31,24 +50,29 @@ const Profile = () => {
         <div className="flex w-full flex-col items-center  rounded-xl bg-gray-100 dark:bg-slate-900">
           <Avatar className=" my-10 flex h-[200px] w-[200px] ">
             <AvatarImage src="" />
-            <AvatarFallback className="bg-gray-200 text-2xl font-semibold dark:bg-slate-800">
-              {user && user.name[0]}
-              {user && user.surname[0]}
+            <AvatarFallback className="bg-gray-200 text-3xl font-semibold dark:bg-slate-800">
+              {user?.name &&
+                user?.surname &&
+                user?.name[0].toUpperCase() + user?.surname[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>{" "}
-          <h3 className="w-full bg-gray-200 text-center text-2xl font-bold dark:bg-slate-800">
+          <h3 className="w-full bg-gray-200 text-center text-3xl font-semibold dark:bg-slate-800">
             {user && user.name} {user && user.surname}
           </h3>
-          <div className=" flex  w-full gap-5">
-            <div className=" flex w-full flex-col gap-5">
-              <h3 className="text-md mx-2 font-semibold text-black dark:text-white ">
-                Departman: {user && user.department}
+          <div className=" my-10  flex w-full gap-5 text-lg ">
+            <div className=" flex w-full flex-col gap-10">
+              <h3 className="text-md mx-2 flex gap-3 text-black dark:text-white">
+                <span className="font-semibold underline">Departman:</span>
+                {user && user.department}
               </h3>
-              <h3 className=" text-md mx-2 flex  font-semibold text-black dark:text-white">
-                Mail: {user && user.email}
+              <h3 className=" text-md mx-2 flex  gap-3 text-black dark:text-white">
+                <span className="font-semibold underline"> E-Posta: </span>
+                {user && user.email}
               </h3>
-              <h3 className="text-md mx-2 font-semibold text-black dark:text-white ">
-                Kaydolma Tarihi:{" "}
+              <h3 className="text-md mx-2 flex gap-3 text-black dark:text-white">
+                <span className="font-semibold underline">
+                  Kaydolma Tarihi:
+                </span>
                 {user &&
                   user.registration_date
                     .split("T")[0]
@@ -58,13 +82,18 @@ const Profile = () => {
               </h3>
               {/* register_date olarak çagırılıyor fakat obje içerisinde registiration_date olarak geçiyor??? */}
 
-              <p className="mx-2 text-black dark:text-white">
-                Katıldığım Anket Sayısı:{" "}
+              <h3 className="mx-2 flex gap-3 text-black dark:text-white">
+                <span className="font-semibold underline">
+                  Katıldığım Anket Sayısı:
+                </span>
                 {user && user.participated_surveys.length}
-              </p>
-              <p className="mx-2 text-black dark:text-white">
-                Oluşturduğum Anket Sayısı: ?
-              </p>
+              </h3>
+              <h3 className="mx-2 flex gap-3 text-black dark:text-white">
+                <span className="font-semibold underline">
+                  Oluşturduğum Anket Sayısı:
+                </span>
+                {createdSurveys && createdSurveys.length}
+              </h3>
             </div>
             <div>
               <ChangePassword />
