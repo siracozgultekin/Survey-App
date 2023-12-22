@@ -1,7 +1,7 @@
 import { Answer, Question, Survey, User } from "@/interfaces";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import ReadOnlyTiptapEditor from "@/components/editor/TiptapReadOnlyEditor";
 import Rating from "@/components/questiontype/Rating";
@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
 import { useUserStore } from "@/store/use-user-store";
 import ScrollToTop from "@/components/ScrollToTop";
+import { toast } from "@/components/ui/use-toast";
+import { Toast } from "@radix-ui/react-toast";
 
 const token = localStorage.getItem("token");
 const SurveyAnswer = () => {
@@ -17,6 +19,7 @@ const SurveyAnswer = () => {
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const navigate = useNavigate();
 
   //get user id from store
   const { setUser, user } = useUserStore();
@@ -111,10 +114,19 @@ const SurveyAnswer = () => {
       if (res.status == 200) {
         UpdateInvitationState();
         InsertParticipatedSurvey();
-        alert("cevaplarınız başarıyla kaydedildi");
+        toast({
+          title: "Cevabınız başarıyla kaydedildi",
+        });
+        navigate("/home");
       }
     } catch (error) {
       console.log("createAnswer error=>", error);
+      toast({
+        title: "Something went wrong",
+        description:
+          "Please check your internet connection and try again later.",
+        variant: "destructive",
+      });
     }
   };
   const UpdateInvitationState = async () => {
@@ -173,7 +185,7 @@ const SurveyAnswer = () => {
           className=" mb-5 flex min-h-[150px] w-[50%] flex-col  rounded-2xl  bg-gray-100 p-3 dark:bg-slate-900"
         >
           <ReadOnlyTiptapEditor content={question.question} />
-          {question.question_type == 2 ? (
+          {question.question_type == "2" ? (
             question.choices.map((choice, index) => (
               <div key={index} className="flex p-2">
                 <div className="flex items-center space-x-2">

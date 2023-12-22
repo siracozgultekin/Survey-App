@@ -24,7 +24,7 @@ const SurveyCreationBody = ({ type }: Props) => {
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + 3);
   const [dropdownMenuTitle, setdropdownMenuTitle] = useState("Çoktan Seçmeli");
-  const [questionType, setQuestionType] = useState<number>(2);
+  const [questionType, setQuestionType] = useState<string>("2");
   const [choices, setChoices] = useState([""]);
   const [rate, setRate] = useState<string>("0");
   const { toast } = useToast();
@@ -52,8 +52,8 @@ const SurveyCreationBody = ({ type }: Props) => {
     });
 
     toast({
-      title: "Question created!",
-      description: "Question created successfully.",
+      title: "Soru oluşturuldu!",
+      description: "Sorunuz başarıyla oluşturuldu.",
     });
     setChoices([""]);
     setEditorState("");
@@ -70,7 +70,7 @@ const SurveyCreationBody = ({ type }: Props) => {
           id: uuidv4(),
           survey_id: id,
           question: "Bulunduğunuz departmanı seçiniz",
-          question_type: 2,
+          question_type: "2",
           choices: [
             "Frontend",
             "Backend",
@@ -84,26 +84,46 @@ const SurveyCreationBody = ({ type }: Props) => {
           id: uuidv4(),
           survey_id: id,
           question: "Haftada kaç gün remote olarak çalışıyorsunuz?",
-          question_type: 2,
+          question_type: "2",
           choices: ["1", "2", "3", "4", "5"],
         });
         insertQuestion({
           id: uuidv4(),
           survey_id: id,
           question: "Kaçıncı kattasınız?",
-          question_type: 2,
+          question_type: "2",
           choices: ["Zemin", "1.kat", "2.kat", "3.kat"],
         });
         break;
       case "2":
         resetQuestionArr();
-
         insertQuestion({
           id: uuidv4(),
           survey_id: id,
-          question: "TemplateQuestion 3",
-          question_type: 3,
-          choices: [],
+          question: "Sizce yapılacak olan etkinliğin teması ne olmalı?",
+          question_type: "2",
+          choices: ["Kültür", "Teknoloji", "Spor", "Eğitim", "Sağlık", "Diğer"],
+        });
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Etkinlik ne zaman yapılmalı?",
+          question_type: "2",
+          choices: ["Hafta içi", "Hafta sonu", "Öğle arası", "Akşam", "Diğer"],
+        });
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Etkinlik nerede yapılmalı?",
+          question_type: "2",
+          choices: ["Ofis", "Dışarı", "Online", "Diğer"],
+        });
+        insertQuestion({
+          id: uuidv4(),
+          survey_id: id,
+          question: "Etkinlik ne kadar sürmeli?",
+          question_type: "2",
+          choices: ["1 saat", "2 saat", "3 saat", "Diğer"],
         });
         break;
       case "3":
@@ -113,7 +133,7 @@ const SurveyCreationBody = ({ type }: Props) => {
           id: uuidv4(),
           survey_id: id,
           question: "Çarşamba günü hangi tür erzak istersiniz?",
-          question_type: 2,
+          question_type: "2",
           choices: [
             "Tatlı çeşidi",
             "Tuzlu çeşidi",
@@ -126,7 +146,7 @@ const SurveyCreationBody = ({ type }: Props) => {
           id: uuidv4(),
           survey_id: id,
           question: "Deparmanınızı seçiniz",
-          question_type: 2,
+          question_type: "2",
           choices: [
             "Frontend",
             "Backend",
@@ -140,14 +160,14 @@ const SurveyCreationBody = ({ type }: Props) => {
           id: uuidv4(),
           survey_id: id,
           question: "Saat kaçta istersiniz?",
-          question_type: 2,
+          question_type: "2",
           choices: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
         });
         insertQuestion({
           id: uuidv4(),
           survey_id: id,
           question: "Geçen haftaki erzak gününden ne kadar memnun musunuz?",
-          question_type: 3, // rating gözükmüyor. yanlis yazmış olabilirsin.
+          question_type: "3", // rating gözükmüyor. yanlis yazmış olabilirsin.
           choices: [],
         });
         break;
@@ -257,7 +277,7 @@ const SurveyCreationBody = ({ type }: Props) => {
                 })
               }
             />
-            {question.question_type === 2 && (
+            {question.question_type === "2" && (
               <button
                 className="m-2 rounded-2xl border-2 bg-gray-100 py-1 text-[70%] dark:bg-slate-900"
                 onClick={() => {
@@ -316,7 +336,7 @@ const SurveyCreationBody = ({ type }: Props) => {
                     </DropdownMenuItem> */}
                     <DropdownMenuItem
                       onClick={() => {
-                        setQuestionType(2);
+                        setQuestionType("2");
                         setdropdownMenuTitle("Çoktan Seçmeli");
                       }}
                     >
@@ -324,7 +344,7 @@ const SurveyCreationBody = ({ type }: Props) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => {
-                        setQuestionType(3);
+                        setQuestionType("3");
                         setdropdownMenuTitle("Rating");
                       }}
                     >
@@ -339,10 +359,10 @@ const SurveyCreationBody = ({ type }: Props) => {
           </div>
           <div className="p-2">
             {/* {questionType === 1 && <OpenEnded />} */}
-            {questionType === 2 && (
+            {questionType === "2" && (
               <MultipleChoice choices={choices} setChoices={setChoices} />
             )}
-            {questionType === 3 && <Rating />}
+            {questionType === "3" && <Rating />}
           </div>
           <button
             className="flex h-[40px] w-[10%]  items-center justify-center self-center rounded-lg border-2 text-[80%]"

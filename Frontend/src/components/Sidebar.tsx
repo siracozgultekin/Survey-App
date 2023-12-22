@@ -61,7 +61,7 @@ const Sidebar = () => {
                 variant="ghost"
               >
                 <Home className="h-5 w-5" />
-                Home
+                Anasayfa
                 <div
                   className={cn(
                     "ml-auto h-full border-2 border-primary opacity-0 transition-all",
@@ -78,7 +78,7 @@ const Sidebar = () => {
                 variant="ghost"
               >
                 <Inbox className="h-5 w-5" />
-                Inbox
+                Davetler
                 <div
                   className={cn(
                     "ml-auto h-full border-2 border-primary opacity-0 transition-all",
@@ -95,28 +95,11 @@ const Sidebar = () => {
                 variant="ghost"
               >
                 <FileText className="h-5 w-5" />
-                Surveys
+                Anketler
                 <div
                   className={cn(
                     "ml-auto h-full border-2 border-primary opacity-0 transition-all",
                     location.pathname === "/surveys" && "opacity-100",
-                  )}
-                />
-              </Button>
-            </Link>
-          </li>
-          <li>
-            <Link to="/report">
-              <Button
-                className="w-full justify-start gap-3 text-base"
-                variant="ghost"
-              >
-                <BarChart3 className="h-5 w-5" />
-                Reports
-                <div
-                  className={cn(
-                    "ml-auto h-full border-2 border-primary opacity-0 transition-all",
-                    location.pathname === "/report" && "opacity-100",
                   )}
                 />
               </Button>
@@ -144,6 +127,13 @@ const Sidebar = () => {
                     " " +
                     user?.surname.toUpperCase()}
               </h2>
+              {user?.is_admin && (
+                <img
+                  src={"/src/assets/moderatorLogo.png"}
+                  alt="moderatorLogo"
+                  className="h-8 w-14"
+                />
+              )}
             </div>
           </PopoverTrigger>
           <PopoverContent className="bg-gray-200 dark:bg-stone-950 ">

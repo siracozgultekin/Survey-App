@@ -90,23 +90,42 @@ app.get(
                 "SELECT * FROM answers WHERE question_id = $1",
                 [question.id]
               );
-              console.log("answers.rows=>", answers.rows[0].answer);
-              const choicesWithCounts = question.choices.map((choice) => {
-                let count = 0;
-                answers.rows.map((answerobj: Answer) => {
-                  answerobj.answer.map((givenAnswer) => {
-                    if (givenAnswer === choice) {
-                      count++;
-                    }
+              console.log("answers.rows=>", answers.rows);
+              if (question.question_type === "2") {
+                const choicesWithCounts = question.choices.map((choice) => {
+                  let count = 0;
+                  answers.rows.map((answerobj: Answer) => {
+                    answerobj.answer.map((givenAnswer) => {
+                      if (givenAnswer === choice) {
+                        count++;
+                      }
+                    });
                   });
+                  return { choice: choice, count: count };
                 });
-                return { choice: choice, count: count };
-              });
-              return {
-                ...question,
-                choicesWithCounts,
-                answers: answers.rows,
-              };
+                return {
+                  ...question,
+                  choicesWithCounts,
+                  answers: answers.rows,
+                };
+              } else if (question.question_type === "3") {
+                //take all answers of this question and calculate the average of them then return it in same format as choicesWithCounts
+                let sum = 0;
+                answers.rows.map((answerobj: Answer) => {
+                  sum = sum + parseInt(answerobj.answer[0]);
+                });
+                const choicesWithCounts = [
+                  {
+                    choice: "Puanlama",
+                    count: sum / answers.rows.length,
+                  },
+                ];
+                return {
+                  ...question,
+                  choicesWithCounts,
+                  answers: answers.rows,
+                };
+              }
             })
           );
           console.log(
@@ -556,10 +575,17 @@ app.post("/insertparticipatedsurvey", async (req, res) => {
   try {
     console.log("req.bodyforparticipatedsurvey=>", survey_id);
     //insert survey_id(request) into participated_surveys column of users table
-    await dbpool.query(
-      "UPDATE users SET participated_surveys = array_append(participated_surveys, $1) WHERE id = $2 ",
-      [survey_id, user_id]
-    );
+    await dbpool
+      .query(
+        "UPDATE users SET participated_surveys = array_append(participated_surveys, $1) WHERE id = $2 ",
+        [survey_id, user_id]
+      )
+      .then(async () => {
+        await dbpool.query(
+          "UPDATE surveys SET participants = array_append(participants, $1) WHERE id = $2 ",
+          [user_id, survey_id]
+        );
+      });
     res.json({
       message: "Survey id inserted into participated_surveys column",
     });

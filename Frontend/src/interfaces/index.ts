@@ -24,7 +24,7 @@ export interface Question {
   id: string;
   survey_id: string;
   question: string;
-  question_type: number;
+  question_type: string;
   choices: string[];
 }
 export interface ExtendedQuestion extends Question {

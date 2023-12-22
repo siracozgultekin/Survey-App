@@ -24,8 +24,8 @@ const Setting = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Title part</DialogTitle>
-          <DialogDescription>Description Part</DialogDescription>
+          <DialogTitle>Ayarlar</DialogTitle>
+          <DialogDescription>Tema Seçimi</DialogDescription>
           <ModeToggle />
         </DialogHeader>
       </DialogContent>

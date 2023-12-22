@@ -50,7 +50,7 @@ export const insertSurveySchema = z.object({
       id: z.string().min(1),
       survey_id: z.string().min(1),
       question: z.string().min(1),
-      question_type: z.number(),
+      question_type: z.string(),
       choices: z.array(z.string()),
     })
   ),
