@@ -29,6 +29,7 @@ import { Avatar } from "@radix-ui/react-avatar";
 import type { User } from "@/interfaces";
 import { useNavigate } from "react-router-dom";
 import { set } from "zod";
+import Cookies from "js-cookie";
 
 type Props = {
   type: string;
@@ -39,21 +40,33 @@ const SurveyCreationHeader = ({ type }: Props) => {
   const { questionArr, resetQuestionArr } = useQuestionArrStore();
   const [filteredUsersArr, setFilteredUsersArr] = useState<User[]>([]);
   const [allUsersArr, setAllUsersArr] = useState<User[]>([]);
+  const [allUsersArr2, setAllUsersArr2] = useState<User[]>([]);
   const [invitedUsersArr, setInvitedUsersArr] = useState<User[]>([]);
   const [searchInp, setSearchInp] = useState<string>("");
   const [leftHeader, setLeftHeader] = useState<string>("");
 
+  const token = Cookies.get("token");
   useEffect(() => {
     //get users from db with user.department value
 
     const fetchData = async () => {
       const res = await axios.get(
         `http://localhost:5000/users/${user?.department}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        },
       );
+
       console.log("res.data=>", res.data);
-      {
-      }
+
       setAllUsersArr(
+        res.data.filter((usr: User) => {
+          return usr.id !== user?.id;
+        }),
+      );
+      setAllUsersArr2(
         res.data.filter((usr: User) => {
           return usr.id !== user?.id;
         }),
@@ -65,7 +78,7 @@ const SurveyCreationHeader = ({ type }: Props) => {
       );
     };
     fetchData();
-    console.log("tpye:", type);
+    console.log("type:", type);
   }, []);
 
   useEffect(() => {
@@ -91,6 +104,11 @@ const SurveyCreationHeader = ({ type }: Props) => {
 
   const navigate = useNavigate();
 
+  const RemoveAllUsers = () => {
+    setAllUsersArr(allUsersArr2);
+    setInvitedUsersArr([]);
+  };
+
   const searchUsersArr = (searchInp: string) => {
     const res = allUsersArr.filter((user) => {
       return user.name.toLowerCase().includes(searchInp);
@@ -109,6 +127,7 @@ const SurveyCreationHeader = ({ type }: Props) => {
       deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       participants: [],
       questions: questionArr,
+      is_active: true,
     };
 
     try {
@@ -214,8 +233,8 @@ const SurveyCreationHeader = ({ type }: Props) => {
                 <SheetDescription>
                   Ankete davet etmek istediğin kişileri seç.
                 </SheetDescription>
-                <div className="flex flex-col gap-5">
-                  <div>
+                <div className="flex flex-col ">
+                  <div className="">
                     {" "}
                     <Input
                       className="rounded-b-none border-b-slate-900/70 "
@@ -248,10 +267,38 @@ const SurveyCreationHeader = ({ type }: Props) => {
                           </button>
                         </div>
                       ))}
-                    </ScrollArea>{" "}
+                    </ScrollArea>
+                    <div className="flex w-full flex-col items-end ">
+                      <Button
+                        variant="ghost"
+                        className=" h-7 p-1 text-blue-500 "
+                        onClick={() => {
+                          setInvitedUsersArr((prev) => [
+                            ...prev,
+                            ...filteredUsersArr,
+                          ]);
+                          setAllUsersArr(
+                            allUsersArr.filter((user) => {
+                              return !filteredUsersArr.includes(user);
+                            }),
+                          );
+                        }}
+                      >
+                        Tümünü Seç
+                      </Button>
+                    </div>
                   </div>
-                  <h3 className="pt-5">Davet Ettiklerin</h3>
-                  <ScrollArea className=" h-40 rounded-lg border">
+                  <h3 className="pt-5">Davet Ettiklerin</h3>{" "}
+                  <div className="flex w-full flex-col items-end ">
+                    <Button
+                      variant="ghost"
+                      className=" h-7  p-1 text-red-600  "
+                      onClick={() => RemoveAllUsers()}
+                    >
+                      Tümünü Sil
+                    </Button>
+                  </div>
+                  <ScrollArea className=" h-40 rounded-lg border ">
                     {invitedUsersArr.map((user: User) => (
                       <div
                         key={user.id}

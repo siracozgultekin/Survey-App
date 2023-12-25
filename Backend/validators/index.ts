@@ -16,6 +16,7 @@ export const registerSchema = z.object({
     .string()
     .min(6, "Password must be contain at least 6 characters.")
     .max(255),
+  is_admin: z.boolean(),
   department: z.enum([
     "Frontend",
     "Backend",
@@ -45,6 +46,7 @@ export const insertSurveySchema = z.object({
   creation_date: z.string(),
   deadline: z.string(),
   participants: z.array(z.string()),
+  is_active: z.boolean(),
   questions: z.array(
     z.object({
       id: z.string().min(1),

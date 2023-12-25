@@ -301,7 +301,6 @@ const Report = (props: Props) => {
               <DialogTitle>Anketi Silme</DialogTitle>
               <DialogDescription className="flex flex-col">
                 <p>
-                  {" "}
                   Bu anketi kalıcı olarak silmek istediğine emin misin?{" "}
                   <strong>Unutma! </strong>
                   Gerçek vedalar yalnızca 1 kez yapılır.

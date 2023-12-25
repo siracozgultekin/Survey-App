@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
 
 import Setting from "./Setting";
+import CreateUser from "./CreateUser";
 const Sidebar = () => {
   const { user, setUser } = useUserStore();
   const location = useLocation();
@@ -105,11 +106,16 @@ const Sidebar = () => {
               </Button>
             </Link>
           </li>
-        </ul>
+        </ul>{" "}
       </div>
       <div className=" my-1 flex w-full flex-col gap-3">
-        <hr className="" />
+        {user?.is_admin && (
+          <div className="flex items-center self-center text-green-500">
+            <CreateUser />
+          </div>
+        )}
 
+        <hr className="" />
         <Popover>
           <PopoverTrigger>
             <div className=" flex items-center   text-base hover:rounded-sm hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50">
@@ -166,7 +172,6 @@ const Sidebar = () => {
             </ul>
           </PopoverContent>
         </Popover>
-
         {/* <p className="    pl-4 pt-2 text-center text-[10px] ">
           <span className=" font-semibold">SAS</span> Version 1.12
         </p> */}

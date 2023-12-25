@@ -8,6 +8,7 @@ export interface Survey {
   creation_date: Date;
   deadline: Date;
   participants: string[];
+  is_active: boolean;
 }
 
 export interface Invitation {

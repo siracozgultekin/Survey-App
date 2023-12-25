@@ -62,9 +62,9 @@ const Inbox = () => {
   return (
     <div className="container py-10">
       <Tabs defaultValue="invitationList" className="">
-        <TabsList>
+        <TabsList className="mx-0 w-fit  px-0">
           <TabsTrigger value="invitationList" className="text-lg">
-            Katıldığım Anketler
+            Davetler
           </TabsTrigger>
         </TabsList>
 

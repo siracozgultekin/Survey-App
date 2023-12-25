@@ -44,35 +44,38 @@ app.post("/logout", (req: Request, res: Response) => {
 });
 
 //Register enpdoint
-app.post("/register", async (req: Request, res: Response) => {
-  try {
-    const { name, surname, email, password, department } = registerSchema.parse(
-      req.body
-    );
+app.post(
+  "/register",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const { name, surname, email, password, department, is_admin } =
+        registerSchema.parse(req.body);
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log(hashedPassword);
-    const newUser = await dbpool.query(
-      "INSERT INTO public.users (is_admin, name, surname, password, email, department, participated_surveys) VALUES($1, $2, $3, $4, $5, $6,$7) RETURNING id",
-      [false, name, surname, hashedPassword, email, department, []]
-    );
-    console.log("buraya geliyo");
+      const hashedPassword = await bcrypt.hash(password, 10);
+      console.log(hashedPassword);
+      const newUser = await dbpool.query(
+        "INSERT INTO public.users (is_admin, name, surname, password, email, department, participated_surveys) VALUES($1, $2, $3, $4, $5, $6,$7) RETURNING id",
+        [is_admin, name, surname, hashedPassword, email, department, []]
+      );
+      console.log("buraya geliyo");
 
-    const userId = newUser.rows[0].id;
+      const userId = newUser.rows[0].id;
 
-    const token = jwt.sign({ userId }, hashedPassword, {
-      expiresIn: "8h", // Token expiration time
-    });
+      const token = jwt.sign({ userId }, hashedPassword, {
+        expiresIn: "8h", // Token expiration time
+      });
 
-    res.json({ token });
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return res.status(400).json({ error: error.errors });
+      res.json({ token });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+
+      res.status(500).json({ message: "Registration failed" });
     }
-
-    res.status(500).json({ message: "Registration failed" });
   }
-});
+);
 
 app.get(
   "/getallquestions/:survey_id",
@@ -210,6 +213,7 @@ app.post("/survey", async (req: Request, res: Response) => {
       participants,
       title,
       questions,
+      is_active,
     } = insertSurveySchema.parse(req.body.dataSent);
     const newSurvey = await dbpool.query(
       "INSERT INTO public.surveys (id, owner_id, title, description, creation_date, deadline, participants) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
@@ -451,19 +455,28 @@ app.get("/questions/:id", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Get user failed" });
   }
 });
-app.get("/users/:department", async (req: Request, res: Response) => {
-  const department = req.params.department;
-  try {
-    const users = await dbpool.query(
-      "SELECT * FROM users WHERE department = $1",
-      [department]
-    );
-    res.json(users.rows);
-  } catch (error) {
-    console.log("get user failed:", error);
-    res.status(500).json({ error: "Get user failed" });
+app.get(
+  "/users/:department",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const department = req.params.department;
+    const { is_admin } = req.user as User;
+
+    try {
+      const users = is_admin
+        ? await dbpool.query("SELECT * FROM users ORDER BY name")
+        : await dbpool.query(
+            "SELECT * FROM users WHERE department = $1 ORDER BY name",
+            [department]
+          );
+
+      res.json(users.rows);
+    } catch (error) {
+      console.log("get user failed:", error);
+      res.status(500).json({ error: "Get user failed" });
+    }
   }
-});
+);
 
 app.get(
   "/mySurveys",
