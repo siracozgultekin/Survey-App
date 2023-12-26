@@ -555,11 +555,13 @@ app.get(
     const { id } = req.user as User;
 
     try {
+      console.log("id=>", id);
       const participatedSurveys = await dbpool.query(
         `
         SELECT 
         s.id, 
         s.title,
+        s.creation_date,
         CONCAT(u.name, ' ', u.surname) AS owner_name,
         s.deadline, 
         CASE 
@@ -576,9 +578,11 @@ app.get(
     `,
         [id]
       );
+      console.log("participatedSurveys=====>", participatedSurveys.rows);
 
       res.json(participatedSurveys.rows);
     } catch (error) {
+      console.log("error=>", error);
       res.status(500).json({ error: error });
     }
   }

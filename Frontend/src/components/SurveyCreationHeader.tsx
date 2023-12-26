@@ -30,6 +30,7 @@ import type { User } from "@/interfaces";
 import { useNavigate } from "react-router-dom";
 import { set } from "zod";
 import Cookies from "js-cookie";
+import { DatePickerWithPresets } from "./ui/datePicker";
 
 type Props = {
   type: string;
@@ -44,8 +45,14 @@ const SurveyCreationHeader = ({ type }: Props) => {
   const [invitedUsersArr, setInvitedUsersArr] = useState<User[]>([]);
   const [searchInp, setSearchInp] = useState<string>("");
   const [leftHeader, setLeftHeader] = useState<string>("");
-
+  const [deadline, setDeadline] = useState<Date>(
+    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  );
   const token = Cookies.get("token");
+  useEffect(() => {
+    console.log("deadline=>", deadline);
+  }, [deadline]);
+
   useEffect(() => {
     //get users from db with user.department value
 
@@ -118,13 +125,18 @@ const SurveyCreationHeader = ({ type }: Props) => {
   };
 
   const CreateSurvey = async () => {
+    const year = deadline.getUTCFullYear();
+    const month = deadline.getUTCMonth();
+    const day = deadline.getUTCDate();
+    const deadlineDate = new Date(Date.UTC(year, month, day, 23, 59));
+
     const dataSent = {
       id: surveyStore.id,
       owner_id: user?.id,
       title: surveyStore.title,
       description: surveyStore.description,
       creation_date: surveyStore.creation_date,
-      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      deadline: deadlineDate, // new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       participants: [],
       questions: questionArr,
       is_active: true,
@@ -220,6 +232,7 @@ const SurveyCreationHeader = ({ type }: Props) => {
         }
       </div>
       <div className="flex items-center gap-5">
+        <DatePickerWithPresets deadline={deadline} setDeadline={setDeadline} />
         <div className=" px-4 ">
           <Sheet>
             <SheetTrigger className="flex gap-1">
@@ -327,7 +340,6 @@ const SurveyCreationHeader = ({ type }: Props) => {
             </SheetContent>
           </Sheet>
         </div>
-
         <Button
           className="bg-blue-500 text-white"
           onClick={() => {

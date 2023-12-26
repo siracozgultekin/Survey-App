@@ -23,6 +23,7 @@ export const participatedSurveySchema = z.object({
   id: z.string(),
   title: z.string(),
   owner_name: z.string(),
+  creation_date: z.string(),
   deadline: z.string(),
   status: z.enum(["active", "closed"]),
 });

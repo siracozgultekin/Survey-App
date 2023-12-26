@@ -40,7 +40,7 @@ const Surveys = () => {
           },
         },
       );
-
+      console.log("responseMysurvey.data", responseMysurvey.data);
       setSurveys(
         (prevState) =>
           ({
@@ -59,6 +59,10 @@ const Surveys = () => {
             Authorization: `${token}`,
           },
         },
+      );
+      console.log(
+        "responseParticipatedSurvey.data",
+        responseParticipatedSurvey,
       );
       setSurveys(
         (prevState) =>
