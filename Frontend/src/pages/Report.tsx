@@ -33,10 +33,48 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReadOnlyTiptapEditor from "@/components/editor/TiptapReadOnlyEditor";
+import { ScrollArea } from "@/components/ui/scroll-area";
 type Props = {};
+
+const customLegend = (props: any) => {
+  const { payload } = props;
+
+  return (
+    <div className="flex flex-col">
+      {payload.map((entry: any, index: number) => (
+        <div className="flex items-center gap-2" key={`item-${index}`}>
+          <Rectangle width={20} height={20} fill={entry.color} />
+          <span className="text-sm">{entry.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const customTooltip = ({ active, payload, label }: any) => {
+  console.log("payload =>", payload);
+  if (active) {
+    return (
+      <div className="rounded-md bg-muted px-4 py-2">
+        <p className="font-bold">{label}</p>
+        <p className="text-sm">
+          {payload && payload[0].name}: {payload && payload[0].value}
+        </p>
+      </div>
+    );
+  }
+
+  return null;
+};
 
 const Report = (props: Props) => {
   const token = Cookies.get("token");
@@ -114,28 +152,34 @@ const Report = (props: Props) => {
       })} */}
       <Tabs
         defaultValue="account"
-        className="flex h-[500px] w-[90%]  border bg-slate-900 "
+        className="flex h-[500px] w-[90%]  border bg-gray-100 dark:bg-slate-900 "
       >
         <TabsList className="flex  h-full flex-col self-center border ">
           {/* <TabsTrigger value="account">Account</TabsTrigger>
           <TabsTrigger value="password">Password</TabsTrigger> */}
-          {extendedQuestions.map((question) => {
-            return (
-              <TabsTrigger
-                value={question.id}
-                key={question.id}
-                className="text-white"
-              >
-                <ReadOnlyTiptapEditor content={question.question} />
-              </TabsTrigger>
-            );
-          })}
+
+          <ScrollArea className="h-full ">
+            <div className="flex flex-col content-center items-center justify-center text-center">
+              {extendedQuestions.map((question) => {
+                return (
+                  <TabsTrigger
+                    value={question.id}
+                    key={question.id}
+                    className="text-white "
+                  >
+                    <ReadOnlyTiptapEditor content={question.question} />
+                  </TabsTrigger>
+                );
+              })}
+            </div>
+          </ScrollArea>
         </TabsList>{" "}
         {/* <TabsContent value="account">
           Make changes to your account here.
         </TabsContent>
         <TabsContent value="password">Change your password here.</TabsContent> */}
-        {extendedQuestions.map((question) => {
+        {extendedQuestions.map((question, i) => {
+          console.log(`question ${i}=>`, question);
           if (question.question_type === "2") {
             return (
               <TabsContent
@@ -144,7 +188,7 @@ const Report = (props: Props) => {
                 className="w-full p-10"
               >
                 <div
-                  className="h-full w-[100%]  p-5 text-black dark:bg-slate-800 dark:text-white"
+                  className="h-full w-[100%]  bg-gray-200 p-5 text-black dark:bg-slate-800  dark:text-white"
                   key={question.id}
                 >
                   <ResponsiveContainer width="100%" height="100%">
@@ -156,13 +200,16 @@ const Report = (props: Props) => {
                         left: 20,
                         bottom: 5,
                       }}
+                      className=" "
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="choice" />
+
+                      <XAxis dataKey="choice" interval={0} />
+
                       <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="count" name="Toplam" fill="#1134d8" />
+                      <Tooltip content={customTooltip} />
+                      <Legend content={customLegend} />
+                      <Bar dataKey="count" name="Toplam" fill="#1125bf" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -176,7 +223,7 @@ const Report = (props: Props) => {
                 className="w-full p-10"
               >
                 <div
-                  className="h-full w-[100%] bg-gray-100 p-5 text-black  dark:bg-slate-800  dark:text-white"
+                  className="h-full w-[100%] bg-gray-200 p-5 text-black  dark:bg-slate-800  dark:text-white"
                   key={question.id}
                 >
                   <ResponsiveContainer width="100%" height="100%">

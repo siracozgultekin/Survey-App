@@ -55,7 +55,7 @@ const HomeBody = () => {
           Hazır Şablonlar
         </p>
         <div className="mb-5 flex w-[80%] flex-col items-center justify-center rounded-md bg-gray-200 p-3 dark:bg-slate-900 ">
-          <div className=" flex h-[320px] w-[75%] min-w-[500px] place-items-center justify-evenly  gap-4 border-primary  ">
+          <div className=" flex h-[320px] w-[75%] min-w-[500px] place-items-center justify-evenly gap-4  border-primary   ">
             <Link to={"/survey-creation"}>
               <div className=" h-[275px] w-[215px] border-blue-600 bg-secondary text-center text-secondary shadow-2xl">
                 <div className="absolute z-[2]  flex h-[275px] w-[215px] flex-col items-center justify-center rounded-sm text-lg font-semibold text-primary hover:bg-primary hover:text-white dark:text-white">
@@ -109,7 +109,7 @@ const HomeBody = () => {
                 <TableHead className="bg-gray-200 dark:bg-slate-900">
                   Bitiş tarihi
                 </TableHead>
-                <TableHead className="bg-gray-200 dark:bg-slate-900">
+                <TableHead className="bg-gray-200 text-center  dark:bg-slate-900">
                   Katılımcı Sayısı
                 </TableHead>
                 <TableHead className="bg-gray-200 dark:bg-slate-900"></TableHead>
@@ -130,7 +130,7 @@ const HomeBody = () => {
                       {" "}
                       {formatDate(survey.deadline)}
                     </TableCell>
-                    <TableCell className="">
+                    <TableCell className="text-center ">
                       {" "}
                       {survey.participants.length}
                     </TableCell>

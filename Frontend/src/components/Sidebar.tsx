@@ -51,7 +51,7 @@ const Sidebar = () => {
         <hr className="mt-2 w-full" />
         <Link to="/survey-creation">
           <Button className="m-4 flex items-center  " variant="positive">
-            <Plus className="mr-1" /> Create New Survey
+            <Plus className="mr-1" /> Yeni Anket Oluştur
           </Button>
         </Link>
         <ul className="flex flex-col gap-3">
@@ -151,7 +151,7 @@ const Sidebar = () => {
                     variant="ghost"
                   >
                     <User className="h-5 w-5" />
-                    Profile
+                    Profil
                   </Button>
                 </Link>
               </li>
@@ -166,7 +166,7 @@ const Sidebar = () => {
                   onClick={handleLogout}
                 >
                   <LogOut className="h-5 w-5" />
-                  Log Out
+                  Çıkış Yap
                 </Button>
               </li>
             </ul>

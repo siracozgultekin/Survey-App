@@ -15,6 +15,8 @@ import TiptapEditor from "./editor/TiptapEditor";
 import { useToast } from "@/components/ui/use-toast";
 import { useSurveyStore } from "@/store/use-survey-store";
 import { useQuestionArrStore } from "@/store/use-questionArr-store";
+import { useEditorStore } from "@/store/use-editor.store";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   type: string;
@@ -27,9 +29,12 @@ const SurveyCreationBody = ({ type }: Props) => {
   const [questionType, setQuestionType] = useState<string>("2");
   const [choices, setChoices] = useState([""]);
   const [rate, setRate] = useState<string>("0");
+  const [question_id, setQuestion_id] = useState<string>("");
   const { toast } = useToast();
 
   const [editorState, setEditorState] = useState("");
+  const [editorState2, setEditorState2] = useState("");
+  const { editor } = useEditorStore();
 
   const { setSurveyDescription, setSurveyTitle, id } = useSurveyStore();
   const {
@@ -57,10 +62,19 @@ const SurveyCreationBody = ({ type }: Props) => {
     });
     setChoices([""]);
     setEditorState("");
+    if (editor) {
+      editor.commands.clearContent();
+    }
   };
-  // useEffect(() => {
-  //   resetQuestionArr();
-  // }, []);
+  const handleQuestionIdChange = (id: string) => {
+    setQuestion_id(id);
+  };
+  useEffect(() => {
+    setQuestion({
+      id: question_id,
+      questionstr: editorState2,
+    });
+  }, [question_id]);
 
   useEffect(() => {
     switch (type) {
@@ -172,6 +186,8 @@ const SurveyCreationBody = ({ type }: Props) => {
         });
         break;
       default:
+        resetQuestionArr();
+
         break;
     }
   }, []);
@@ -180,11 +196,11 @@ const SurveyCreationBody = ({ type }: Props) => {
     <div className="flex h-full w-full flex-col items-center justify-start ">
       {" "}
       {/* surveyId: {id} */}
-      <p className="text-red-600">
+      {/* <p className="text-red-600">
         Çöz : Oluşturulan soruyu editleyince texteditor devre dışı kalıyor.
         Stilsiz şekilde editlenebiliyor.
-      </p>
-      <div className="m-10 flex h-fit w-[50%] flex-col  gap-3  rounded-2xl bg-gray-100 dark:bg-slate-900 ">
+      </p> */}
+      <div className="m-10 flex h-fit w-[50%] flex-col  gap-3 rounded-2xl border bg-gray-100 dark:bg-slate-900 ">
         <div className="flex h-3 w-full self-start rounded-t-2xl bg-primary"></div>
         <div className="flex flex-col gap-3 p-5">
           <input
@@ -196,15 +212,15 @@ const SurveyCreationBody = ({ type }: Props) => {
                 setSurveyTitle(e.target.value);
               }
             }}
-            placeholder="Başlıksız Döküman"
-            className=" rounded-lg border-slate-600 bg-gray-200 px-2 font-sans text-3xl focus:border-b-2 focus:outline-none dark:bg-slate-800"
+            placeholder="Başlıksız Anket"
+            className="  border-slate-600 bg-gray-100 px-2 font-sans text-3xl focus:border-b-2 focus:outline-none dark:bg-slate-800"
           />
           <input
             type="text"
             name=""
             id=""
             placeholder="Anket açıklaması..."
-            className=" rounded-lg border-slate-600 bg-gray-200 px-2 font-normal focus:border-b-2 focus:outline-none dark:bg-slate-800 "
+            className="  border-slate-600 bg-gray-100 px-2 font-normal focus:border-b-2 focus:outline-none dark:bg-slate-800 "
             onChange={(e) => {
               setSurveyDescription(e.target.value);
             }}
@@ -217,31 +233,39 @@ const SurveyCreationBody = ({ type }: Props) => {
           key={question.id}
         >
           {/* {JSON.stringify(question, null, 2)} */}
-          <div className="m-5 w-[85%]">
+          <div className="m-5 w-full">
             <div className="mb-5 text-lg">
               {/*Bold italic vs. çalısmıyor.*/}
-              <input
+              {/* <input
                 type="text"
                 placeholder={question.question}
+                value={question.question}
                 className=" h-[90px] w-[100%] border-slate-600 bg-gray-200 font-sans text-lg focus:border-b-2 focus:outline-none dark:bg-slate-800"
                 onChange={(e) => {
-                  e.preventDefault(),
-                    setQuestion({
-                      id: question.id,
-                      questionstr: e.target.value,
-                    });
+                  e.preventDefault(), setQuestion_id(question.id);
+
+                  setQuestion({
+                    id: question.id,
+                    questionstr: e.target.value,
+                  });
                 }}
-              />
+              /> */}
+              <div className=" mb-5 w-full  border  ">
+                <TiptapEditor
+                  editorState={question.question}
+                  setEditorState={setEditorState2} //buraya handler ver
+                />
+              </div>{" "}
             </div>
             <div>
               {question.choices.map((choice, index) => (
                 <div key={index} className="mb-2 flex items-center gap-2">
-                  <Circle />
+                  <Circle className="h-5 w-5" />
                   {
                     <input
                       type="text"
                       placeholder={choice}
-                      className="w-[50%] rounded-lg border-slate-800 bg-gray-200 p-1 font-sans text-lg focus:border-b-2 focus:outline-none dark:bg-slate-800"
+                      className="w-full rounded-lg border-slate-800 bg-gray-200 p-1 font-sans text-lg  focus:border-b-2 focus:outline-none dark:bg-slate-800"
                       onChange={(e) => {
                         e.preventDefault(),
                           setQuestionChoice({
@@ -266,30 +290,44 @@ const SurveyCreationBody = ({ type }: Props) => {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-          <div className="flex flex-col justify-between">
-            <Trash2
-              className=" m-2 flex h-[25px] w-[25px] self-center  "
-              onClick={() =>
-                removeQuestion({
-                  id: question.id,
-                })
-              }
-            />
-            {question.question_type === "2" && (
-              <button
-                className="m-2 rounded-2xl border-2 bg-gray-100 py-1 text-[70%] dark:bg-slate-900"
-                onClick={() => {
-                  addChoice({
+              {question.question_type === "2" && (
+                <div className="flex content-center items-center gap-2">
+                  <Circle className="h-5 w-5" />
+                  <button
+                    className="h-10 w-[15%] rounded-lg  text-start text-[85%] underline"
+                    onClick={() => {
+                      addChoice({
+                        id: question.id,
+                        choicestr: `${question.choices.length + 1}. Seçenek`,
+                      });
+                    }}
+                  >
+                    Seçenek Ekle
+                  </button>
+                </div>
+              )}
+            </div>{" "}
+            <div
+              className=" flex  items-center justify-end
+               gap-2
+          "
+            >
+              <Trash2
+                className="   h-[25px] w-[25px]   "
+                onClick={() =>
+                  removeQuestion({
                     id: question.id,
-                    choicestr: "newChoice",
-                  });
-                }}
+                  })
+                }
+              />{" "}
+              <Button
+                variant="ghost"
+                onClick={() => handleQuestionIdChange(question.id)}
+                className="flex self-end rounded-br-lg text-primary "
               >
-                Seçenek Ekle
-              </button>
-            )}
+                Değişikliği Kaydet
+              </Button>
+            </div>
           </div>
         </div>
       ))}
@@ -309,13 +347,13 @@ const SurveyCreationBody = ({ type }: Props) => {
                 value={questioninput}
                 className="h-[60px] w-[50%] border-slate-600 bg-gray-200 placeholder-gray-400 focus:border-b-[1px] focus:outline-none"
               /> */}
-              <div className="m-2 mb-5 w-full  border  ">
+              <div className=" mb-5 w-full  border  ">
                 <TiptapEditor
                   editorState={editorState}
                   setEditorState={setEditorState}
                 />
               </div>
-              <div className=" items-center ">
+              <div className=" m-7 items-center ">
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <div className="flex h-[60px] w-[90px] items-center justify-center rounded-md border-[1px]  text-sm ">
@@ -357,7 +395,7 @@ const SurveyCreationBody = ({ type }: Props) => {
               </div>
             </div>
           </div>
-          <div className="p-2">
+          <div className=" pt-2">
             {/* {questionType === 1 && <OpenEnded />} */}
             {questionType === "2" && (
               <MultipleChoice choices={choices} setChoices={setChoices} />

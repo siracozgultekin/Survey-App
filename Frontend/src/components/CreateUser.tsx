@@ -74,7 +74,7 @@ const CreateUser = (props: Props) => {
           Yeni Kullanıcı Oluştur
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-gray-200">
         <DialogHeader>
           <DialogTitle className="text-center">Kullanıcı Oluşturma</DialogTitle>
           <div className="flc flex-col p-2">

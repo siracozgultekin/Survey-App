@@ -173,9 +173,9 @@ const SurveyAnswer = () => {
   return (
     <div className="flex flex-col items-center">
       {" "}
-      <div className=" flex h-[100px] w-[50%] flex-col gap-2 p-5 font-semibold text-primary">
+      <div className=" flex  w-[50%] flex-col gap-2  p-5  font-semibold text-primary">
         <h3 className="self-center text-3xl ">{survey && survey.title}</h3>
-        <p className="text-center text-black dark:text-white">
+        <p className=" text-center text-black dark:text-white">
           {survey && survey.description}
         </p>
       </div>

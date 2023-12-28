@@ -91,12 +91,14 @@ export const mySurveyColumns: ColumnDef<DataTableSurvey>[] = [
   {
     accessorKey: "numberOfParticipants",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Katılımcı Sayısı" />
+      <div className="flex justify-center  ">
+        <DataTableColumnHeader column={column} title="Katılımcı Sayısı" />
+      </div>
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
+        <div className="flex space-x-2  text-center">
+          <span className="w-full max-w-[500px] truncate  text-center font-medium">
             {row.getValue("numberOfParticipants")}
           </span>
         </div>

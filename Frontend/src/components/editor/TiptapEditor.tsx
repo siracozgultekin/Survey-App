@@ -3,6 +3,7 @@ import { StarterKit } from "@tiptap/starter-kit";
 import TiptapToolBar from "./TiptapToolbar";
 import { useState } from "react";
 import Placeholder from "@tiptap/extension-placeholder";
+import { useEditorStore } from "@/store/use-editor.store";
 
 type Props = {
   editorState: string;
@@ -11,6 +12,7 @@ type Props = {
 
 const TiptapEditor = ({ editorState, setEditorState }: Props) => {
   const [editorToggle, setEditorToggle] = useState<boolean>(false);
+  const { setEditor } = useEditorStore();
 
   const editor = useEditor({
     autofocus: true,
@@ -20,10 +22,17 @@ const TiptapEditor = ({ editorState, setEditorState }: Props) => {
         placeholder: "Soru metni giriniz...",
       }),
     ],
+    onCreate: ({ editor }) => {
+      setEditor(editor);
+    },
+    onDestroy: () => {
+      setEditor(null);
+    },
     content: editorState,
     onUpdate: ({ editor }) => {
       setEditorState(editor.getHTML());
     },
+
     editorProps: {
       attributes: {
         class:

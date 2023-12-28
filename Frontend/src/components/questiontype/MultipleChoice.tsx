@@ -17,14 +17,14 @@ const MultipleChoice = ({ choices, setChoices }: Props) => {
   };
 
   return (
-    <div className="flex w-full justify-between">
+    <div className="flex w-full justify-between ">
       <div className=" w-full  flex-col ">
         {choices.map((choice, index) => (
           <div key={index} className="flex w-full pb-2  pr-5">
             <input
               type="text"
               placeholder="Yeni Seçenek "
-              className=" w-[75%] rounded-lg border-slate-900 bg-gray-200 p-2  focus:border-b-2 focus:outline-none dark:border-gray-200 dark:bg-slate-800"
+              className=" w-[75%] rounded-lg border-slate-900 bg-gray-200 p-2 text-sm focus:border-b-2 focus:outline-none dark:border-gray-200 dark:bg-slate-800"
               value={choice}
               onChange={(e) => {
                 const newChoices = [...choices];
@@ -39,14 +39,14 @@ const MultipleChoice = ({ choices, setChoices }: Props) => {
               <X className="  text-red-700" />
             </button>
           </div>
-        ))}
+        ))}{" "}
+        <button
+          className="h-10 w-[15%] rounded-lg  text-start text-[85%]  underline "
+          onClick={addChoice}
+        >
+          Seçenek ekle
+        </button>
       </div>
-      <button
-        className="h-10 w-[15%] rounded-lg border-2 bg-gray-100 text-[70%] dark:bg-slate-900"
-        onClick={addChoice}
-      >
-        Seçenek ekle
-      </button>
     </div>
   );
 };
