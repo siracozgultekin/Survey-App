@@ -8,11 +8,14 @@ import {
   registerSchema,
   insertSurveySchema,
   invitationSchema,
-} from "./validators";
+} from "./src/validators";
 import { ZodError } from "zod";
-import authenticateToken from "./middlewares/auth";
+import authenticateToken from "./src/middlewares/auth";
 import cookieParser from "cookie-parser";
-import { Survey, Question, Invitation, Answer, User } from "./types";
+import { Survey, Question, Invitation, Answer, User } from "./src/types";
+
+import { AuthController } from "./src/controllers";
+
 const app: Express = express();
 
 dotenv.config();
@@ -27,11 +30,14 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(cookieParser());
 
 app.use(express.json());
 
-//signout endpoint
+app.use("/auth", AuthController);
+
+//! signout endpoint
 app.post("/logout", (req: Request, res: Response) => {
   console.log("first line of logout");
   try {
@@ -43,7 +49,7 @@ app.post("/logout", (req: Request, res: Response) => {
   }
 });
 
-//Register enpdoint
+//! Register enpdoint
 app.post(
   "/register",
   authenticateToken,
@@ -246,7 +252,7 @@ app.post("/survey", async (req: Request, res: Response) => {
   }
 });
 
-//Login enpdoint
+//! Login enpdoint
 app.post("/login", async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -311,7 +317,7 @@ app.post("/survey", async (req, res) => {
     res.status(500).json({ error: "Get survey failed" });
   }
 });
-//create an endpoint to update password
+//! create an endpoint to update password
 app.post(
   "/updatepassword",
   authenticateToken,

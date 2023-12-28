@@ -1,4 +1,4 @@
-import { User } from "../middlewares/auth";
+import { User } from "../src/middlewares/auth";
 
 declare namespace Express {
   interface Request {
