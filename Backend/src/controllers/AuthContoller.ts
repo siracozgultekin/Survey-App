@@ -91,15 +91,6 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-//* Logout
-router.post("/logout", (req: Request, res: Response) => {
-  try {
-    res.clearCookie("token").json({ message: "Log out successful" });
-  } catch (error) {
-    res.status(500).json({ error: "Log out failed, try again" });
-  }
-});
-
 //* Update Password
 router.post(
   "/updatepassword",

@@ -95,7 +95,7 @@ const Report = (props: Props) => {
     const GetAllQuestionsAndSurvey = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/getallquestions/${survey_id}`,
+          `http://localhost:5000/question/questions-with-their-answers/${survey_id}`,
           {
             headers: {
               Authorization: `${token}`,
@@ -104,7 +104,7 @@ const Report = (props: Props) => {
         );
 
         const survey = await axios.get(
-          `http://localhost:5000/surveys/${survey_id}`,
+          `http://localhost:5000/survey/get-surveys/${survey_id}`,
           {
             headers: {
               Authorization: `${token}`,
@@ -124,22 +124,7 @@ const Report = (props: Props) => {
 
     return () => {};
   }, [survey_id]);
-  // const GetAllAnswers = async (question_id: string) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:5000/getallanswers/${question_id}`,
-  //       {
-  //         headers: {
-  //           Authorization: `${token}`,
-  //         },
-  //       },
-  //     );
-  //     console.log("response.data =>", response.data);
-  //     setAnswers(response.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+
   return (
     <div className="flex  flex-col items-center  p-5 text-center ">
       {/* {questions.map((question) => {
@@ -158,8 +143,8 @@ const Report = (props: Props) => {
           {/* <TabsTrigger value="account">Account</TabsTrigger>
           <TabsTrigger value="password">Password</TabsTrigger> */}
 
-          <ScrollArea className="h-full ">
-            <div className="flex flex-col content-center items-center justify-center text-center">
+          <ScrollArea className="flex h-full flex-col">
+            <div className="flex  flex-col content-center items-center  justify-center bg-red-300 text-center">
               {extendedQuestions.map((question) => {
                 return (
                   <TabsTrigger

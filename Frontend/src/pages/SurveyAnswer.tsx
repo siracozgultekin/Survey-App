@@ -33,7 +33,7 @@ const SurveyAnswer = () => {
     const fetchQuestions = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/questions/${surveyId}`,
+          `http://localhost:5000/question/questions/${surveyId}`,
         );
         setQuestions(res.data);
       } catch (error) {
@@ -46,7 +46,7 @@ const SurveyAnswer = () => {
     const fetchSurvey = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/surveys/${surveyId}`,
+          `http://localhost:5000/survey/get-surveys/${surveyId}`,
         );
         setSurvey(res.data);
       } catch (err) {
@@ -109,7 +109,10 @@ const SurveyAnswer = () => {
   };
   const CreateAnswer = async () => {
     try {
-      const res = await axios.post(`http://localhost:5000/answers`, answers);
+      const res = await axios.post(
+        `http://localhost:5000/answer/answers`,
+        answers,
+      );
 
       if (res.status == 200) {
         UpdateInvitationState();
@@ -133,7 +136,7 @@ const SurveyAnswer = () => {
     console.log("invitationId=>", invitationId);
     try {
       const res = await axios.post(
-        `http://localhost:5000/updateinvitationstate`,
+        `http://localhost:5000/invitation/updateinvitationstate`,
         {
           invitation_id: invitationId,
         },
@@ -146,7 +149,7 @@ const SurveyAnswer = () => {
   const InsertParticipatedSurvey = async () => {
     try {
       await axios
-        .post(`http://localhost:5000/insertparticipatedsurvey`, {
+        .post(`http://localhost:5000/survey/insertparticipatedsurvey`, {
           survey_id: surveyId as string,
           user_id: user!.id,
         })

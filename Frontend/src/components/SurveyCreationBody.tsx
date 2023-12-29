@@ -68,6 +68,11 @@ const SurveyCreationBody = ({ type }: Props) => {
   };
   const handleQuestionIdChange = (id: string) => {
     setQuestion_id(id);
+
+    toast({
+      title: "Değişiklik Kaydedildi!",
+      description: "Değişiklik başarıyla kaydedildi.",
+    });
   };
   useEffect(() => {
     setQuestion({
@@ -213,14 +218,14 @@ const SurveyCreationBody = ({ type }: Props) => {
               }
             }}
             placeholder="Başlıksız Anket"
-            className="  border-slate-600 bg-gray-100 px-2 font-sans text-3xl focus:border-b-2 focus:outline-none dark:bg-slate-800"
+            className="  border-slate-600 bg-gray-100 px-2 font-sans text-3xl focus:border-b-2 focus:outline-none dark:bg-slate-900"
           />
           <input
             type="text"
             name=""
             id=""
             placeholder="Anket açıklaması..."
-            className="  border-slate-600 bg-gray-100 px-2 font-normal focus:border-b-2 focus:outline-none dark:bg-slate-800 "
+            className="  border-slate-600 bg-gray-100 px-2 font-normal focus:border-b-2 focus:outline-none dark:bg-slate-900 "
             onChange={(e) => {
               setSurveyDescription(e.target.value);
             }}
@@ -250,7 +255,7 @@ const SurveyCreationBody = ({ type }: Props) => {
                   });
                 }}
               /> */}
-              <div className=" mb-5 w-full  border  ">
+              <div className=" mb-5  w-full border  ">
                 <TiptapEditor
                   editorState={question.question}
                   setEditorState={setEditorState2} //buraya handler ver
@@ -353,7 +358,7 @@ const SurveyCreationBody = ({ type }: Props) => {
                   setEditorState={setEditorState}
                 />
               </div>
-              <div className=" m-7 items-center ">
+              <div className="items-center ">
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <div className="flex h-[60px] w-[90px] items-center justify-center rounded-md border-[1px]  text-sm ">
@@ -364,14 +369,6 @@ const SurveyCreationBody = ({ type }: Props) => {
                     <DropdownMenuLabel>{"Soru Tipi Seçiniz"}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
 
-                    {/* <DropdownMenuItem
-                      onClick={() => {
-                        setQuestionType(1);
-                        setdropdownMenuTitle("Open-ended");
-                      }}
-                    >
-                      Open-ended
-                    </DropdownMenuItem> */}
                     <DropdownMenuItem
                       onClick={() => {
                         setQuestionType("2");

@@ -19,7 +19,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/login",
+        "http://localhost:5000/auth/login",
         {
           email: email,
           password: password,
@@ -46,11 +46,9 @@ const Login = () => {
           typeof dataObj.user.participated_surveys,
         );
         setUser(dataObj.user);
-        // dispatch(setCurrentUser(dataObj.user));
         navigate("/home");
-        // Token'i kullanmak için burada işlem yapabilirsiniz, örneğin yerel depolamada saklayabilirsiniz.
       } else {
-        // Hata durumları için uygun işlemleri yapın.
+        setError("Geçersiz Kullanıcı adı veya şifre!");
       }
     } catch (error) {
       setError("Geçersiz Kullanıcı adı veya şifre!");
@@ -70,9 +68,6 @@ const Login = () => {
         }}
       >
         <div className="absolute z-[2] h-full w-full bg-white/10 dark:bg-black/70" />{" "}
-        {/* <div className="z-[3] flex self-start">
-          <ModeToggle />
-        </div> */}
         <div className="z-[3] mb-8 flex w-[35%] flex-col items-center bg-opacity-0 bg-clip-padding   dark:bg-opacity-0 ">
           <div className="flex w-full pb-8 "></div>
           <img src={SebitLogo} alt="SebitPhoto" className="w-[90%] " />
@@ -82,8 +77,6 @@ const Login = () => {
           <h4 className="text-lg font-thin italic">
             "Geleceğin eğitimini tasarlıyoruz".
           </h4>
-
-          {/* <FileEdit /> */}
         </div>
         <div className="z-[3] flex h-[40%] min-h-[300px] w-[30%] flex-col items-center justify-center rounded-xl bg-blue-300 bg-opacity-30 bg-clip-padding p-9 backdrop-blur-md backdrop-filter dark:bg-slate-400 dark:bg-opacity-20">
           <form className="flex w-full flex-col gap-4 " onSubmit={handleLogin}>

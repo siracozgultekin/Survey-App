@@ -46,7 +46,7 @@ const ChangePassword = (props: Props) => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/updatepassword",
+        "http://localhost:5000/auth/updatepassword",
         payload,
         {
           headers: {

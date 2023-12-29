@@ -33,7 +33,7 @@ const Surveys = () => {
   useEffect(() => {
     const fetchData = async () => {
       const responseMysurvey = await axios.get(
-        "http://localhost:5000/tablemysurvey",
+        "http://localhost:5000/survey/tablemysurvey",
         {
           headers: {
             Authorization: `${token}`,
@@ -53,7 +53,7 @@ const Surveys = () => {
       );
 
       const responseParticipatedSurvey = await axios.get(
-        "http://localhost:5000/tableparticipatedsurvey",
+        "http://localhost:5000/survey/tableparticipatedsurvey",
         {
           headers: {
             Authorization: `${token}`,

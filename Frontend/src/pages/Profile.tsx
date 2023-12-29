@@ -28,7 +28,7 @@ const Profile = () => {
     const getCreatedSurveys = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/getparticipatedsurveys",
+          "http://localhost:5000/survey/get-my-surveys",
           {
             headers: {
               Authorization: `${token}`,

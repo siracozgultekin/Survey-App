@@ -58,7 +58,7 @@ const SurveyCreationHeader = ({ type }: Props) => {
 
     const fetchData = async () => {
       const res = await axios.get(
-        `http://localhost:5000/users/${user?.department}`,
+        `http://localhost:5000/user/users/${user?.department}`,
         {
           headers: {
             Authorization: `${token}`,
@@ -143,10 +143,13 @@ const SurveyCreationHeader = ({ type }: Props) => {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/survey", {
-        //dataSent is equal to: { ...survey, questions: questionArray },
-        dataSent,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/survey/Insert-survey-and-questions",
+        {
+          //dataSent is equal to: { ...survey, questions: questionArray },
+          dataSent,
+        },
+      );
 
       if (res.status === 200) {
         toast({
@@ -179,7 +182,7 @@ const SurveyCreationHeader = ({ type }: Props) => {
   };
   const CreateInvitations = async () => {
     try {
-      axios.post("http://localhost:5000/invitation", {
+      axios.post("http://localhost:5000/invitation/insert-invitations", {
         invitedUserArr: invitedUsersArr,
         survey_id: surveyStore.id,
       });

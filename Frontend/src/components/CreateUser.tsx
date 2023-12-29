@@ -43,7 +43,7 @@ const CreateUser = (props: Props) => {
       };
       console.log("CreateUserHandler");
       console.log("payload::", payload);
-      await axios.post("http://localhost:5000/register", payload, {
+      await axios.post("http://localhost:5000/auth/register", payload, {
         headers: {
           Authorization: `${token}`,
         },

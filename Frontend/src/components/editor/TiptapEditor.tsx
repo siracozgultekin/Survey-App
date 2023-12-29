@@ -41,7 +41,7 @@ const TiptapEditor = ({ editorState, setEditorState }: Props) => {
     },
   });
   return (
-    <div className="flex  flex-col">
+    <div className="flex flex-col ">
       {}
       <EditorContent
         editor={editor}

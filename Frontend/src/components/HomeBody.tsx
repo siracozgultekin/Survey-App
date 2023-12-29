@@ -26,11 +26,14 @@ const HomeBody = () => {
   const [mySurveys, setMySurveys] = useState<Survey[] | null>(null);
   useEffect(() => {
     const GetMySurveys = async () => {
-      const response = await axios.get("http://localhost:5000/mySurveys", {
-        headers: {
-          Authorization: `${token}`,
+      const response = await axios.get(
+        "http://localhost:5000/survey/get-my-latest-surveys",
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
         },
-      });
+      );
       console.log("response.data =>", response.data);
       setMySurveys(response.data); // Update mySurveys state
     };
