@@ -1,21 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { Settings } from "lucide-react";
 import Cookies from "js-cookie";
 import { useUserStore } from "@/store/use-user-store";
 import axios, { AxiosError } from "axios";
 import { useToast } from "./ui/use-toast";
-type Props = {};
 
-const ChangePassword = (props: Props) => {
+const ChangePassword = () => {
   const user = useUserStore((state) => state.user);
   const { toast } = useToast();
 
@@ -23,7 +20,6 @@ const ChangePassword = (props: Props) => {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
-
     const oldPassword = formData.get("oldpass");
     const newPassword = formData.get("newpass");
     const newPasswordConfirm = formData.get("newpass2");
@@ -45,17 +41,11 @@ const ChangePassword = (props: Props) => {
         newPassword,
       };
 
-      const response = await axios.post(
-        "http://localhost:5000/auth/updatepassword",
-        payload,
-        {
-          headers: {
-            Authorization: `${token}`,
-          },
+      await axios.post("http://localhost:5000/auth/updatepassword", payload, {
+        headers: {
+          Authorization: `${token}`,
         },
-      );
-
-      console.log(response);
+      });
     } catch (error) {
       if (error instanceof AxiosError) {
         toast({
@@ -66,31 +56,7 @@ const ChangePassword = (props: Props) => {
         console.log(error.response?.data);
       }
     }
-
-    // if (newPassword !== newPassword2) {
-    //   alert("Şifreler Uyuşmuyor");
-    //   return;
-    // }
-    // const response = await fetch("http://localhost:5000/updatepassword", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     id: user?.id,
-    //     oldPassword,
-    //     newPassword,
-    //   }),
-    // });
-    // if (response.status === 200) {
-    //   alert("Şifre Değiştirildi");
-    // } else {
-    //   alert("Şifre Değiştirilemedi,nedeni: " + response.statusText);
-    // }
   };
-  useEffect(() => {
-    console.log(user);
-  }, []);
 
   return (
     <Dialog>

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -13,9 +12,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { toast } from "./ui/use-toast";
-type Props = {};
 
-const CreateUser = (props: Props) => {
+const CreateUser = () => {
   const token = Cookies.get("token");
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -41,8 +39,7 @@ const CreateUser = (props: Props) => {
         is_admin,
         department,
       };
-      console.log("CreateUserHandler");
-      console.log("payload::", payload);
+
       await axios.post("http://localhost:5000/auth/register", payload, {
         headers: {
           Authorization: `${token}`,

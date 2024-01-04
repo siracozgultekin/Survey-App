@@ -7,7 +7,6 @@ import Cookies from "js-cookie";
 import { useUserStore } from "@/store/use-user-store";
 import SebitLogo from "@/assets/sebitLogo.png";
 import LoginBG from "@/assets/loginbgg.png";
-import { User } from "@/interfaces";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -35,16 +34,9 @@ const Login = () => {
 
       if (response.status === 200) {
         const token = Cookies.get("token");
-        console.log("CookiesToken=> ", Cookies.get("token"));
         if (!token) return;
         const decoded = jwt_decode(token); //unknown tipinde olduğu için stringfy ile json'a çevirip sonra da parse ile objeye çevirdim.
         const dataObj = JSON.parse(JSON.stringify(decoded));
-        console.log(`dataobject: `, dataObj.user);
-        console.log(`typeofdataobject: `, typeof dataObj.user);
-        console.log(
-          `participatedsurvey typeof: `,
-          typeof dataObj.user.participated_surveys,
-        );
         setUser(dataObj.user);
         navigate("/home");
       } else {

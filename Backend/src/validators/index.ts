@@ -1,7 +1,4 @@
 import z from "zod";
-
-import { Question } from "../types";
-
 export const registerSchema = z.object({
   name: z
     .string()

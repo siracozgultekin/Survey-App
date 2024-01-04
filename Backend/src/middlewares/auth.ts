@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as dotenv from "dotenv";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { decode } from "punycode";
 import { User } from "../types";
 
 interface ExtendedJwtPayload extends JwtPayload {

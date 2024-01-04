@@ -6,22 +6,18 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import {
-  invitationSchema,
+  DataTableSurveyWithInvitation,
   mySurveySchema,
   participatedSurveySchema,
   surveyWithInvitationSchema,
 } from "./data/schema";
+import { Link } from "react-router-dom";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -39,6 +35,12 @@ export function DataTableRowActions<TData>({
       ? participatedSurveySchema.parse(row.original)
       : surveyWithInvitationSchema.parse(row.original);
 
+  function instanceOfSurveyWithInvitation(
+    object: any,
+  ): object is DataTableSurveyWithInvitation {
+    return "invitation" in object;
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -51,9 +53,11 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={() => console.log(survey)}>
-          Düzenle
-        </DropdownMenuItem>
+        {!instanceOfSurveyWithInvitation(survey) && (
+          <DropdownMenuItem className="cursor-pointer" asChild>
+            <Link to={`/statistic?surveyid=${survey.id}`}>Görüntüle</Link>
+          </DropdownMenuItem>
+        )}
 
         <DropdownMenuItem>
           {tableType === "mySurvey" && "Katılımcıları düzenle"}

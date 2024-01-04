@@ -3,7 +3,6 @@ import Sidebar from "@/components/Sidebar";
 import { useEffect } from "react";
 import { useUserStore } from "@/store/use-user-store";
 import Cookies from "js-cookie";
-import ScrollToTop from "@/components/ScrollToTop";
 
 function AuthLayout() {
   const { user } = useUserStore();

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { Survey } from "@/interfaces";
 import { DataTable } from "@/components/data-table/data-table";
 import {
@@ -7,15 +6,12 @@ import {
   DataTableParticipatedSurvey,
 } from "@/components/data-table/data/schema";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import {
   mySurveyColumns,
   participatedSurveyColumns,
 } from "@/components/data-table/columns";
 import axios from "axios";
-
 import Cookies from "js-cookie";
-
 export interface extendedSurvey extends Survey {
   owner: {
     name: string;
@@ -40,7 +36,6 @@ const Surveys = () => {
           },
         },
       );
-      console.log("responseMysurvey.data", responseMysurvey.data);
       setSurveys(
         (prevState) =>
           ({
@@ -60,10 +55,7 @@ const Surveys = () => {
           },
         },
       );
-      console.log(
-        "responseParticipatedSurvey.data",
-        responseParticipatedSurvey,
-      );
+
       setSurveys(
         (prevState) =>
           ({
@@ -74,7 +66,6 @@ const Surveys = () => {
             participatedSurvey: DataTableParticipatedSurvey[];
           },
       );
-      // Update participatedSurveys state
     };
     fetchData();
   }, []);

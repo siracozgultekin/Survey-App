@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserStore } from "@/store/use-user-store";
 import Cookies from "js-cookie";
-import { Survey, User } from "@/interfaces";
-import { Mail } from "lucide-react";
+import { Survey } from "@/interfaces";
 import ChangePassword from "@/components/ChangePassword";
 import axios from "axios";
-
 export interface extendedSurvey extends Survey {
   owner: {
     name: string;
@@ -16,15 +14,9 @@ export interface extendedSurvey extends Survey {
 
 const Profile = () => {
   const user = useUserStore((state) => state.user);
-
   const token = Cookies.get("token");
-
-  const [participatedSurveys, setParticipatedSurveys] = useState<
-    extendedSurvey[] | null
-  >(null);
   const [createdSurveys, setCreatedSurveys] = useState<Survey[] | null>(null);
   useEffect(() => {
-    user && console.log(user);
     const getCreatedSurveys = async () => {
       try {
         const res = await axios.get(
@@ -35,7 +27,6 @@ const Profile = () => {
             },
           },
         );
-        console.log("res.data=>", res.data);
         setCreatedSurveys(res.data);
       } catch (error) {
         console.log(error);
@@ -80,8 +71,6 @@ const Profile = () => {
                     .reverse()
                     .join("-")}
               </h3>
-              {/* register_date olarak çagırılıyor fakat obje içerisinde registiration_date olarak geçiyor??? */}
-
               <h3 className="mx-2 flex gap-3 text-black dark:text-white">
                 <span className="font-semibold underline">
                   Katıldığım Anket Sayısı:

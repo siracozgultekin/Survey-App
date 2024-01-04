@@ -1,15 +1,8 @@
-import express, { Express, Request, Response } from "express";
-
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { ZodError } from "zod";
-
+import express, { Request, Response } from "express";
 import dbpool from "../../db";
-
 import authenticateToken from "../middlewares/auth";
-
 import { Answer, Question, Survey, User } from "../types";
-import { registerSchema } from "../validators";
+
 const router = express.Router();
 
 //* Get questions and their answers of a survey by survey id
@@ -29,7 +22,6 @@ router.get(
                 "SELECT * FROM answers WHERE question_id = $1",
                 [question.id]
               );
-              console.log("answers.rows=>", answers.rows);
               if (question.question_type === "2") {
                 const choicesWithCounts = question.choices.map((choice) => {
                   let count = 0;
@@ -67,13 +59,9 @@ router.get(
               }
             })
           );
-          console.log(
-            "questionsWithAnswesaars=>",
-            questionsWithAnswers[0].answers[0]
-          );
+
           return questionsWithAnswers;
         });
-      console.log("qyestions=>", questions);
       res.json(questions);
     } catch (error) {
       console.log("get user failed:", error);
@@ -84,7 +72,6 @@ router.get(
 //* Get questions of a survey by survey id
 router.get("/questions/:survey_id", async (req: Request, res: Response) => {
   const surveyid = req.params.survey_id;
-  console.log(`surveyidquestion: ${surveyid}`);
   try {
     const questionArr = await dbpool.query(
       "SELECT * FROM questions WHERE survey_id= $1",

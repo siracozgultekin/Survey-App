@@ -1,15 +1,8 @@
-import express, { Express, Request, Response } from "express";
-
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { ZodError } from "zod";
-
+import express, { Request, Response } from "express";
 import dbpool from "../../db";
-
 import authenticateToken from "../middlewares/auth";
+import { User } from "../types";
 
-import { Survey, User } from "../types";
-import { registerSchema } from "../validators";
 const router = express.Router();
 
 //* Get users by department

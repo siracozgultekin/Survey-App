@@ -25,10 +25,8 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "./ui/input";
 import { useEffect, useState } from "react";
-import { Avatar } from "@radix-ui/react-avatar";
 import type { User } from "@/interfaces";
 import { useNavigate } from "react-router-dom";
-import { set } from "zod";
 import Cookies from "js-cookie";
 import { DatePickerWithPresets } from "./ui/datePicker";
 
@@ -50,10 +48,6 @@ const SurveyCreationHeader = ({ type }: Props) => {
   );
   const token = Cookies.get("token");
   useEffect(() => {
-    console.log("deadline=>", deadline);
-  }, [deadline]);
-
-  useEffect(() => {
     //get users from db with user.department value
 
     const fetchData = async () => {
@@ -65,8 +59,6 @@ const SurveyCreationHeader = ({ type }: Props) => {
           },
         },
       );
-
-      console.log("res.data=>", res.data);
 
       setAllUsersArr(
         res.data.filter((usr: User) => {
@@ -85,7 +77,6 @@ const SurveyCreationHeader = ({ type }: Props) => {
       );
     };
     fetchData();
-    console.log("type:", type);
   }, []);
 
   useEffect(() => {
@@ -121,7 +112,6 @@ const SurveyCreationHeader = ({ type }: Props) => {
       return user.name.toLowerCase().includes(searchInp);
     });
     setFilteredUsersArr(res);
-    console.log("res=>", res);
   };
 
   const CreateSurvey = async () => {
@@ -158,7 +148,6 @@ const SurveyCreationHeader = ({ type }: Props) => {
         });
         surveyStore.resetsurveyStore();
         resetQuestionArr();
-        console.log("calisti");
         navigate("/home");
       }
     } catch (error) {
@@ -199,18 +188,14 @@ const SurveyCreationHeader = ({ type }: Props) => {
     surveyStore.resetsurveyStore();
     resetQuestionArr();
     setInvitedUsersArr([]);
-    console.log("calisti");
     navigate("/home");
   };
 
   const AddUser = (usr: User) => {
     setInvitedUsersArr((prev: User[]) => [...prev, usr]);
-    console.log("allUsersArr=>", allUsersArr);
     const filteredUsers = allUsersArr.filter((user) => {
-      console.log("usr.id=>", usr.id);
       return user.id !== usr.id;
     });
-    console.log("filteredUsers=>", filteredUsers);
     setAllUsersArr(filteredUsers);
   };
 
@@ -221,7 +206,6 @@ const SurveyCreationHeader = ({ type }: Props) => {
     setInvitedUsersArr(filteredUsers);
     setAllUsersArr((prev: User[]) => [...prev, usr]);
   };
-  console.log("invitedUsersArr=>", invitedUsersArr);
 
   return (
     <div className=" flex h-full items-center justify-between border-b bg-white px-8 dark:bg-slate-950">

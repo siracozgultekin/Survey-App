@@ -1,13 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-// import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-// import { useLocation } from "react-router-dom";
 import { Plus } from "lucide-react";
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-// import { object } from "zod";
-// import { useDispatch, useSelector } from "react-redux";
-// import type { RootState } from "../redux/app/store";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Survey } from "@/interfaces";
@@ -34,7 +26,6 @@ const HomeBody = () => {
           },
         },
       );
-      console.log("response.data =>", response.data);
       setMySurveys(response.data); // Update mySurveys state
     };
 
@@ -67,13 +58,7 @@ const HomeBody = () => {
               </div>
             </Link>
             <Link to={"/survey-creation?template=1"}>
-              <div
-                // style={{
-                //   backgroundImage: `url(${multiplech})`,
-                //   backgroundSize: "cover",
-                // }}
-                className="h-[275px] w-[215px] bg-secondary text-center text-secondary  shadow-2xl"
-              >
+              <div className="h-[275px] w-[215px] bg-secondary text-center text-secondary  shadow-2xl">
                 <div className="absolute z-[2]  flex h-[275px] w-[215px] flex-col items-center justify-center rounded-sm text-lg font-semibold text-primary hover:bg-primary hover:text-white dark:text-white">
                   Çalışan Geri Bildirimi Anketi <Plus />
                 </div>
@@ -138,14 +123,12 @@ const HomeBody = () => {
                       {survey.participants.length}
                     </TableCell>
                     <TableCell>
-                      {/* <Link to={`/survey/${survey.id}`}> */}
                       <Link
                         to={`/statistic?surveyid=${survey.id}`}
                         className=""
                       >
                         Görüntüle
                       </Link>
-                      {/* </Link> */}
                     </TableCell>
                   </TableRow>
                 ))

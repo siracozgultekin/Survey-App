@@ -1,15 +1,7 @@
-import express, { Express, Request, Response } from "express";
-
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { ZodError } from "zod";
-
+import express, { Request, Response } from "express";
 import dbpool from "../../db";
-
 import authenticateToken from "../middlewares/auth";
-
-import { Answer, User } from "../types";
-import { registerSchema } from "../validators";
+import { Answer } from "../types";
 
 const router = express.Router();
 
@@ -42,7 +34,6 @@ router.get(
   authenticateToken,
   async (req: Request, res: Response) => {
     try {
-      console.log("buradadada");
       const question_id = req.params.question_id;
       const answers = await dbpool.query(
         "SELECT * FROM answers where question_id = $1",

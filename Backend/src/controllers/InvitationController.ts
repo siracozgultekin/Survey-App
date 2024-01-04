@@ -1,23 +1,14 @@
 import express, { Express, Request, Response } from "express";
-
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { ZodError } from "zod";
-
 import dbpool from "../../db";
-
 import authenticateToken from "../middlewares/auth";
-
-import { Answer, Invitation, Question, Survey, User } from "../types";
-import { invitationSchema, registerSchema } from "../validators";
+import { Invitation, User } from "../types";
+import { invitationSchema } from "../validators";
 const router = express.Router();
 
 //* Insert invitations to invitations table
 router.post("/insert-invitations", async (req: Request, res: Response) => {
   try {
     const { invitedUserArr, survey_id } = invitationSchema.parse(req.body);
-    console.log("invitedUserArr=>", invitedUserArr);
-    console.log("survey_id=>", survey_id);
     invitedUserArr.forEach(async (user) => {
       await dbpool.query(
         "INSERT INTO public.invitations (survey_id, user_id, state) VALUES($1, $2, $3) RETURNING id",
@@ -54,7 +45,6 @@ router.get(
   authenticateToken,
   async (req: Request, res: Response) => {
     try {
-      console.log("burada");
       const { id } = req.user as User;
       const invitationArr = await dbpool.query(
         "SELECT * FROM invitations WHERE user_id = $1",
@@ -91,8 +81,6 @@ router.get(
 router.post("/updateinvitationstate", async (req, res) => {
   try {
     const { invitation_id } = req.body;
-    console.log("invitation_id=>", invitation_id);
-    console.log("req.body=>", req.body);
     await dbpool.query("UPDATE invitations SET state = true WHERE id = $1", [
       invitation_id,
     ]);

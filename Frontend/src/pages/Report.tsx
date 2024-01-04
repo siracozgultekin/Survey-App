@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Settings } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -24,22 +23,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReadOnlyTiptapEditor from "@/components/editor/TiptapReadOnlyEditor";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -61,7 +44,6 @@ const customLegend = (props: any) => {
 };
 
 const customTooltip = ({ active, payload, label }: any) => {
-  console.log("payload =>", payload);
   if (active) {
     return (
       <div className="rounded-md bg-muted px-4 py-2">
@@ -111,8 +93,7 @@ const Report = (props: Props) => {
             },
           },
         );
-        console.log("survey.data =>", survey.data);
-        console.log("response.data =>", response.data);
+
         setExtendedQuestions(response.data);
         setSurvey(survey.data);
         // setQuestions(response.data);
@@ -127,24 +108,13 @@ const Report = (props: Props) => {
 
   return (
     <div className="flex  flex-col items-center  p-5 text-center ">
-      {/* {questions.map((question) => {
-        // GetAllAnswers(question.id);
-        return (
-          <div className="text-2xl text-white" key={question.id}>
-            {question.question}
-          </div>
-        );
-      })} */}
       <Tabs
         defaultValue="account"
         className="flex h-[500px] w-[90%]  border bg-gray-100 dark:bg-slate-900 "
       >
         <TabsList className="flex  h-full flex-col self-center border ">
-          {/* <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="password">Password</TabsTrigger> */}
-
           <ScrollArea className="flex h-full flex-col">
-            <div className="flex  flex-col content-center items-center  justify-center bg-red-300 text-center">
+            <div className="flex  flex-col content-center items-center  justify-center  text-center">
               {extendedQuestions.map((question) => {
                 return (
                   <TabsTrigger
@@ -159,12 +129,7 @@ const Report = (props: Props) => {
             </div>
           </ScrollArea>
         </TabsList>{" "}
-        {/* <TabsContent value="account">
-          Make changes to your account here.
-        </TabsContent>
-        <TabsContent value="password">Change your password here.</TabsContent> */}
         {extendedQuestions.map((question, i) => {
-          console.log(`question ${i}=>`, question);
           if (question.question_type === "2") {
             return (
               <TabsContent
@@ -235,66 +200,6 @@ const Report = (props: Props) => {
           }
         })}
       </Tabs>
-      {/* <div className="grid grid-cols-3 gap-14">
-        {extendedQuestions.map((question) => {
-          switch (question?.question_type) {
-            case "2":
-              return (
-                <div
-                  className="h-[300px] w-[70%] bg-gray-100 text-black dark:bg-slate-900 dark:text-white"
-                  key={question.id}
-                >
-                  soru: {question.question}{" "}
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={question.choicesWithCounts}
-                      margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="choice" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="count" name="d" fill="#8884d8" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              );
-            case "3":
-              return (
-                <div
-                  className="h-[350px] w-[70%] bg-gray-100 text-black dark:bg-slate-900 dark:text-white"
-                  key={question.id}
-                >
-                  soru: {question.question}{" "}
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={question.choicesWithCounts}
-                      margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="choice" />
-                      <YAxis domain={[0, 10]} tickCount={11} />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="count" name="Average" fill="#4484d8" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              );
-          }
-        })}
-      </div> */}
       <div className="flex w-[90%] flex-col gap-4 pt-3 ">
         <h1 className=" text-start text-lg font-bold underline">
           Anket Bilgileri

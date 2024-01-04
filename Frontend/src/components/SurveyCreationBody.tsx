@@ -28,14 +28,11 @@ const SurveyCreationBody = ({ type }: Props) => {
   const [dropdownMenuTitle, setdropdownMenuTitle] = useState("Çoktan Seçmeli");
   const [questionType, setQuestionType] = useState<string>("2");
   const [choices, setChoices] = useState([""]);
-  const [rate, setRate] = useState<string>("0");
   const [question_id, setQuestion_id] = useState<string>("");
   const { toast } = useToast();
-
   const [editorState, setEditorState] = useState("");
   const [editorState2, setEditorState2] = useState("");
   const { editor } = useEditorStore();
-
   const { setSurveyDescription, setSurveyTitle, id } = useSurveyStore();
   const {
     addChoice,
@@ -62,9 +59,9 @@ const SurveyCreationBody = ({ type }: Props) => {
     });
     setChoices([""]);
     setEditorState("");
-    if (editor) {
-      editor.commands.clearContent();
-    }
+    // if (editor) {
+    //   editor.commands.clearContent();
+    // }
   };
   const handleQuestionIdChange = (id: string) => {
     setQuestion_id(id);
@@ -186,13 +183,12 @@ const SurveyCreationBody = ({ type }: Props) => {
           id: uuidv4(),
           survey_id: id,
           question: "Geçen haftaki erzak gününden ne kadar memnun musunuz?",
-          question_type: "3", // rating gözükmüyor. yanlis yazmış olabilirsin.
+          question_type: "3",
           choices: [],
         });
         break;
       default:
         resetQuestionArr();
-
         break;
     }
   }, []);
@@ -200,11 +196,6 @@ const SurveyCreationBody = ({ type }: Props) => {
   return (
     <div className="flex h-full w-full flex-col items-center justify-start ">
       {" "}
-      {/* surveyId: {id} */}
-      {/* <p className="text-red-600">
-        Çöz : Oluşturulan soruyu editleyince texteditor devre dışı kalıyor.
-        Stilsiz şekilde editlenebiliyor.
-      </p> */}
       <div className="m-10 flex h-fit w-[50%] flex-col  gap-3 rounded-2xl border bg-gray-100 dark:bg-slate-900 ">
         <div className="flex h-3 w-full self-start rounded-t-2xl bg-primary"></div>
         <div className="flex flex-col gap-3 p-5">
@@ -237,24 +228,8 @@ const SurveyCreationBody = ({ type }: Props) => {
           className=" mb-5 flex w-[50%] justify-between rounded-2xl  bg-gray-100 dark:bg-slate-900"
           key={question.id}
         >
-          {/* {JSON.stringify(question, null, 2)} */}
           <div className="m-5 w-full">
             <div className="mb-5 text-lg">
-              {/*Bold italic vs. çalısmıyor.*/}
-              {/* <input
-                type="text"
-                placeholder={question.question}
-                value={question.question}
-                className=" h-[90px] w-[100%] border-slate-600 bg-gray-200 font-sans text-lg focus:border-b-2 focus:outline-none dark:bg-slate-800"
-                onChange={(e) => {
-                  e.preventDefault(), setQuestion_id(question.id);
-
-                  setQuestion({
-                    id: question.id,
-                    questionstr: e.target.value,
-                  });
-                }}
-              /> */}
               <div className=" mb-5  w-full border  ">
                 <TiptapEditor
                   editorState={question.question}
@@ -283,12 +258,10 @@ const SurveyCreationBody = ({ type }: Props) => {
                   }
                   <div
                     onClick={() => {
-                      console.log("removeonces...", question.id, index);
                       removeChoice({
                         id: question.id,
                         index: index,
                       });
-                      console.log("sonrası...", question.id, index);
                     }}
                   >
                     <X className="h-6  text-red-700" />
@@ -341,17 +314,6 @@ const SurveyCreationBody = ({ type }: Props) => {
         <div className="flex  w-full flex-col bg-gray-100 p-5 dark:bg-slate-900">
           <div className="flex w-full flex-col">
             <div className="flex  w-full items-center justify-center gap-3 bg-gray-100 dark:bg-slate-900 ">
-              {/* <input
-                type="text"
-                name="questioninput"
-                id=""
-                onChange={(e) => {
-                  setQuestionInput(e.target.value);
-                }}
-                placeholder="Question"
-                value={questioninput}
-                className="h-[60px] w-[50%] border-slate-600 bg-gray-200 placeholder-gray-400 focus:border-b-[1px] focus:outline-none"
-              /> */}
               <div className=" mb-5 w-full  border  ">
                 <TiptapEditor
                   editorState={editorState}
@@ -393,7 +355,6 @@ const SurveyCreationBody = ({ type }: Props) => {
             </div>
           </div>
           <div className=" pt-2">
-            {/* {questionType === 1 && <OpenEnded />} */}
             {questionType === "2" && (
               <MultipleChoice choices={choices} setChoices={setChoices} />
             )}
@@ -406,11 +367,6 @@ const SurveyCreationBody = ({ type }: Props) => {
           >
             oluştur
           </button>
-          {/* <TiptapEditor
-            editorState={editorState}
-            setEditorState={setEditorState}
-          /> */}
-          {/* <ReadOnlyTiptapEditor content={editorState} /> */}
         </div>
       </div>
     </div>

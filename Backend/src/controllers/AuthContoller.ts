@@ -1,13 +1,9 @@
 import express, { Express, Request, Response } from "express";
-
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ZodError } from "zod";
-
 import dbpool from "../../db";
-
 import authenticateToken from "../middlewares/auth";
-
 import { User } from "../types";
 import { registerSchema } from "../validators";
 

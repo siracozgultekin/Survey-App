@@ -8,11 +8,8 @@ import Rating from "@/components/questiontype/Rating";
 import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
 import { useUserStore } from "@/store/use-user-store";
-import ScrollToTop from "@/components/ScrollToTop";
 import { toast } from "@/components/ui/use-toast";
-import { Toast } from "@radix-ui/react-toast";
 
-const token = localStorage.getItem("token");
 const SurveyAnswer = () => {
   const { surveyId } = useParams<{ surveyId: string }>();
   const { invitationId } = useParams<{ invitationId: string }>();
@@ -23,11 +20,6 @@ const SurveyAnswer = () => {
 
   //get user id from store
   const { setUser, user } = useUserStore();
-
-  useEffect(() => {
-    console.log("user=>", user);
-    console.log("usertypeof=>", typeof user);
-  }, [user]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -58,7 +50,6 @@ const SurveyAnswer = () => {
   useEffect(() => {
     //create answers object and asign it to answers for each question
     const newAnswers = questions.map((question: Question) => {
-      console.log("answer olusturucu tetiklendi");
       return {
         id: uuidv4(),
         user_id: user!.id,
@@ -82,11 +73,7 @@ const SurveyAnswer = () => {
       }
       return answerobj;
     });
-    console.log("AnswerArrayÖncesi=>", answers);
     setAnswers(newAnswers);
-    console.log("newAnswers", newAnswers);
-    console.log("typeof newAnswers", typeof newAnswers);
-    console.log("AnswerArray=>", answers);
   };
   const InsertMultipleChoiceAnswer = (choice: string, questionID: string) => {
     const newAnswers = answers.map((answerobj: Answer) => {
@@ -101,11 +88,7 @@ const SurveyAnswer = () => {
       }
       return answerobj;
     });
-    console.log("AnswerArrayÖncesi=>", answers);
     setAnswers(newAnswers);
-    console.log("newAnswers", newAnswers);
-    console.log("typeof newAnswers", typeof newAnswers);
-    console.log("AnswerArray=>", answers);
   };
   const CreateAnswer = async () => {
     try {
@@ -133,15 +116,13 @@ const SurveyAnswer = () => {
     }
   };
   const UpdateInvitationState = async () => {
-    console.log("invitationId=>", invitationId);
     try {
-      const res = await axios.post(
+      await axios.post(
         `http://localhost:5000/invitation/updateinvitationstate`,
         {
           invitation_id: invitationId,
         },
       );
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -154,7 +135,6 @@ const SurveyAnswer = () => {
           user_id: user!.id,
         })
         .then(() => {
-          console.log("thene girdi");
           //update user store by adding participated survey id
 
           const newParticipatedSurveys = [
@@ -167,11 +147,9 @@ const SurveyAnswer = () => {
           };
           setUser(newUser as User);
         });
-      console.log("then sonu");
     } catch (error) {
       console.log(error);
     }
-    console.log("user son hali=>", user);
   };
   return (
     <div className="flex flex-col items-center">
@@ -208,8 +186,6 @@ const SurveyAnswer = () => {
               </div>
             ))
           ) : (
-            /// her rating sorusu için özel olmalı. Şu an sadece genel bir rate değişkenini günceleyebiliyor.
-
             <div className="flex  flex-col items-center gap-2 p-3">
               <Rating
                 questionID={question.id}
@@ -217,15 +193,6 @@ const SurveyAnswer = () => {
                 setQuestions={setQuestions}
                 InsertRatingAnswer={InsertRatingAnswer}
               />
-
-              {/* <button
-                onClick={() => {
-                  console.log("choice::", question.choices);
-                  console.log("AnswerArraySon=>", answers);
-                }}
-              >
-                choice
-              </button> */}
             </div>
           )}
         </div>

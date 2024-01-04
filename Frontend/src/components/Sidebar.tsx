@@ -1,27 +1,18 @@
-import {
-  BarChart3,
-  FileText,
-  Home,
-  Inbox,
-  LogOut,
-  Plus,
-  User,
-} from "lucide-react";
+import { Crown, FileText, Home, Inbox, LogOut, Plus, User } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import SebitLogo from "@/assets/sebitLogo.png";
-
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "@/store/use-user-store";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
-
 import Setting from "./Setting";
 import CreateUser from "./CreateUser";
+
 const Sidebar = () => {
   const { user, setUser } = useUserStore();
   const location = useLocation();
@@ -35,12 +26,7 @@ const Sidebar = () => {
 
   return (
     <div className="flex h-full w-[250px] flex-col justify-between border-2 px-4  py-2 ">
-      {/* <img
-      src="https://www.vfabrika.com/Content/universal/img/sebit_logo.png"
-      alt="SebitPhoto"
-    /> */}
       <div>
-        {/* <hr className="border-1 w-full " /> */}
         <img src={SebitLogo} alt="SebitPhoto" className="" />
         <div className="flex w-full justify-center  ">
           <p className=" text-center font-sans tracking-[31px] text-primary ">
@@ -133,13 +119,7 @@ const Sidebar = () => {
                     " " +
                     user?.surname.toUpperCase()}
               </h2>
-              {user?.is_admin && (
-                <img
-                  src={"/src/assets/moderatorLogo.png"}
-                  alt="moderatorLogo"
-                  className="h-8 w-14"
-                />
-              )}
+              {user?.is_admin && <Crown />}
             </div>
           </PopoverTrigger>
           <PopoverContent className="bg-gray-200 dark:bg-stone-950 ">
@@ -172,9 +152,6 @@ const Sidebar = () => {
             </ul>
           </PopoverContent>
         </Popover>
-        {/* <p className="    pl-4 pt-2 text-center text-[10px] ">
-          <span className=" font-semibold">SAS</span> Version 1.12
-        </p> */}
       </div>
     </div>
   );

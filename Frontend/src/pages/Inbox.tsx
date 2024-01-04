@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
-
 import { DataTable } from "@/components/data-table/data-table";
-import {
-  DataTableInvitation,
-  DataTableSurveyWithInvitation,
-} from "@/components/data-table/data/schema";
+import { DataTableSurveyWithInvitation } from "@/components/data-table/data/schema";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { SurveyWithInvitationColumn } from "@/components/data-table/columns";
 import axios from "axios";
-
 import Cookies from "js-cookie";
 
 const Inbox = () => {
@@ -28,7 +22,6 @@ const Inbox = () => {
             },
           },
         );
-        console.log("surveyExtended=> ", response.data);
         setSurveyExtended(response.data as DataTableSurveyWithInvitation[]);
       } catch (err) {
         console.log(err);

@@ -1,15 +1,9 @@
-import express, { Express, Request, Response } from "express";
-
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import express, { Request, Response } from "express";
 import { ZodError } from "zod";
-
 import dbpool from "../../db";
-
 import authenticateToken from "../middlewares/auth";
-
 import { User } from "../types";
-import { insertSurveySchema, registerSchema } from "../validators";
+import { insertSurveySchema } from "../validators";
 
 const router = express.Router();
 
@@ -17,7 +11,6 @@ const router = express.Router();
 router.post(
   "/Insert-survey-and-questions",
   async (req: Request, res: Response) => {
-    console.log(req.body.dataSent);
     try {
       const {
         id,
@@ -62,7 +55,6 @@ router.post(
     } catch (error) {
       console.log(error);
       if (error instanceof ZodError) {
-        console.log("hocam şimdi de zod tipinde hata var");
         return res.status(400).json({ error: error.errors });
       }
       res.status(500).json({ error: "Ups.. Something went wrong!" });
@@ -166,7 +158,6 @@ router.get(
     const { id } = req.user as User;
 
     try {
-      console.log("id=>", id);
       const participatedSurveys = await dbpool.query(
         `
         SELECT 
@@ -189,7 +180,6 @@ router.get(
     `,
         [id]
       );
-      console.log("participatedSurveys=====>", participatedSurveys.rows);
 
       res.json(participatedSurveys.rows);
     } catch (error) {
@@ -202,7 +192,6 @@ router.get(
 router.post("/insertparticipatedsurvey", async (req, res) => {
   const { survey_id, user_id } = req.body;
   try {
-    console.log("req.bodyforparticipatedsurvey=>", survey_id);
     //insert survey_id(request) into participated_surveys column of users table
     await dbpool
       .query(

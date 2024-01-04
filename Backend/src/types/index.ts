@@ -1,5 +1,3 @@
-import { Request } from "express-serve-static-core";
-
 export interface Survey {
   id: string;
   owner_id: string;
