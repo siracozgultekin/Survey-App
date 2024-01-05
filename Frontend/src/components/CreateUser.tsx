@@ -71,7 +71,7 @@ const CreateUser = () => {
           Yeni Kullanıcı Oluştur
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-gray-200">
+      <DialogContent className="bg-gray-200 dark:bg-slate-900">
         <DialogHeader>
           <DialogTitle className="text-center">Kullanıcı Oluşturma</DialogTitle>
           <div className="flc flex-col p-2">

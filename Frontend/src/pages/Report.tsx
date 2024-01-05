@@ -233,10 +233,10 @@ const Report = (props: Props) => {
               Anketi Sil
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="bg-gray-100 dark:bg-slate-900">
             <DialogHeader>
-              <DialogTitle>Anketi Silme</DialogTitle>
-              <DialogDescription className="flex flex-col">
+              <DialogTitle>Anketi Silme İşlemi</DialogTitle>
+              <DialogDescription className="flex flex-col ">
                 <p>
                   Bu anketi kalıcı olarak silmek istediğine emin misin?{" "}
                   <strong>Unutma! </strong>
