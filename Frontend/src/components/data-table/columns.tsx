@@ -232,12 +232,6 @@ export const participatedSurveyColumns: ColumnDef<DataTableParticipatedSurvey>[]
         );
       },
     },
-    {
-      id: "actions",
-      cell: ({ row }) => (
-        <DataTableRowActions row={row} tableType="participatedSurvey" />
-      ),
-    },
   ];
 
 export const SurveyWithInvitationColumn: ColumnDef<DataTableSurveyWithInvitation>[] =

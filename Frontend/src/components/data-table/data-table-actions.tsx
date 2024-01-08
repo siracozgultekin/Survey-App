@@ -53,11 +53,12 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        {!instanceOfSurveyWithInvitation(survey) && (
-          <DropdownMenuItem className="cursor-pointer" asChild>
-            <Link to={`/statistic?surveyid=${survey.id}`}>Görüntüle</Link>
-          </DropdownMenuItem>
-        )}
+        {!instanceOfSurveyWithInvitation(survey) &&
+          tableType === "mySurvey" && (
+            <DropdownMenuItem className="cursor-pointer" asChild>
+              <Link to={`/statistic?surveyid=${survey.id}`}>Görüntüle</Link>
+            </DropdownMenuItem>
+          )}
 
         <DropdownMenuItem>
           {tableType === "mySurvey" && "Katılımcıları düzenle"}

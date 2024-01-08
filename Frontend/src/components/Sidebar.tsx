@@ -27,13 +27,15 @@ const Sidebar = () => {
   return (
     <div className="flex h-full w-[250px] flex-col justify-between border-2 px-4  py-2 ">
       <div>
-        <img src={SebitLogo} alt="SebitPhoto" className="" />
-        <div className="flex w-full justify-center  ">
-          <p className=" text-center font-sans tracking-[31px] text-primary ">
-            ANKE
-          </p>
-          <p className=" text-center font-sans text-primary ">T</p>
-        </div>
+        <Link to="/home">
+          <img src={SebitLogo} alt="SebitPhoto" className="" />
+          <div className="flex w-full justify-center  ">
+            <p className=" text-center font-sans tracking-[31px] text-primary ">
+              ANKE
+            </p>
+            <p className=" text-center font-sans text-primary ">T</p>
+          </div>
+        </Link>
         <hr className="mt-2 w-full" />
         <Link to="/survey-creation">
           <Button className="m-4 flex items-center  " variant="positive">

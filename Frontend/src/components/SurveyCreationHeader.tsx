@@ -208,7 +208,7 @@ const SurveyCreationHeader = ({ type }: Props) => {
   };
 
   return (
-    <div className=" flex h-full items-center justify-between border-b bg-white px-8 dark:bg-slate-950">
+    <div className=" flex h-full items-center justify-between border-b bg-white px-8 py-3 dark:bg-slate-950">
       <div className="flex items-center">
         {/* <h3 className="w-[400px] font-semibold">{surveyStore.title}</h3> */}
         <h3 className=" pr-5 font-semibold"> {leftHeader} </h3>
