@@ -7,6 +7,7 @@ interface RatingProps {
   questions?: Question[];
   setQuestions?: (questions: Question[]) => void;
   InsertRatingAnswer?: (choice: string, questionID: string) => void;
+  disabled?: boolean;
 }
 
 const Rating: React.FC<RatingProps> = ({
@@ -14,6 +15,7 @@ const Rating: React.FC<RatingProps> = ({
   questions = [],
   setQuestions,
   InsertRatingAnswer,
+  disabled,
 }) => {
   const [clickedIndex, setClickedIndex] = useState<number | null>(null);
 
@@ -33,8 +35,10 @@ const Rating: React.FC<RatingProps> = ({
       {Array.from(Array(10).keys()).map((_, index) => (
         <button
           key={index}
+          disabled={disabled}
           className={cn(
             "h-10 w-10 rounded-full border-2 border-slate-500 bg-slate-200 text-[80%] hover:text-white  dark:bg-slate-800 ",
+            disabled && "cursor-not-allowed",
             index === 0 &&
               " hover:bg-red-900 dark:hover:bg-red-900 dark:hover:text-white",
             index === 1 &&

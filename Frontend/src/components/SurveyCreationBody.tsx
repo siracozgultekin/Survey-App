@@ -240,32 +240,35 @@ const SurveyCreationBody = ({ type }: Props) => {
             <div>
               {question.choices.map((choice, index) => (
                 <div key={index} className="mb-2 flex items-center gap-2">
-                  <Circle className="h-5 w-5" />
-                  {
-                    <input
-                      type="text"
-                      placeholder={choice}
-                      className="w-full rounded-lg border-slate-800 bg-gray-200 p-1 font-sans text-lg  focus:border-b-2 focus:outline-none dark:bg-slate-800"
-                      onChange={(e) => {
-                        e.preventDefault(),
-                          setQuestionChoice({
+                  {question.question_type === "2" && (
+                    <>
+                      <Circle className="h-5 w-5" />
+                      <input
+                        type="text"
+                        placeholder={choice}
+                        className="w-full rounded-lg border-slate-800 bg-gray-200 p-1 font-sans text-lg  focus:border-b-2 focus:outline-none dark:bg-slate-800"
+                        onChange={(e) => {
+                          e.preventDefault(),
+                            setQuestionChoice({
+                              id: question.id,
+                              index: index,
+                              choicestr: e.target.value,
+                            });
+                        }}
+                      />
+
+                      <div
+                        onClick={() => {
+                          removeChoice({
                             id: question.id,
                             index: index,
-                            choicestr: e.target.value,
                           });
-                      }}
-                    />
-                  }
-                  <div
-                    onClick={() => {
-                      removeChoice({
-                        id: question.id,
-                        index: index,
-                      });
-                    }}
-                  >
-                    <X className="h-6  text-red-700" />
-                  </div>
+                        }}
+                      >
+                        <X className="h-6  text-red-700" />
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
               {question.question_type === "2" && (
@@ -358,7 +361,7 @@ const SurveyCreationBody = ({ type }: Props) => {
             {questionType === "2" && (
               <MultipleChoice choices={choices} setChoices={setChoices} />
             )}
-            {questionType === "3" && <Rating />}
+            {questionType === "3" && <Rating disabled={true} />}
           </div>
           <button
             className="flex h-[40px] w-[10%]  items-center justify-center self-center rounded-lg border-2 text-[80%]"
