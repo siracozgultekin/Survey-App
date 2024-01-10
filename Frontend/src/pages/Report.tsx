@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 import {
   BarChart,
@@ -28,11 +27,10 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReadOnlyTiptapEditor from "@/components/editor/TiptapReadOnlyEditor";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast, useToast } from "@/components/ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
 
 const customLegend = (props: any) => {
   const { payload } = props;
-  const { toast } = useToast();
   return (
     <div className="flex flex-col">
       {payload.map((entry: any, index: number) => (
@@ -67,6 +65,9 @@ const Report = () => {
   const [survey, setSurvey] = useState<Survey>();
   const [extendedQuestions, setExtendedQuestions] = useState<
     ExtendedQuestion[]
+  >([]);
+  const [invitedUsersNameSurname, setInvitedUsersNameSurname] = useState<
+    String[]
   >([]);
   const navigate = useNavigate();
   function formatDate(date: Date | undefined | null) {
@@ -104,8 +105,24 @@ const Report = () => {
         console.log(error);
       }
     };
+    const GetInvitedUsers = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/invitation/get-invited-users/${survey_id}`,
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          },
+        );
+        console.log(response.data);
+        setInvitedUsersNameSurname(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     GetAllQuestionsAndSurvey();
-
+    GetInvitedUsers();
     return () => {};
   }, [survey_id]);
   const DeleteHandler = async () => {
@@ -224,57 +241,76 @@ const Report = () => {
           }
         })}
       </Tabs>
-      <div className="flex w-[90%] flex-col gap-4 pt-3 ">
-        <h1 className=" text-start text-lg font-bold underline">
-          Anket Bilgileri
-        </h1>
-        <div className="flex gap-2">
-          <h3 className="font-semibold">Anketin Başlığı:</h3>
-          <p>{survey?.title}</p>
+      <div className="flex w-[90%]  content-between justify-between gap-4  pt-3">
+        <div className=" flex w-[45%] flex-col gap-3  ">
+          <h1 className=" text-start text-lg font-bold underline">
+            Anket Bilgileri
+          </h1>
+          <div className="flex gap-2">
+            <h3 className="font-semibold">Başlığı:</h3>
+            <p>{survey?.title}</p>
+          </div>
+          <div className="flex flex-col items-start gap-2">
+            <h3 className="truncate font-semibold">Açıklama:</h3>
+            <p className="flex flex-col text-start">
+              {survey?.description}
+              {survey?.description}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <h3 className="font-semibold">Katılımcı Sayısı:</h3>
+            <p>{survey?.participants.length}</p>
+          </div>
+          <div className="flex gap-2">
+            <h3 className="font-semibold"> Oluşturulma Tarihi:</h3>
+            <p>{formatDate(survey?.creation_date)}</p>
+          </div>
+          <div className="flex gap-2">
+            <h3 className="font-semibold">Bitiş Tarihi:</h3>
+            <p>{formatDate(survey?.deadline)}</p>
+          </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                className="w-fit justify-start gap-3  text-base"
+                variant="destructive"
+              >
+                Anketi Sil
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-gray-100 dark:bg-slate-900">
+              <DialogHeader>
+                <DialogTitle>Anketi Silme İşlemi</DialogTitle>
+                <DialogDescription className="flex flex-col ">
+                  Bu anketi kalıcı olarak silmek istediğine emin misin?{" "}
+                  <strong>Unutma! </strong>
+                  Gerçek vedalar yalnızca 1 kez yapılır.
+                  <Button
+                    variant="destructive"
+                    className="w-fit self-center"
+                    onClick={DeleteHandler}
+                  >
+                    Sil
+                  </Button>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
-        <div className="flex gap-2">
-          <h3 className="font-semibold">Anketin Açıklaması:</h3>
-          <p> {survey?.description}</p>
+        <div className=" h-[300px] w-[45%] ">
+          <h1 className=" text-start text-lg font-bold underline">
+            Davet Edilenler
+          </h1>
+          <ScrollArea className="flex flex-col border ">
+            <div className="flex h-[310px] flex-col content-center items-center  justify-center  gap-3 text-center">
+              {invitedUsersNameSurname.map((user, i) => (
+                <div className="flex" key={i}>
+                  <p>{user}</p>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
         </div>
-        <div className="flex gap-2">
-          <h3 className="font-semibold">Katılımcı Sayısı:</h3>
-          <p>{survey?.participants.length}</p>
-        </div>
-        <div className="flex gap-2">
-          <h3 className="font-semibold">Anketin Oluşturulma Tarihi:</h3>
-          <p>{formatDate(survey?.creation_date)}</p>
-        </div>
-        <div className="flex gap-2">
-          <h3 className="font-semibold">Anketin Bitiş Tarihi:</h3>
-          <p>{formatDate(survey?.deadline)}</p>
-        </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              className="w-fit justify-start gap-3  text-base"
-              variant="destructive"
-            >
-              Anketi Sil
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="bg-gray-100 dark:bg-slate-900">
-            <DialogHeader>
-              <DialogTitle>Anketi Silme İşlemi</DialogTitle>
-              <DialogDescription className="flex flex-col ">
-                Bu anketi kalıcı olarak silmek istediğine emin misin?{" "}
-                <strong>Unutma! </strong>
-                Gerçek vedalar yalnızca 1 kez yapılır.
-                <Button
-                  variant="destructive"
-                  className="w-fit self-center"
-                  onClick={DeleteHandler}
-                >
-                  Sil
-                </Button>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );

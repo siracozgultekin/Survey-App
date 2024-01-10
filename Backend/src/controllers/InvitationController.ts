@@ -94,5 +94,32 @@ router.post("/updateinvitationstate", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Update invitation state failed" });
   }
 });
+router.get(
+  "/get-invited-users/:survey_id",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      //get invitations by survey id then get users by invitation user id
+      const { survey_id } = req.params;
+      console.log("survey_id:", survey_id);
+      const invitations = await dbpool.query(
+        "SELECT * FROM invitations WHERE survey_id = $1  AND is_active = true",
+        [survey_id]
+      );
+      const usersNameSurname = await Promise.all(
+        invitations.rows.map(async (invitation: Invitation) => {
+          const user = await dbpool.query("SELECT * FROM users WHERE id = $1", [
+            invitation.user_id,
+          ]);
+          return user.rows[0].name + " " + user.rows[0].surname;
+        })
+      );
 
+      res.json(usersNameSurname);
+    } catch (error) {
+      console.log("get invited users failed:", error);
+      res.status(500).json({ error: "Get invited users failed" });
+    }
+  }
+);
 export default router;
