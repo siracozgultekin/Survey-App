@@ -6,21 +6,25 @@ import { invitationSchema } from "../validators";
 const router = express.Router();
 
 //* Insert invitations to invitations table
-router.post("/insert-invitations", async (req: Request, res: Response) => {
-  try {
-    const { invitedUserArr, survey_id } = invitationSchema.parse(req.body);
-    invitedUserArr.forEach(async (user) => {
-      await dbpool.query(
-        "INSERT INTO public.invitations (survey_id, user_id, state) VALUES($1, $2, $3) RETURNING id",
-        [survey_id, user.id, false]
-      );
-    });
-    res.status(200).json({ message: "Invitation sent" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Ups.. Something went wrong! (code:500)" });
+router.post(
+  "/insert-invitations",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const { invitedUserArr, survey_id } = invitationSchema.parse(req.body);
+      invitedUserArr.forEach(async (user) => {
+        await dbpool.query(
+          "INSERT INTO public.invitations (survey_id, user_id, state) VALUES($1, $2, $3) RETURNING id",
+          [survey_id, user.id, false]
+        );
+      });
+      res.status(200).json({ message: "Invitation sent" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Ups.. Something went wrong! (code:500)" });
+    }
   }
-});
+);
 //* Get all invitations of current user
 router.get(
   "/get-invitations",
@@ -78,7 +82,7 @@ router.get(
 );
 
 //* Update invitation state
-router.post("/updateinvitationstate", async (req, res) => {
+router.post("/updateinvitationstate", authenticateToken, async (req, res) => {
   try {
     const { invitation_id } = req.body;
     await dbpool.query("UPDATE invitations SET state = true WHERE id = $1", [

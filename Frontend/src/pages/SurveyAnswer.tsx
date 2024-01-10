@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
 import { useUserStore } from "@/store/use-user-store";
 import { toast } from "@/components/ui/use-toast";
-
+import Cookies from "js-cookie";
 const SurveyAnswer = () => {
   const { surveyId } = useParams<{ surveyId: string }>();
   const { invitationId } = useParams<{ invitationId: string }>();
@@ -20,12 +20,17 @@ const SurveyAnswer = () => {
 
   //get user id from store
   const { setUser, user } = useUserStore();
-
+  const token = Cookies.get("token");
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         const res = await axios.get(
           `http://localhost:5000/question/questions/${surveyId}`,
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          },
         );
         setQuestions(res.data);
       } catch (error) {
@@ -39,6 +44,11 @@ const SurveyAnswer = () => {
       try {
         const res = await axios.get(
           `http://localhost:5000/survey/get-surveys/${surveyId}`,
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          },
         );
         setSurvey(res.data);
       } catch (err) {
@@ -93,8 +103,13 @@ const SurveyAnswer = () => {
   const CreateAnswer = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:5000/answer/answers`,
+        `http://localhost:5000/answer/insert-answers`,
         answers,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        },
       );
 
       if (res.status == 200) {
@@ -122,6 +137,11 @@ const SurveyAnswer = () => {
         {
           invitation_id: invitationId,
         },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        },
       );
     } catch (error) {
       console.log(error);
@@ -130,10 +150,14 @@ const SurveyAnswer = () => {
   const InsertParticipatedSurvey = async () => {
     try {
       await axios
-        .post(`http://localhost:5000/survey/insertparticipatedsurvey`, {
-          survey_id: surveyId as string,
-          user_id: user!.id,
-        })
+        .post(
+          `http://localhost:5000/survey/insertparticipatedsurvey`,
+          {
+            survey_id: surveyId as string,
+            user_id: user!.id,
+          },
+          { headers: { Authorization: `${token}` } },
+        )
         .then(() => {
           //update user store by adding participated survey id
 

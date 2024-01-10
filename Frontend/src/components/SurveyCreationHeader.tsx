@@ -139,6 +139,11 @@ const SurveyCreationHeader = ({ type }: Props) => {
           //dataSent is equal to: { ...survey, questions: questionArray },
           dataSent,
         },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        },
       );
 
       if (res.status === 200) {
@@ -171,10 +176,18 @@ const SurveyCreationHeader = ({ type }: Props) => {
   };
   const CreateInvitations = async () => {
     try {
-      axios.post("http://localhost:5000/invitation/insert-invitations", {
-        invitedUserArr: invitedUsersArr,
-        survey_id: surveyStore.id,
-      });
+      axios.post(
+        "http://localhost:5000/invitation/insert-invitations",
+        {
+          invitedUserArr: invitedUsersArr,
+          survey_id: surveyStore.id,
+        },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        },
+      );
     } catch (error) {
       console.log("error=>", error);
     }

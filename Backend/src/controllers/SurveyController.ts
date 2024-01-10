@@ -10,6 +10,7 @@ const router = express.Router();
 //*insert survey and questions into database
 router.post(
   "/Insert-survey-and-questions",
+  authenticateToken,
   async (req: Request, res: Response) => {
     try {
       const {
@@ -23,7 +24,7 @@ router.post(
         questions,
         is_active,
       } = insertSurveySchema.parse(req.body.dataSent);
-      const newSurvey = await dbpool.query(
+      await dbpool.query(
         "INSERT INTO public.surveys (id, owner_id, title, description, creation_date, deadline, participants) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
         [
           id,
@@ -64,20 +65,24 @@ router.post(
 
 //* Get a survey by id
 
-router.get("/get-surveys/:id", async (req: Request, res: Response) => {
-  const surveyid = req.params.id;
+router.get(
+  "/get-surveys/:id",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const surveyid = req.params.id;
 
-  try {
-    const survey = await dbpool.query("SELECT * FROM surveys WHERE id= $1", [
-      surveyid,
-    ]);
+    try {
+      const survey = await dbpool.query("SELECT * FROM surveys WHERE id= $1", [
+        surveyid,
+      ]);
 
-    res.json(survey.rows[0]);
-  } catch (error) {
-    console.log("get survey failed:", error);
-    res.status(500).json({ error: "Get user failed" });
+      res.json(survey.rows[0]);
+    } catch (error) {
+      console.log("get survey failed:", error);
+      res.status(500).json({ error: "Get user failed" });
+    }
   }
-});
+);
 //* Get last 6 surveys of current user
 router.get(
   "/get-my-latest-surveys",
@@ -189,29 +194,33 @@ router.get(
   }
 );
 //* Insert  survey id into participated_surveys column of users table and user id into participants column of surveys table
-router.post("/insertparticipatedsurvey", async (req, res) => {
-  const { survey_id, user_id } = req.body;
-  try {
-    //insert survey_id(request) into participated_surveys column of users table
-    await dbpool
-      .query(
-        "UPDATE users SET participated_surveys = array_append(participated_surveys, $1) WHERE id = $2 ",
-        [survey_id, user_id]
-      )
-      .then(async () => {
-        await dbpool.query(
-          "UPDATE surveys SET participants = array_append(participants, $1) WHERE id = $2 ",
-          [user_id, survey_id]
-        );
+router.post(
+  "/insertparticipatedsurvey",
+  authenticateToken,
+  async (req, res) => {
+    const { survey_id, user_id } = req.body;
+    try {
+      //insert survey_id(request) into participated_surveys column of users table
+      await dbpool
+        .query(
+          "UPDATE users SET participated_surveys = array_append(participated_surveys, $1) WHERE id = $2 ",
+          [survey_id, user_id]
+        )
+        .then(async () => {
+          await dbpool.query(
+            "UPDATE surveys SET participants = array_append(participants, $1) WHERE id = $2 ",
+            [user_id, survey_id]
+          );
+        });
+      res.json({
+        message: "Survey id inserted into participated_surveys column",
       });
-    res.json({
-      message: "Survey id inserted into participated_surveys column",
-    });
-  } catch (error) {
-    console.log("get user failed:", error);
-    res.status(500).json({ error: "Get user failed" });
+    } catch (error) {
+      console.log("get user failed:", error);
+      res.status(500).json({ error: "Get user failed" });
+    }
   }
-});
+);
 ///
 
 export default router;

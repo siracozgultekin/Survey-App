@@ -70,19 +70,23 @@ router.get(
   }
 );
 //* Get questions of a survey by survey id
-router.get("/questions/:survey_id", async (req: Request, res: Response) => {
-  const surveyid = req.params.survey_id;
-  try {
-    const questionArr = await dbpool.query(
-      "SELECT * FROM questions WHERE survey_id= $1",
-      [surveyid]
-    );
+router.get(
+  "/questions/:survey_id",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const surveyid = req.params.survey_id;
+    try {
+      const questionArr = await dbpool.query(
+        "SELECT * FROM questions WHERE survey_id= $1",
+        [surveyid]
+      );
 
-    res.json(questionArr.rows);
-  } catch (error) {
-    console.log("get user failed:", error);
-    res.status(500).json({ error: "Get user failed" });
+      res.json(questionArr.rows);
+    } catch (error) {
+      console.log("get user failed:", error);
+      res.status(500).json({ error: "Get user failed" });
+    }
   }
-});
+);
 
 export default router;

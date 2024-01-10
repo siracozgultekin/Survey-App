@@ -1,14 +1,16 @@
 import express, { Request, Response } from "express";
 import dbpool from "../../db";
 import authenticateToken from "../middlewares/auth";
-import { Answer } from "../types";
+import { Answer, User } from "../types";
 
 const router = express.Router();
 
 //*Create answer objects in database
-router.post("/answers", async (req, res) => {
+router.post("/insert-answers", authenticateToken, async (req, res) => {
   try {
+    console.log("insert answers called");
     const answersArr = req.body;
+    console.log("answersArr:", answersArr);
     answersArr.forEach(async (answer: Answer) => {
       await dbpool.query(
         "INSERT INTO public.answers (id, question_id, survey_id, user_id, answer) VALUES($1, $2, $3, $4, $5)",
@@ -21,7 +23,7 @@ router.post("/answers", async (req, res) => {
         ]
       );
     });
-
+    console.log("answers inserted into their tables");
     res.json({ message: "Answers inserted into their tables" });
   } catch (error) {
     console.log("insert answers failed:", error);
@@ -29,21 +31,21 @@ router.post("/answers", async (req, res) => {
   }
 });
 //* Get all answers of a question by question id
-router.get(
-  "/getallanswers/:question_id",
-  authenticateToken,
-  async (req: Request, res: Response) => {
-    try {
-      const question_id = req.params.question_id;
-      const answers = await dbpool.query(
-        "SELECT * FROM answers where question_id = $1",
-        [question_id]
-      );
-      res.json(answers.rows);
-    } catch (error) {
-      console.log("get answers failed:", error);
-      res.status(500).json({ error: "Get answers failed" });
-    }
-  }
-);
+// router.get(
+//   "/getallanswers/:question_id",
+//   authenticateToken,
+//   async (req: Request, res: Response) => {
+//     try {
+//       const question_id = req.params.question_id;
+//       const answers = await dbpool.query(
+//         "SELECT * FROM answers where question_id = $1",
+//         [question_id]
+//       );
+//       res.json(answers.rows);
+//     } catch (error) {
+//       console.log("get answers failed:", error);
+//       res.status(500).json({ error: "Get answers failed" });
+//     }
+//   }
+// );
 export default router;
