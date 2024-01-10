@@ -51,7 +51,7 @@ router.get(
     try {
       const { id } = req.user as User;
       const invitationArr = await dbpool.query(
-        "SELECT * FROM invitations WHERE user_id = $1",
+        "SELECT * FROM invitations WHERE user_id = $1 AND is_active = true",
         [id]
       );
 

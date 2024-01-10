@@ -2,7 +2,7 @@ import { ExtendedQuestion, Survey } from "@/interfaces";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+
 import {
   BarChart,
   Bar,
@@ -26,11 +28,11 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReadOnlyTiptapEditor from "@/components/editor/TiptapReadOnlyEditor";
 import { ScrollArea } from "@/components/ui/scroll-area";
-type Props = {};
+import { toast, useToast } from "@/components/ui/use-toast";
 
 const customLegend = (props: any) => {
   const { payload } = props;
-
+  const { toast } = useToast();
   return (
     <div className="flex flex-col">
       {payload.map((entry: any, index: number) => (
@@ -58,7 +60,7 @@ const customTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const Report = (props: Props) => {
+const Report = () => {
   const token = Cookies.get("token");
   let [searchParams] = useSearchParams();
   const survey_id = searchParams.get("surveyid") ?? "0";
@@ -66,6 +68,7 @@ const Report = (props: Props) => {
   const [extendedQuestions, setExtendedQuestions] = useState<
     ExtendedQuestion[]
   >([]);
+  const navigate = useNavigate();
   function formatDate(date: Date | undefined | null) {
     if (date) {
       const formattedDate = new Date(date).toLocaleDateString(); // You can customize the date format as needed
@@ -105,7 +108,28 @@ const Report = (props: Props) => {
 
     return () => {};
   }, [survey_id]);
-
+  const DeleteHandler = async () => {
+    try {
+      await axios.post(
+        `http://localhost:5000/survey/delete-survey-and-invitations`,
+        { survey_id },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        },
+      );
+      toast({
+        title: "Silindi!",
+        description: "Anket başarıyla silindi",
+      });
+      setTimeout(() => {
+        navigate("/home");
+      }, 400);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="flex  flex-col items-center  p-5 text-center ">
       <Tabs
@@ -129,7 +153,7 @@ const Report = (props: Props) => {
             </div>
           </ScrollArea>
         </TabsList>{" "}
-        {extendedQuestions.map((question, i) => {
+        {extendedQuestions.map((question) => {
           if (question.question_type === "2") {
             return (
               <TabsContent
@@ -237,12 +261,14 @@ const Report = (props: Props) => {
             <DialogHeader>
               <DialogTitle>Anketi Silme İşlemi</DialogTitle>
               <DialogDescription className="flex flex-col ">
-                <p>
-                  Bu anketi kalıcı olarak silmek istediğine emin misin?{" "}
-                  <strong>Unutma! </strong>
-                  Gerçek vedalar yalnızca 1 kez yapılır.
-                </p>
-                <Button variant="destructive" className="w-fit self-center">
+                Bu anketi kalıcı olarak silmek istediğine emin misin?{" "}
+                <strong>Unutma! </strong>
+                Gerçek vedalar yalnızca 1 kez yapılır.
+                <Button
+                  variant="destructive"
+                  className="w-fit self-center"
+                  onClick={DeleteHandler}
+                >
                   Sil
                 </Button>
               </DialogDescription>

@@ -92,7 +92,7 @@ router.get(
 
     try {
       const mySurveys = await dbpool.query(
-        "SELECT * FROM surveys WHERE owner_id = $1 ORDER BY creation_date DESC LIMIT 6",
+        "SELECT * FROM surveys WHERE owner_id = $1 AND is_active=true ORDER BY creation_date DESC LIMIT 6",
         [id]
       );
       res.json(mySurveys.rows);
@@ -144,7 +144,8 @@ router.get(
 FROM 
     surveys
 WHERE 
-    owner_id = $1;
+    owner_id = $1
+    AND is_active = true;
     `,
         [id]
       );
@@ -180,8 +181,8 @@ router.get(
     JOIN
         users u ON s.owner_id = u.id
     WHERE 
-        $1 = ANY(s.participants);
-    
+        $1 = ANY(s.participants)
+      AND s.is_active = true;
     `,
         [id]
       );
@@ -218,6 +219,31 @@ router.post(
     } catch (error) {
       console.log("get user failed:", error);
       res.status(500).json({ error: "Get user failed" });
+    }
+  }
+);
+
+router.post(
+  "/delete-survey-and-invitations",
+  authenticateToken,
+  async (req, res) => {
+    const { survey_id } = req.body;
+    try {
+      //update is_active column of surveys table
+      console.log("tetiklendi");
+      await dbpool.query(
+        "UPDATE surveys SET is_active = false WHERE id = $1 ",
+        [survey_id]
+      );
+      //update is_active column of invitations table
+      await dbpool.query(
+        "UPDATE invitations SET is_active = false WHERE survey_id = $1 ",
+        [survey_id]
+      );
+      res.json({ message: "Survey deleted" });
+    } catch (error) {
+      console.log("error=>", error);
+      res.status(500).json({ error: error });
     }
   }
 );

@@ -14,6 +14,7 @@ export interface Invitation {
   user_id: string;
   survey_id: string;
   state: boolean;
+  is_active: boolean;
 }
 
 export type User = {

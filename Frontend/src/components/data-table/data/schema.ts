@@ -33,6 +33,7 @@ export const invitationSchema = z.object({
   user_id: z.string(),
   survey_id: z.string(),
   state: z.boolean(),
+  is_active: z.boolean(),
 });
 
 export const surveyWithInvitationSchema = z.object({
