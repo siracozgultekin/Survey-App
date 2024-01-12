@@ -4,7 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import SebitLogo from "@/assets/sebitLogo.png";
+import Logo from "@/assets/logoSAS.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "@/store/use-user-store";
 import { Button } from "./ui/button";
@@ -27,15 +27,23 @@ const Sidebar = () => {
   return (
     <div className="flex h-full w-[250px] flex-col justify-between border-2 px-4  py-2 ">
       <div>
-        <Link to="/home">
-          <img src={SebitLogo} alt="SebitPhoto" className="" />
-          <div className="flex w-full justify-center  ">
-            <p className=" text-center font-sans tracking-[31px] text-primary ">
-              ANKE
-            </p>
-            <p className=" text-center font-sans text-primary ">T</p>
-          </div>
-        </Link>
+        <div className="flex w-full flex-col items-center bg-slate-900 ">
+          <Link to="/home" className="flex flex-col items-center ">
+            <img src={Logo} alt="Logo" className="w-[100px] self-center  " />
+            <div className="flex w-full justify-center  ">
+              <p className=" text-center  tracking-[20px] text-primary ">
+                SİRA
+              </p>
+              <p className=" text-center text-primary ">C</p>
+            </div>
+            <div className="flex w-full justify-center  ">
+              <p className=" text-center font-sans tracking-[31px] text-primary ">
+                ANKE
+              </p>
+              <p className=" text-center font-sans text-primary ">T</p>
+            </div>
+          </Link>
+        </div>
         <hr className="mt-2 w-full" />
         <Link to="/survey-creation">
           <Button className="m-4 flex items-center  " variant="positive">
