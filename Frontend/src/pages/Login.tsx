@@ -81,7 +81,7 @@ const Login = () => {
               type="text"
               id="email"
               className="h-10 rounded-xl border-2 px-1 text-black dark:border-slate-500"
-              placeholder=" Email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
