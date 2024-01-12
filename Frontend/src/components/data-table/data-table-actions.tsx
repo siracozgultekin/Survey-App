@@ -59,28 +59,10 @@ export function DataTableRowActions<TData>({
               <Link to={`/statistic?surveyid=${survey.id}`}>Görüntüle</Link>
             </DropdownMenuItem>
           )}
-
+        {/* <DropdownMenuSeparator />
         <DropdownMenuItem>
           {tableType === "mySurvey" && "Katılımcıları düzenle"}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {/* <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.label}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub> */}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Sil
-          <DropdownMenuShortcut>⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -4,6 +4,7 @@ import dbpool from "../../db";
 import authenticateToken from "../middlewares/auth";
 import { User } from "../types";
 import { insertSurveySchema } from "../validators";
+import e from "express";
 
 const router = express.Router();
 
@@ -228,18 +229,30 @@ router.post(
   authenticateToken,
   async (req, res) => {
     const { survey_id } = req.body;
+    const { id } = req.user as User;
+    console.log("userid", id);
     try {
       //update is_active column of surveys table
-      console.log("tetiklendi");
-      await dbpool.query(
-        "UPDATE surveys SET is_active = false WHERE id = $1 ",
+      const survey = await dbpool.query(
+        "SELECT * FROM surveys WHERE id = $1 ",
         [survey_id]
       );
-      //update is_active column of invitations table
-      await dbpool.query(
-        "UPDATE invitations SET is_active = false WHERE survey_id = $1 ",
-        [survey_id]
-      );
+      if (survey.rows[0].owner_id !== id) {
+        res
+          .status(401)
+          .json({ error: "You are not authorized to delete this survey" });
+      }
+
+      await dbpool
+        .query("UPDATE surveys SET is_active = false WHERE id = $1 ", [
+          survey_id,
+        ])
+        .then(async () => {
+          await dbpool.query(
+            "UPDATE invitations SET is_active = false WHERE survey_id = $1 ",
+            [survey_id]
+          );
+        });
       res.json({ message: "Survey deleted" });
     } catch (error) {
       console.log("error=>", error);
