@@ -29,12 +29,15 @@ const Sidebar = () => {
       <div>
         <div className="flex w-full flex-col items-center bg-slate-900 ">
           <Link to="/home" className="flex flex-col items-center ">
-            <img src={Logo} alt="Logo" className="w-[100px] self-center  " />
-            <div className="flex w-full justify-center  ">
-              <p className=" text-center  tracking-[20px] text-primary ">
-                SİRA
+            {/* <img src={Logo} alt="Logo" className="w-[100px] self-center  " /> */}
+            <div className="m-5 flex h-[100px] w-[100px] items-center justify-center border-2">
+              Logo Area
+            </div>
+            <div className="flex  justify-center ">
+              <p className="max-w-[200px] truncate text-center tracking-[20px] text-primary ">
+                NAM
               </p>
-              <p className=" text-center text-primary ">C</p>
+              <p className="max-w-[200px]  text-center text-primary ">E</p>
             </div>
             <div className="flex w-full justify-center  ">
               <p className=" text-center font-sans tracking-[31px] text-primary ">
