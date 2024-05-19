@@ -7,7 +7,7 @@ This is a fullstack web-based demo project which aims to reduce the company's de
 - Frontend was developed using  **React** and **Typescript**.
 * In the backend, as server environment **Node.js** was preferred with **Typescript**.
 + **TailwindCSS** and **Shadcn UI** were used for the UI and component library.
-- **PostgreSQL** has been used and empowered with Dbeaver to store data in a database.
+- **PostgreSQL** has been used and empowered with **Dbeaver** to store data in a database.
 * **Docker** has been used for containerization.
 
 
